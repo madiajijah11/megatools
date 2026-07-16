@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
+import InfoPanel from "@/components/InfoPanel";
+import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 
 function generateUUIDs(count: number): string[] {
   const uuids: string[] = [];
@@ -16,6 +18,7 @@ export default function UUIDClient() {
   const [bulkCount, setBulkCount] = useState(10);
   const [bulkUUIDs, setBulkUUIDs] = useState("");
   const [copied, setCopied] = useState<"single" | "bulk" | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleGenerateSingle = useCallback(() => {
     setSingleUUID(crypto.randomUUID());
@@ -43,96 +46,132 @@ export default function UUIDClient() {
     setTimeout(() => setCopied(null), 2000);
   };
 
+  const stats = (
+    <div className="grid grid-cols-2 gap-3 text-sm">
+      <div>
+        <p className="text-text-muted text-xs">Single</p>
+        <p className="text-text-primary font-mono">
+          {singleUUID ? "Ready" : "—"}
+        </p>
+      </div>
+      <div>
+        <p className="text-text-muted text-xs">Bulk Count</p>
+        <p className="text-text-primary font-mono">{bulkUUIDs ? bulkUUIDs.split("\n").length : "—"}</p>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="mx-auto max-w-6xl px-3 sm:px-4 py-8 sm:py-12">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       <Link
         href="/"
-        className="inline-flex items-center gap-1 text-sm text-mega-muted hover:text-mega-accent-light transition-colors mb-6 sm:mb-8"
+        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
       >
         ← Back to Tools
       </Link>
 
-      <div className="glass rounded-2xl p-4 sm:p-6 md:p-8">
-        <div className="mb-4 sm:mb-6 text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold">
-            <span className="gradient-text">UUID Generator</span>
-          </h1>
-          <p className="mt-2 text-xs sm:text-sm text-mega-muted">
-            Generate UUID v4 identifiers instantly. One click to copy.
-          </p>
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
+        {/* Left: Workspace */}
+        <div className="card p-6 sm:p-8">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              <span className="gradient-text">UUID Generator</span>
+            </h1>
+            <p className="mt-2 text-sm text-text-secondary">
+              Generate UUID v4 identifiers instantly. One click to copy.
+            </p>
+          </div>
 
-        {/* Single UUID */}
-        <div className="mb-6 sm:mb-8">
-          <label className="mb-2 block text-sm font-medium text-mega-muted">
-            Generated UUID
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={singleUUID}
+          {/* Single UUID */}
+          <div className="mb-8">
+            <label className="mb-2 block text-sm font-medium text-text-secondary">
+              Generated UUID
+            </label>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={singleUUID}
+                readOnly
+                placeholder="Click Generate..."
+                className="input-field flex-1 min-w-0 font-mono"
+              />
+              <button
+                onClick={handleCopySingle}
+                disabled={!singleUUID}
+                className="btn-secondary shrink-0 px-5"
+              >
+                {copied === "single" ? "Copied!" : "Copy"}
+              </button>
+            </div>
+            <div className="mt-3 flex justify-center">
+              <button
+                onClick={handleGenerateSingle}
+                className="btn-primary w-full sm:w-auto px-8"
+              >
+                Generate New
+              </button>
+            </div>
+          </div>
+
+          {/* Divider */}
+          <div className="mb-8 border-t border-border-subtle" />
+
+          {/* Bulk generate */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-text-secondary">
+              Bulk Generate
+            </label>
+            <div className="mb-3 flex flex-wrap items-center gap-3">
+              <label className="text-sm text-text-secondary">Count:</label>
+              <input
+                type="number"
+                min={1}
+                max={100}
+                value={bulkCount}
+                onChange={(e) => setBulkCount(Number(e.target.value))}
+                className="input-field w-24"
+              />
+              <button
+                onClick={handleGenerateBulk}
+                className="btn-primary px-6"
+              >
+                Generate
+              </button>
+              <button
+                onClick={handleCopyBulk}
+                disabled={!bulkUUIDs}
+                className="btn-secondary px-5"
+              >
+                {copied === "bulk" ? "Copied!" : "Copy All"}
+              </button>
+            </div>
+            <textarea
+              value={bulkUUIDs}
               readOnly
-              placeholder="Click Generate..."
-              className="flex-1 min-w-0 rounded-xl border border-mega-border bg-mega-dark/50 p-3 sm:p-4 text-sm font-mono text-mega-text placeholder-mega-muted/40 outline-none break-all"
+              placeholder="Generated UUIDs will appear here..."
+              className="input-field min-h-[200px] sm:min-h-[260px] resize-y font-mono text-sm"
             />
-            <button
-              onClick={handleCopySingle}
-              disabled={!singleUUID}
-              className="shrink-0 rounded-xl border border-mega-border px-4 sm:px-5 py-2.5 text-sm font-medium text-mega-muted transition-colors hover:border-mega-accent/50 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {copied === "single" ? "Copied!" : "Copy"}
-            </button>
-          </div>
-          <div className="mt-3 flex justify-center">
-            <button
-              onClick={handleGenerateSingle}
-              className="w-full sm:w-auto rounded-xl bg-mega-accent px-8 py-2.5 text-sm font-medium text-white transition-colors hover:bg-mega-accent-light"
-            >
-              Generate New
-            </button>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="mb-8 border-t border-mega-border" />
-
-        {/* Bulk generate */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-mega-muted">
-            Bulk Generate
-          </label>
-          <div className="mb-3 flex flex-wrap items-center gap-2 sm:gap-3">
-            <label className="text-sm text-mega-muted">Count:</label>
-            <input
-              type="number"
-              min={1}
-              max={100}
-              value={bulkCount}
-              onChange={(e) => setBulkCount(Number(e.target.value))}
-              className="w-20 sm:w-24 rounded-xl border border-mega-border bg-mega-dark/50 px-3 sm:px-4 py-2.5 text-sm text-mega-text outline-none focus:border-mega-accent"
-            />
-            <button
-              onClick={handleGenerateBulk}
-              className="rounded-xl bg-mega-accent px-5 sm:px-6 py-2.5 text-sm font-medium text-white transition-colors hover:bg-mega-accent-light"
-            >
-              Generate
-            </button>
-            <button
-              onClick={handleCopyBulk}
-              disabled={!bulkUUIDs}
-              className="rounded-xl border border-mega-border px-4 sm:px-5 py-2.5 text-sm font-medium text-mega-muted transition-colors hover:border-mega-accent/50 hover:text-white disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {copied === "bulk" ? "Copied!" : "Copy All"}
-            </button>
-          </div>
-          <textarea
-            value={bulkUUIDs}
-            readOnly
-            placeholder="Generated UUIDs will appear here..."
-            className="w-full h-48 sm:h-64 rounded-xl border border-mega-border bg-mega-dark/50 p-3 sm:p-4 text-sm font-mono text-mega-text placeholder-mega-muted/40 outline-none resize-y"
-          />
+        {/* Right: Info Panel (desktop) */}
+        <div className="hidden lg:block">
+          <InfoPanel toolId="uuid-generator" stats={stats} />
         </div>
       </div>
+
+      {/* Mobile FAB */}
+      <button
+        onClick={() => setDrawerOpen(true)}
+        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-white shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
+      >
+        💡
+      </button>
+
+      {/* Mobile Drawer */}
+      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <InfoPanel toolId="uuid-generator" stats={stats} />
+      </MobileInfoDrawer>
     </div>
   );
 }

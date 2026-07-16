@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import Link from "next/link";
+import InfoPanel from "@/components/InfoPanel";
+import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 
 type DiffLine = {
   type: "added" | "removed" | "unchanged";
@@ -55,6 +57,7 @@ export default function DiffClient() {
   const [original, setOriginal] = useState("");
   const [modified, setModified] = useState("");
   const [diff, setDiff] = useState<DiffLine[] | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleCompare = () => {
     setDiff(computeDiff(original, modified));
@@ -68,104 +71,146 @@ export default function DiffClient() {
       }
     : null;
 
+  const statPanel = (
+    <div className="grid grid-cols-2 gap-3 text-sm">
+      <div>
+        <p className="text-text-muted text-xs">Additions</p>
+        <p className="text-success font-mono">{stats ? `+${stats.additions}` : "—"}</p>
+      </div>
+      <div>
+        <p className="text-text-muted text-xs">Deletions</p>
+        <p className="text-error font-mono">{stats ? `-${stats.deletions}` : "—"}</p>
+      </div>
+      <div>
+        <p className="text-text-muted text-xs">Unchanged</p>
+        <p className="text-text-primary font-mono">{stats ? stats.unchanged : "—"}</p>
+      </div>
+      <div>
+        <p className="text-text-muted text-xs">Total</p>
+        <p className="text-text-primary font-mono">{stats ? stats.additions + stats.deletions + stats.unchanged : "—"}</p>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="mx-auto max-w-6xl px-3 sm:px-4 py-8 sm:py-12">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       <Link
         href="/"
-        className="inline-flex items-center gap-1 text-sm text-mega-muted hover:text-mega-accent-light transition-colors mb-6 sm:mb-8"
+        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
       >
         ← Back to Tools
       </Link>
 
-      <div className="glass rounded-2xl p-4 sm:p-6 md:p-8">
-        <div className="mb-4 sm:mb-6 text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold">
-            <span className="gradient-text">Text Diff Checker</span>
-          </h1>
-          <p className="mt-2 text-xs sm:text-sm text-mega-muted">
-            Compare two texts and see the differences highlighted line by line.
-          </p>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
+        {/* Left: Workspace */}
+        <div className="card p-6 sm:p-8">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              <span className="gradient-text">Text Diff Checker</span>
+            </h1>
+            <p className="mt-2 text-sm text-text-secondary">
+              Compare two texts and see the differences highlighted line by line.
+            </p>
+          </div>
+
+          {/* Inputs */}
+          <div className="mb-4 grid gap-4 grid-cols-1 sm:grid-cols-2">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-text-secondary">
+                Original
+              </label>
+              <textarea
+                value={original}
+                onChange={(e) => setOriginal(e.target.value)}
+                placeholder="Paste the original text here..."
+                className="input-field min-h-[200px] sm:min-h-[260px] resize-y font-mono text-sm"
+                spellCheck={false}
+              />
+            </div>
+            <div>
+              <label className="mb-2 block text-sm font-medium text-text-secondary">
+                Modified
+              </label>
+              <textarea
+                value={modified}
+                onChange={(e) => setModified(e.target.value)}
+                placeholder="Paste the modified text here..."
+                className="input-field min-h-[200px] sm:min-h-[260px] resize-y font-mono text-sm"
+                spellCheck={false}
+              />
+            </div>
+          </div>
+
+          {/* Compare button */}
+          <div className="mb-4 flex justify-center">
+            <button
+              onClick={handleCompare}
+              disabled={!original && !modified}
+              className="btn-primary w-full sm:w-auto px-8"
+            >
+              Compare
+            </button>
+          </div>
+
+          {/* Stats */}
+          {stats && (
+            <div className="mb-4 flex flex-wrap justify-center gap-4 text-sm">
+              <span className="rounded-lg bg-success/10 px-3 py-1 text-success">
+                +{stats.additions} added
+              </span>
+              <span className="rounded-lg bg-error/10 px-3 py-1 text-error">
+                -{stats.deletions} removed
+              </span>
+              <span className="rounded-lg bg-bg-page px-3 py-1 text-text-muted">
+                {stats.unchanged} unchanged
+              </span>
+            </div>
+          )}
+
+          {/* Diff output */}
+          {diff && (
+            <div className="overflow-x-auto rounded-xl border border-border-subtle bg-bg-page">
+              <pre className="p-4 text-sm font-mono leading-relaxed">
+                {diff.map((line, i) => (
+                  <div
+                    key={i}
+                    className={`px-2 py-0.5 break-all ${
+                      line.type === "added"
+                        ? "bg-success/10 text-success"
+                        : line.type === "removed"
+                          ? "bg-error/10 text-error"
+                          : "text-text-primary"
+                    }`}
+                  >
+                    <span className="mr-3 inline-block w-6 text-right text-text-muted select-none">
+                      {line.type === "added" ? "+" : line.type === "removed" ? "-" : " "}
+                    </span>
+                    {line.content}
+                  </div>
+                ))}
+              </pre>
+            </div>
+          )}
         </div>
 
-        {/* Inputs */}
-        <div className="mb-4 grid gap-4 grid-cols-1 sm:grid-cols-2">
-          <div>
-            <label className="mb-2 block text-sm font-medium text-mega-muted">
-              Original
-            </label>
-            <textarea
-              value={original}
-              onChange={(e) => setOriginal(e.target.value)}
-              placeholder="Paste the original text here..."
-              className="w-full h-48 sm:h-64 rounded-xl border border-mega-border bg-mega-dark/50 p-3 sm:p-4 text-sm font-mono text-mega-text placeholder-mega-muted/40 outline-none transition-colors focus:border-mega-accent resize-y"
-              spellCheck={false}
-            />
-          </div>
-          <div>
-            <label className="mb-2 block text-sm font-medium text-mega-muted">
-              Modified
-            </label>
-            <textarea
-              value={modified}
-              onChange={(e) => setModified(e.target.value)}
-              placeholder="Paste the modified text here..."
-              className="w-full h-48 sm:h-64 rounded-xl border border-mega-border bg-mega-dark/50 p-3 sm:p-4 text-sm font-mono text-mega-text placeholder-mega-muted/40 outline-none transition-colors focus:border-mega-accent resize-y"
-              spellCheck={false}
-            />
-          </div>
+        {/* Right: Info Panel (desktop) */}
+        <div className="hidden lg:block">
+          <InfoPanel toolId="text-diff" stats={statPanel} />
         </div>
-
-        {/* Compare button */}
-        <div className="mb-4 flex justify-center">
-          <button
-            onClick={handleCompare}
-            disabled={!original && !modified}
-            className="w-full sm:w-auto rounded-xl bg-mega-accent px-8 py-2.5 text-sm font-medium text-white transition-colors hover:bg-mega-accent-light disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Compare
-          </button>
-        </div>
-
-        {/* Stats */}
-        {stats && (
-          <div className="mb-4 flex flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm">
-            <span className="rounded-lg bg-green-950/40 px-2 sm:px-3 py-1 text-green-400">
-              +{stats.additions} added
-            </span>
-            <span className="rounded-lg bg-red-950/40 px-2 sm:px-3 py-1 text-red-400">
-              -{stats.deletions} removed
-            </span>
-            <span className="rounded-lg bg-mega-dark/50 px-2 sm:px-3 py-1 text-mega-muted">
-              {stats.unchanged} unchanged
-            </span>
-          </div>
-        )}
-
-        {/* Diff output */}
-        {diff && (
-          <div className="overflow-x-auto rounded-xl border border-mega-border bg-mega-dark/50">
-            <pre className="p-3 sm:p-4 text-xs sm:text-sm font-mono leading-relaxed">
-              {diff.map((line, i) => (
-                <div
-                  key={i}
-                  className={`px-1 sm:px-2 py-0.5 break-all ${
-                    line.type === "added"
-                      ? "bg-green-950/40 text-green-400"
-                      : line.type === "removed"
-                        ? "bg-red-950/40 text-red-400"
-                        : "text-mega-text"
-                  }`}
-                >
-                  <span className="mr-1 sm:mr-3 inline-block w-4 sm:w-6 text-right text-mega-muted/50 select-none">
-                    {line.type === "added" ? "+" : line.type === "removed" ? "-" : " "}
-                  </span>
-                  {line.content}
-                </div>
-              ))}
-            </pre>
-          </div>
-        )}
       </div>
+
+      {/* Mobile FAB */}
+      <button
+        onClick={() => setDrawerOpen(true)}
+        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-white shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
+      >
+        💡
+      </button>
+
+      {/* Mobile Drawer */}
+      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <InfoPanel toolId="text-diff" stats={statPanel} />
+      </MobileInfoDrawer>
     </div>
   );
 }
