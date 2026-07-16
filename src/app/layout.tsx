@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import QuickSwitchBar from "@/components/QuickSwitchBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,47 +37,22 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
-      <body className="min-h-full flex flex-col antialiased">
-        <header className="sticky top-0 z-50 border-b border-mega-border glass">
-          <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-            <a href="/" className="text-xl font-bold tracking-tight">
+      <body className="min-h-full flex flex-col antialiased bg-bg-page text-text-primary">
+        <header className="sticky top-0 z-50 border-b border-border-subtle bg-bg-card/80 backdrop-blur-md">
+          <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
+            <a href="/" className="flex items-center gap-1 text-xl font-bold tracking-tight">
               <span className="gradient-text">✦ Mega</span>
-              <span className="text-mega-muted">Tools</span>
+              <span className="text-text-secondary">Tools</span>
             </a>
-            <nav className="flex items-center gap-3 sm:gap-4 text-sm text-mega-muted">
-              <a href="/qrcode" className="hover:text-mega-accent-light transition-colors hidden sm:inline">
-                QR
-              </a>
-              <a href="/json-formatter" className="hover:text-mega-accent-light transition-colors hidden sm:inline">
-                JSON
-              </a>
-              <a href="/password-generator" className="hover:text-mega-accent-light transition-colors hidden sm:inline">
-                Password
-              </a>
-              <a href="/uuid-generator" className="hover:text-mega-accent-light transition-colors hidden md:inline">
-                UUID
-              </a>
-              <a href="/base64" className="hover:text-mega-accent-light transition-colors hidden md:inline">
-                Base64
-              </a>
-              <a href="/markdown-preview" className="hover:text-mega-accent-light transition-colors hidden lg:inline">
-                Markdown
-              </a>
-              <a href="/image-compressor" className="hover:text-mega-accent-light transition-colors hidden lg:inline">
-                Image
-              </a>
-              <a href="/text-diff" className="hover:text-mega-accent-light transition-colors hidden lg:inline">
-                Diff
-              </a>
-              <a
-                href="https://ko-fi.com/genzodr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-full bg-mega-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-mega-accent-light transition-colors"
-              >
-                ☕ Support
-              </a>
-            </nav>
+            <QuickSwitchBar />
+            <a
+              href="https://ko-fi.com/genzodr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-primary hidden sm:flex text-sm py-1.5 px-3"
+            >
+              ☕ Support
+            </a>
           </div>
         </header>
         <script
@@ -96,8 +72,8 @@ export default function RootLayout({
           }}
         />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-mega-border py-6 text-center text-sm text-mega-muted">
-          <p>✦ MegaTools — Free. Fast. Private. No data leaves your browser.</p>
+        <footer className="border-t border-border-subtle py-4 text-center text-sm text-text-muted">
+          <p>MegaTools — Free. Fast. Private. No data leaves your browser.</p>
         </footer>
       </body>
     </html>
