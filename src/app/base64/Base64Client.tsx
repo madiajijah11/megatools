@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import InfoPanel from "@/components/InfoPanel";
+import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import CopyButton from "@/components/CopyButton";
 
 type Mode = "encode" | "decode";
 
@@ -10,12 +13,11 @@ export default function Base64Client() {
   const [mode, setMode] = useState<Mode>("encode");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleConvert = () => {
     setError("");
     setOutput("");
-    setCopied(false);
 
     if (!input.trim()) {
       setError("Please enter some text.");
@@ -41,116 +43,145 @@ export default function Base64Client() {
     }
   };
 
-  const handleCopy = async () => {
-    if (!output) return;
-    await navigator.clipboard.writeText(output);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const stats = (
+    <div className="grid grid-cols-2 gap-3 text-sm">
+      <div>
+        <p className="text-text-muted text-xs">Input</p>
+        <p className="text-text-primary font-mono">{new Blob([input]).size} B</p>
+      </div>
+      <div>
+        <p className="text-text-muted text-xs">Output</p>
+        <p className="text-text-primary font-mono">{new Blob([output]).size} B</p>
+      </div>
+      <div>
+        <p className="text-text-muted text-xs">Ratio</p>
+        <p className="text-text-primary font-mono">
+          {input.length > 0 && output.length > 0
+            ? `${Math.round((output.length / input.length) * 100)}%`
+            : "—"}
+        </p>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="mx-auto max-w-6xl px-3 sm:px-4 py-8 sm:py-12">
+    <div className="mx-auto max-w-7xl px-4 py-8">
       <Link
         href="/"
-        className="inline-flex items-center gap-1 text-sm text-mega-muted hover:text-mega-accent-light transition-colors mb-6 sm:mb-8"
+        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
       >
         ← Back to Tools
       </Link>
 
-      <div className="glass rounded-2xl p-4 sm:p-6 md:p-8">
-        <div className="mb-4 sm:mb-6 text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold">
-            <span className="gradient-text">Base64 Encode/Decode</span>
-          </h1>
-          <p className="mt-2 text-xs sm:text-sm text-mega-muted">
-            Encode text to Base64 or decode Base64 back to readable text.
-          </p>
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
+        {/* Left: Workspace */}
+        <div className="card p-6 sm:p-8">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              <span className="gradient-text">Base64 Encode/Decode</span>
+            </h1>
+            <p className="mt-2 text-sm text-text-secondary">
+              Encode text to Base64 or decode Base64 back to readable text.
+            </p>
+          </div>
 
-        {/* Mode toggle */}
-        <div className="mb-4 sm:mb-6 flex justify-center gap-1 rounded-xl border border-mega-border p-1 w-fit mx-auto">
-          {(["encode", "decode"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => {
-                setMode(m);
+          {/* Mode toggle */}
+          <div className="mb-6 flex justify-center gap-1 rounded-xl border border-border-subtle p-1 w-fit mx-auto">
+            {(["encode", "decode"] as const).map((m) => (
+              <button
+                key={m}
+                onClick={() => {
+                  setMode(m);
+                  setError("");
+                  setOutput("");
+                }}
+                className={`rounded-lg px-6 py-2 text-sm font-medium transition-colors capitalize ${
+                  mode === m
+                    ? "bg-accent text-white"
+                    : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+
+          {/* Input */}
+          <div className="mb-4">
+            <label className="mb-2 block text-sm font-medium text-text-secondary">
+              {mode === "encode" ? "Text to Encode" : "Base64 to Decode"}
+            </label>
+            <textarea
+              value={input}
+              onChange={(e) => {
+                setInput(e.target.value);
                 setError("");
                 setOutput("");
-                setCopied(false);
               }}
-              className={`rounded-lg px-4 sm:px-6 py-2 text-sm font-medium transition-colors capitalize ${
-                mode === m
-                  ? "bg-mega-accent text-white"
-                  : "text-mega-muted hover:text-white"
-              }`}
-            >
-              {m}
-            </button>
-          ))}
-        </div>
-
-        {/* Input */}
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-medium text-mega-muted">
-            {mode === "encode" ? "Text to Encode" : "Base64 to Decode"}
-          </label>
-          <textarea
-            value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              setError("");
-              setOutput("");
-            }}
-            placeholder={
-              mode === "encode"
-                ? "Enter text to encode..."
-                : "Paste Base64 string here..."
-            }
-            className="w-full h-32 sm:h-48 rounded-xl border border-mega-border bg-mega-dark/50 p-3 sm:p-4 text-sm font-mono text-mega-text placeholder-mega-muted/40 outline-none transition-colors focus:border-mega-accent resize-y break-all"
-            spellCheck={false}
-          />
-        </div>
-
-        {/* Convert button */}
-        <div className="mb-4 flex justify-center">
-          <button
-            onClick={handleConvert}
-            disabled={!input.trim()}
-            className="w-full sm:w-auto rounded-xl bg-mega-accent px-8 py-2.5 text-sm font-medium text-white transition-colors hover:bg-mega-accent-light disabled:opacity-40 disabled:cursor-not-allowed"
-          >
-            Convert
-          </button>
-        </div>
-
-        {/* Error */}
-        {error && (
-          <div className="mb-4 rounded-xl border border-red-800 bg-red-950/40 px-4 py-3 text-sm text-red-400 text-center">
-            {error}
-          </div>
-        )}
-
-        {/* Output */}
-        {output && (
-          <div>
-            <div className="mb-2 flex items-center justify-between">
-              <label className="text-sm font-medium text-mega-muted">
-                {mode === "encode" ? "Encoded Output" : "Decoded Output"}
-              </label>
-              <button
-                onClick={handleCopy}
-                className="rounded-xl border border-mega-border px-5 py-2.5 text-sm font-medium text-mega-muted transition-colors hover:border-mega-accent/50 hover:text-white"
-              >
-                {copied ? "Copied!" : "Copy"}
-              </button>
-            </div>
-            <textarea
-              value={output}
-              readOnly
-              className="w-full h-32 sm:h-48 rounded-xl border border-mega-border bg-mega-dark/50 p-3 sm:p-4 text-sm font-mono text-mega-text outline-none resize-y break-all"
+              placeholder={
+                mode === "encode"
+                  ? "Enter text to encode..."
+                  : "Paste Base64 string here..."
+              }
+              className="input-field min-h-[120px] sm:min-h-[180px] resize-y"
+              spellCheck={false}
             />
           </div>
-        )}
+
+          {/* Convert button */}
+          <div className="mb-4 flex justify-center">
+            <button
+              onClick={handleConvert}
+              disabled={!input.trim()}
+              className="btn-primary w-full sm:w-auto px-8"
+            >
+              Convert
+            </button>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="mb-4 rounded-xl border border-error/30 bg-error/5 px-4 py-3 text-sm text-error text-center">
+              {error}
+            </div>
+          )}
+
+          {/* Output */}
+          {output && (
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <label className="text-sm font-medium text-text-secondary">
+                  {mode === "encode" ? "Encoded Output" : "Decoded Output"}
+                </label>
+                <CopyButton text={output} />
+              </div>
+              <textarea
+                value={output}
+                readOnly
+                className="output-field min-h-[120px] sm:min-h-[180px] resize-y"
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Right: Info Panel (desktop) */}
+        <div className="hidden lg:block">
+          <InfoPanel toolId="base64" stats={stats} />
+        </div>
       </div>
+
+      {/* Mobile FAB */}
+      <button
+        onClick={() => setDrawerOpen(true)}
+        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-white shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
+      >
+        💡
+      </button>
+
+      {/* Mobile Drawer */}
+      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <InfoPanel toolId="base64" stats={stats} />
+      </MobileInfoDrawer>
     </div>
   );
 }
