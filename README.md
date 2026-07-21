@@ -13,7 +13,7 @@
 | 🔐 Password Generator | Create strong, random passwords with custom options |
 | 🆔 UUID Generator | Generate UUID v4 identifiers (single or bulk) |
 | 🔡 Base64 Encode/Decode | Encode text to Base64 or decode it back |
-| 📝 Markdown Preview | Write Markdown with live rendered preview |
+| 📝 Markdown Preview | Write Markdown with live rendered preview (supports .md and .mdx) |
 | 🖼️ Image Compressor | Compress images via canvas — drag & drop, adjust quality |
 | 🔍 Text Diff Checker | Compare two texts with line-by-line diff highlighting |
 

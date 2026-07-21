@@ -4,6 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import InfoPanel from "@/components/InfoPanel";
 import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import { compile, run } from "@mdx-js/mdx";
+import * as runtime from "react/jsx-runtime";
 
 function parseMarkdown(text: string): string {
   let html = text;
@@ -69,11 +71,34 @@ function sanitizeHtml(html: string): string {
   return html.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "");
 }
 
+async function parseMDX(text: string) {
+  try {
+    const code = String(await compile(text, { outputFormat: "function-body" }));
+    const { default: Content } = await run(code, runtime as any);
+    return { Content, error: null };
+  } catch (err) {
+    return { Content: null, error: (err as Error).message };
+  }
+}
+
 export default function MarkdownClient() {
   const [markdown, setMarkdown] = useState(
     `# Hello World\n\nThis is a **bold** and *italic* demo.\n\n## Features\n\n- Headers\n- **Bold** and *italic*\n- [Links](https://example.com)\n- \`Inline code\` and code blocks\n\n\`\`\`js\nconsole.log("Hello!");\n\`\`\`\n\n---\n\nA [link](https://example.com) in a paragraph.`
   );
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mode, setMode] = useState<"md" | "mdx">("md");
+  const [MDXContent, setMDXContent] = useState<React.ComponentType<{}> | null>(null);
+  const [mdxError, setMdxError] = useState<string | null>(null);
+
+  // Parse MDX when mode is MDX
+  useMemo(() => {
+    if (mode === "mdx") {
+      parseMDX(markdown).then(({ Content, error }) => {
+        setMDXContent(Content ? () => Content : null);
+        setMdxError(error);
+      });
+    }
+  }, [markdown, mode]);
 
   const html = useMemo(() => sanitizeHtml(parseMarkdown(markdown)), [markdown]);
   const charCount = markdown.length;
@@ -123,13 +148,37 @@ export default function MarkdownClient() {
             </p>
           </div>
 
+          {/* Mode Toggle */}
+          <div className="mb-4 flex justify-center gap-2">
+            <button
+              onClick={() => setMode("md")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                mode === "md"
+                  ? "bg-accent text-white"
+                  : "bg-bg-page text-text-secondary hover:bg-accent-soft"
+              }`}
+            >
+              .md (Markdown)
+            </button>
+            <button
+              onClick={() => setMode("mdx")}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                mode === "mdx"
+                  ? "bg-accent text-white"
+                  : "bg-bg-page text-text-secondary hover:bg-accent-soft"
+              }`}
+            >
+              .mdx (MDX)
+            </button>
+          </div>
+
           {/* Editor + Preview */}
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             {/* Editor */}
             <div>
               <div className="mb-2 flex items-center justify-between">
                 <label className="text-sm font-medium text-text-secondary">
-                  Markdown
+                  {mode === "md" ? "Markdown" : "MDX"}
                 </label>
                 <span className="text-xs text-text-muted">
                   {charCount} chars · {wordCount} words
@@ -153,7 +202,22 @@ export default function MarkdownClient() {
               </div>
               <div className="min-h-[260px] sm:min-h-[320px] md:min-h-[32rem] overflow-y-auto rounded-xl border border-border-subtle bg-bg-page p-4 text-sm text-text-primary leading-relaxed break-words">
                 {markdown.trim() ? (
-                  <div dangerouslySetInnerHTML={{ __html: html }} />
+                  mode === "md" ? (
+                    <div dangerouslySetInnerHTML={{ __html: html }} />
+                  ) : mdxError ? (
+                    <div className="text-error">
+                      <p className="font-semibold mb-2">MDX Parse Error:</p>
+                      <pre className="text-xs bg-bg-card p-3 rounded border border-border-subtle overflow-x-auto">
+                        {mdxError}
+                      </pre>
+                    </div>
+                  ) : MDXContent ? (
+                    <div className="mdx-preview"><MDXContent /></div>
+                  ) : (
+                    <p className="text-text-muted animate-pulse-soft">
+                      Parsing MDX...
+                    </p>
+                  )
                 ) : (
                   <p className="text-text-muted">
                     Preview will appear here...
