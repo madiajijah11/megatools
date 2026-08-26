@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QuickSwitchBar from "@/components/QuickSwitchBar";
@@ -47,11 +48,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col antialiased bg-bg-page text-text-primary">
         <header className="sticky top-0 z-50 border-b border-border-subtle bg-bg-card/80 backdrop-blur-md">
           <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-            <a href="/" className="flex items-center gap-1 text-lg font-bold tracking-tight">
+            <Link href="/" className="flex items-center gap-1 text-lg font-bold tracking-tight">
               <span className="text-text-secondary">[</span>
               <span className="gradient-text">megatools</span>
               <span className="text-text-secondary">]$</span>
-            </a>
+            </Link>
             <QuickSwitchBar />
             <a href="#support" className="btn-primary hidden sm:flex text-sm py-1.5 px-3">
               Support

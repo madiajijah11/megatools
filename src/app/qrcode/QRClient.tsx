@@ -26,7 +26,10 @@ export default function QRClient() {
   }, [text]);
 
   useEffect(() => {
-    generateQR();
+    const t = setTimeout(() => {
+      generateQR();
+    }, 0);
+    return () => clearTimeout(t);
   }, [generateQR]);
 
   const handleDownload = () => {
@@ -123,7 +126,7 @@ export default function QRClient() {
       {/* Mobile FAB */}
       <button
         onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-white shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
+        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
       >
         ?
       </button>

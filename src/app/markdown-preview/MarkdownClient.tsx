@@ -5,6 +5,7 @@ import Link from "next/link";
 import InfoPanel from "@/components/InfoPanel";
 import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import { compile, run } from "@mdx-js/mdx";
+import type { RunOptions } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 
 function parseMarkdown(text: string): string {
@@ -74,7 +75,7 @@ function sanitizeHtml(html: string): string {
 async function parseMDX(text: string) {
   try {
     const code = String(await compile(text, { outputFormat: "function-body" }));
-    const { default: Content } = await run(code, runtime as any);
+    const { default: Content } = await run(code, runtime as unknown as RunOptions);
     return { Content, error: null };
   } catch (err) {
     return { Content: null, error: (err as Error).message };
@@ -87,7 +88,7 @@ export default function MarkdownClient() {
   );
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mode, setMode] = useState<"md" | "mdx">("md");
-  const [MDXContent, setMDXContent] = useState<React.ComponentType<{}> | null>(null);
+  const [MDXContent, setMDXContent] = useState<React.ComponentType<Record<string, never>> | null>(null);
   const [mdxError, setMdxError] = useState<string | null>(null);
 
   // Parse MDX when mode is MDX
@@ -237,7 +238,7 @@ export default function MarkdownClient() {
       {/* Mobile FAB */}
       <button
         onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-white shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
+        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
       >
         ?
       </button>
