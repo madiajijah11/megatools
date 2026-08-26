@@ -5,7 +5,6 @@ import Link from "next/link";
 import QRCode from "qrcode";
 import InfoPanel from "@/components/InfoPanel";
 import MobileInfoDrawer from "@/components/MobileInfoDrawer";
-import CopyButton from "@/components/CopyButton";
 
 export default function QRClient() {
   const [text, setText] = useState("https://example.com");

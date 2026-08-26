@@ -31,7 +31,6 @@ function computeDiff(original: string, modified: string): DiffLine[] {
   }
 
   // Backtrack to produce diff
-  const result: DiffLine[] = [];
   let i = m;
   let j = n;
   const temp: DiffLine[] = [];
@@ -214,3 +213,4 @@ export default function DiffClient() {
     </div>
   );
 }
+

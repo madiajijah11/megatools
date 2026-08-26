@@ -236,3 +236,59 @@ export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
 export function getToolInfo(toolId: string): ToolInfo | undefined {
   return TOOLS_INFO[toolId];
 }
+
+export interface ToolCategory {
+  id: string;
+  name: string;
+  emoji: string;
+  toolIds: string[];
+}
+
+export const TOOL_CATEGORIES: ToolCategory[] = [
+  {
+    id: "format-text",
+    name: "Format & Text",
+    emoji: "📝",
+    toolIds: [
+      "json-formatter",
+      "base64",
+      "url-encoder",
+      "text-diff",
+      "text-transformer",
+      "markdown-preview",
+    ],
+  },
+  {
+    id: "crypto-security",
+    name: "Security & Crypto",
+    emoji: "🔐",
+    toolIds: [
+      "password-generator",
+      "uuid-generator",
+      "hash-generator",
+      "aes-crypto",
+      "jwt-decoder",
+    ],
+  },
+  {
+    id: "media-qr",
+    name: "Media & QR",
+    emoji: "📱",
+    toolIds: [
+      "qrcode",
+      "qr-scanner",
+      "image-compressor",
+    ],
+  },
+  {
+    id: "dev-network",
+    name: "Dev & Network",
+    emoji: "⚙️",
+    toolIds: [
+      "timestamp-converter",
+      "regex-tester",
+      "chmod-calculator",
+      "cidr-calculator",
+    ],
+  },
+];
