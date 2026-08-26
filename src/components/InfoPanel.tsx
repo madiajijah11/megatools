@@ -18,7 +18,9 @@ export default function InfoPanel({ toolId, stats, extraContent }: InfoPanelProp
     <aside className="flex flex-col gap-5">
       {/* Header */}
       <div>
-        <h2 className="text-lg font-semibold text-text-primary mb-1">💡 Tips &amp; Info</h2>
+        <h2 className="text-lg font-semibold text-text-primary mb-1">
+          <span className="text-accent">$</span> cat tips.txt
+        </h2>
         <TechBadge tech={tool.tech} />
       </div>
 

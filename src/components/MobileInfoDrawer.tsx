@@ -25,7 +25,7 @@ export default function MobileInfoDrawer({ open, onClose, children }: MobileInfo
       {/* Overlay */}
       {open && (
         <div
-          className="fixed inset-0 z-40 bg-black/20 transition-opacity"
+          className="fixed inset-0 z-40 bg-black/60 transition-opacity"
           onClick={onClose}
         />
       )}

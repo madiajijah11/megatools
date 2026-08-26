@@ -98,7 +98,7 @@ export default function DiffClient() {
         href="/"
         className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
       >
-        ← Back to Tools
+        $ cd ../ 
       </Link>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
@@ -204,7 +204,7 @@ export default function DiffClient() {
         onClick={() => setDrawerOpen(true)}
         className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-white shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
       >
-        💡
+        ?
       </button>
 
       {/* Mobile Drawer */}

@@ -2,6 +2,13 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QuickSwitchBar from "@/components/QuickSwitchBar";
+import CopyButton from "@/components/CopyButton";
+
+const SUPPORT_ADDRESSES = [
+  { chain: "BTC", address: "bc1q3aej7x9wlvl54syt4qm48xcdn6zqa64cm6dwj6" },
+  { chain: "ETH", address: "0xae69f5bcf7762bb5fe34d3832fd7d1954054674b" },
+  { chain: "SOL", address: "6Et2XmHSdAD4QBR9Apdt9AVeJ77ktr1piV49q7RD4SLk" },
+];
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,18 +47,14 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col antialiased bg-bg-page text-text-primary">
         <header className="sticky top-0 z-50 border-b border-border-subtle bg-bg-card/80 backdrop-blur-md">
           <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
-            <a href="/" className="flex items-center gap-1 text-xl font-bold tracking-tight">
-              <span className="gradient-text">✦ Mega</span>
-              <span className="text-text-secondary">Tools</span>
+            <a href="/" className="flex items-center gap-1 text-lg font-bold tracking-tight">
+              <span className="text-text-secondary">[</span>
+              <span className="gradient-text">megatools</span>
+              <span className="text-text-secondary">]$</span>
             </a>
             <QuickSwitchBar />
-            <a
-              href="https://ko-fi.com/genzodr"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn-primary hidden sm:flex text-sm py-1.5 px-3"
-            >
-              ☕ Support
+            <a href="#support" className="btn-primary hidden sm:flex text-sm py-1.5 px-3">
+              Support
             </a>
           </div>
         </header>
@@ -72,8 +75,33 @@ export default function RootLayout({
           }}
         />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-border-subtle py-4 text-center text-sm text-text-muted">
-          <p>MegaTools — Free. Fast. Private. No data leaves your browser.</p>
+        <footer className="border-t border-border-subtle py-6 text-sm text-text-muted">
+          <div className="mx-auto max-w-6xl px-4">
+            <p className="text-text-secondary">
+              <span className="text-accent">$</span> megatools --free --fast --private{" "}
+              <span className="animate-pulse-soft text-accent">▊</span>
+            </p>
+            <p className="mt-1">No data leaves your browser.</p>
+            <div id="support" className="mt-5 scroll-mt-20">
+              <p className="mb-2 text-text-primary font-semibold uppercase tracking-wider">
+                Support the project
+              </p>
+              {SUPPORT_ADDRESSES.map((a) => (
+                <div
+                  key={a.chain}
+                  className="flex flex-wrap items-center gap-2 py-1 break-all"
+                >
+                  <span className="w-10 shrink-0 font-semibold text-text-primary">
+                    {a.chain}
+                  </span>
+                  <code className="text-xs sm:text-sm text-text-secondary">
+                    {a.address}
+                  </code>
+                  <CopyButton text={a.address} label="copy" />
+                </div>
+              ))}
+            </div>
+          </div>
         </footer>
       </body>
     </html>

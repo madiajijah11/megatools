@@ -15,14 +15,13 @@ export default function QuickSwitchBar() {
           <Link
             key={tool.id}
             href={tool.href}
-            className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-all duration-200 ${
+            className={`rounded px-2.5 py-1.5 text-sm transition-all duration-200 ${
               isActive
-                ? "bg-accent/10 text-accent"
-                : "text-secondary hover:bg-gray-100 hover:text-primary"
+                ? "bg-accent-soft text-accent"
+                : "text-text-secondary hover:bg-accent-soft hover:text-accent"
             }`}
           >
-            <span className="text-base">{tool.emoji}</span>
-            <span className="hidden lg:inline">{tool.shortTitle}</span>
+            <span className="hidden lg:inline">{tool.shortTitle.toLowerCase().replace(/\s+/g, "-")}</span>
           </Link>
         );
       })}
