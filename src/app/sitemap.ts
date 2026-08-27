@@ -2,7 +2,9 @@ import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/tool-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = "https://megatools.vercel.app";
+  const base =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "https://megatools.vercel.app");
   const pages = ["", "/about", "/privacy", "/terms", ...TOOLS.map((t) => t.href)];
 
   return pages.map((path) => ({
