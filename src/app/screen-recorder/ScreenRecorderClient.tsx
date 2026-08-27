@@ -23,12 +23,15 @@ export default function ScreenRecorderClient() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const isSupported =
-      typeof navigator !== "undefined" &&
-      !!navigator.mediaDevices &&
-      !!navigator.mediaDevices.getDisplayMedia &&
-      typeof MediaRecorder !== "undefined";
-    setSupported(isSupported);
+    const t = setTimeout(() => {
+      const isSupported =
+        typeof navigator !== "undefined" &&
+        !!navigator.mediaDevices &&
+        !!navigator.mediaDevices.getDisplayMedia &&
+        typeof MediaRecorder !== "undefined";
+      setSupported(isSupported);
+    }, 0);
+    return () => clearTimeout(t);
   }, []);
 
   // Cleanup on unmount
@@ -301,7 +304,7 @@ export default function ScreenRecorderClient() {
               <div className="flex justify-end pt-2">
                 <a
                   href={recordedUrl}
-                  download={`screen-recording-${Date.now()}.webm`}
+                  download="screen-recording.webm"
                   className="btn-primary py-2 px-6 text-xs"
                 >
                   Download .webm Video

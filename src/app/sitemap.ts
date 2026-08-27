@@ -3,7 +3,7 @@ import { TOOLS } from "@/lib/tool-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const base = "https://megatools.vercel.app";
-  const pages = ["", ...TOOLS.map((t) => t.href)];
+  const pages = ["", "/about", "/privacy", "/terms", ...TOOLS.map((t) => t.href)];
 
   return pages.map((path) => ({
     url: `${base}${path}`,

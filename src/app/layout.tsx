@@ -5,6 +5,7 @@ import "./globals.css";
 import QuickSwitchBar from "@/components/QuickSwitchBar";
 import CopyButton from "@/components/CopyButton";
 import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const SUPPORT_ADDRESSES = [
   { chain: "BTC", address: "bc1q3aej7x9wlvl54syt4qm48xcdn6zqa64cm6dwj6" },
@@ -38,6 +39,9 @@ export const metadata: Metadata = {
   openGraph: {
     title: "MegaTools — Free Online Tools",
     description: "Free, fast, privacy-first tools for devs and everyone.",
+  },
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
   },
 };
 
@@ -84,8 +88,23 @@ export default function RootLayout({
               <span className="animate-pulse-soft text-accent">▊</span>
             </p>
             <p className="mt-1">No data leaves your browser.</p>
-            <div id="support" className="mt-5 scroll-mt-20">
-              <p className="mb-2 text-text-primary font-semibold uppercase tracking-wider">
+
+            <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-mono text-text-muted">
+              <Link href="/about" className="hover:text-accent transition-colors">
+                About Us
+              </Link>
+              <span>·</span>
+              <Link href="/privacy" className="hover:text-accent transition-colors">
+                Privacy Policy
+              </Link>
+              <span>·</span>
+              <Link href="/terms" className="hover:text-accent transition-colors">
+                Terms of Service
+              </Link>
+            </div>
+
+            <div id="support" className="mt-6 scroll-mt-20 border-t border-border-subtle pt-4">
+              <p className="mb-2 text-text-primary font-semibold uppercase tracking-wider text-xs font-mono">
                 Support the project
               </p>
               {SUPPORT_ADDRESSES.map((a) => (
@@ -93,7 +112,7 @@ export default function RootLayout({
                   key={a.chain}
                   className="flex flex-wrap items-center gap-2 py-1 break-all"
                 >
-                  <span className="w-10 shrink-0 font-semibold text-text-primary">
+                  <span className="w-10 shrink-0 font-semibold text-text-primary font-mono text-xs">
                     {a.chain}
                   </span>
                   <code className="text-xs sm:text-sm text-text-secondary">
@@ -106,6 +125,9 @@ export default function RootLayout({
           </div>
         </footer>
         <Analytics />
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        )}
       </body>
     </html>
   );
