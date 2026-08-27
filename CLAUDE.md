@@ -11,14 +11,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-**MegaTools** is a Next.js 16 App Router site — 28 client-side developer and cybersecurity tools that run entirely in the browser (no server-side data handling). Built with React 19, TypeScript, and Tailwind CSS v4.
+**MegaTools** is a Next.js 16 App Router site — 38 client-side developer, media, and cybersecurity tools that run entirely in the browser (no server-side data handling). Built with React 19, TypeScript, and Tailwind CSS v4.
 
 ### Tech Stack
 
 - Next.js 16 / React 19 / TypeScript 5
 - Tailwind CSS v4 — configured entirely via `@import "tailwindcss"` + `@theme inline` in `src/app/globals.css`. No `tailwind.config.js`.
-- Dependencies: `pdf-lib` (PDF manipulation), `js-yaml` (YAML parser), `qrcode` (QR generator), `@mdx-js/mdx` (Markdown renderer), `@vercel/analytics` (Vercel Analytics).
-- All other tools use native browser APIs (Canvas, Web Crypto API, TextEncoder, Intl, clipboard).
+- Dependencies: `pdf-lib` (PDF manipulation), `js-yaml` (YAML parser), `sql-formatter` (SQL beautifier), `qrcode` (QR generator), `@mdx-js/mdx` (Markdown renderer), `@vercel/analytics` (Vercel Analytics).
+- All other tools use native browser APIs (Canvas, Web Audio API, MediaRecorder API, Web Crypto API, TextEncoder, Intl, clipboard).
 - Deployed on Vercel at `https://megatools.vercel.app`.
 
 ### Directory Layout
@@ -40,7 +40,7 @@ src/
     TechBadge.tsx                 # Tech label badge bracket format [tech]
     QuickSwitchBar.tsx            # Top nav bar (tool switcher)
   lib/
-    tool-data.ts                  # ToolInfo interface + TOOLS (28 tools) + TOOL_CATEGORIES
+    tool-data.ts                  # ToolInfo interface + TOOLS (38 tools) + TOOL_CATEGORIES
 ```
 
 ### Design System — Dark Terminal Theme

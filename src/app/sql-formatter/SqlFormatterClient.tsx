@@ -1,0 +1,251 @@
+"use client";
+
+import { useState, useCallback, useEffect } from "react";
+import Link from "next/link";
+import { format as formatSql, type FormatOptionsWithLanguage } from "sql-formatter";
+import InfoPanel from "@/components/InfoPanel";
+import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import CopyButton from "@/components/CopyButton";
+
+type Dialect = "sql" | "postgresql" | "mysql" | "sqlite" | "transactsql" | "bigquery";
+type KeywordCase = "upper" | "lower" | "preserve";
+
+const SAMPLE_SQL = `select u.id, u.username, u.email, count(o.id) as total_orders, sum(o.amount) as total_spent from users u left join orders o on u.id = o.user_id where u.active = 1 and u.created_at >= '2026-01-01' group by u.id, u.username, u.email having count(o.id) > 5 order by total_spent desc limit 50;`;
+
+export default function SqlFormatterClient() {
+  const [input, setInput] = useState(SAMPLE_SQL);
+  const [output, setOutput] = useState("");
+  const [dialect, setDialect] = useState<Dialect>("sql");
+  const [keywordCase, setKeywordCase] = useState<KeywordCase>("upper");
+  const [tabWidth, setTabWidth] = useState<number>(2);
+  const [mode, setMode] = useState<"beautify" | "minify">("beautify");
+  const [error, setError] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const formatQuery = useCallback(() => {
+    setError(null);
+    if (!input.trim()) {
+      setOutput("");
+      return;
+    }
+
+    try {
+      if (mode === "minify") {
+        // Compact minification: remove comments & collapse whitespace
+        const minified = input
+          .replace(/--.*$/gm, "")
+          .replace(/\/\*[\s\S]*?\*\//g, "")
+          .replace(/\s+/g, " ")
+          .trim();
+        setOutput(minified);
+      } else {
+        const options: FormatOptionsWithLanguage = {
+          language: dialect,
+          keywordCase: keywordCase,
+          tabWidth: tabWidth,
+          useTabs: false,
+        };
+        const formatted = formatSql(input, options);
+        setOutput(formatted);
+      }
+    } catch (err) {
+      setError(`Format error: ${(err as Error).message}`);
+      setOutput("");
+    }
+  }, [input, dialect, keywordCase, tabWidth, mode]);
+
+  useEffect(() => {
+    const t = setTimeout(formatQuery, 100);
+    return () => clearTimeout(t);
+  }, [formatQuery]);
+
+  const handleDownload = () => {
+    if (!output) return;
+    const blob = new Blob([output], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "query.sql";
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const lineCount = output ? output.split("\n").length : 0;
+
+  const stats = (
+    <div className="grid grid-cols-2 gap-3 text-sm">
+      <div>
+        <p className="text-text-muted text-xs">Lines</p>
+        <p className="text-text-primary font-mono">{lineCount || "—"}</p>
+      </div>
+      <div>
+        <p className="text-text-muted text-xs">Dialect</p>
+        <p className="text-text-primary font-mono uppercase text-xs">{dialect}</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="mx-auto max-w-7xl px-4 py-8">
+      <Link
+        href="/"
+        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
+      >
+        $ cd ../
+      </Link>
+
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
+        {/* Left: Workspace */}
+        <div className="card p-6 sm:p-8">
+          <div className="mb-6 text-center">
+            <h1 className="text-2xl sm:text-3xl font-bold">
+              <span className="gradient-text">SQL Formatter &amp; Beautifier</span>
+            </h1>
+            <p className="mt-2 text-sm text-text-secondary">
+              Format, indent, and beautify complex SQL queries in your browser.
+            </p>
+          </div>
+
+          {/* Controls toolbar */}
+          <div className="mb-4 grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs font-mono rounded border border-border-subtle bg-bg-page p-3">
+            <div>
+              <label className="text-text-muted block mb-1">MODE</label>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => setMode("beautify")}
+                  className={`flex-1 py-1 px-2 rounded border text-xs transition-colors ${
+                    mode === "beautify"
+                      ? "border-accent bg-accent text-bg-page font-bold"
+                      : "border-border-subtle bg-bg-card text-text-secondary"
+                  }`}
+                >
+                  Beautify
+                </button>
+                <button
+                  onClick={() => setMode("minify")}
+                  className={`flex-1 py-1 px-2 rounded border text-xs transition-colors ${
+                    mode === "minify"
+                      ? "border-accent bg-accent text-bg-page font-bold"
+                      : "border-border-subtle bg-bg-card text-text-secondary"
+                  }`}
+                >
+                  Minify
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="text-text-muted block mb-1">DIALECT</label>
+              <select
+                value={dialect}
+                disabled={mode === "minify"}
+                onChange={(e) => setDialect(e.target.value as Dialect)}
+                className="input-field py-1 text-xs"
+              >
+                <option value="sql">Standard SQL</option>
+                <option value="postgresql">PostgreSQL</option>
+                <option value="mysql">MySQL</option>
+                <option value="sqlite">SQLite</option>
+                <option value="transactsql">T-SQL (MS SQL)</option>
+                <option value="bigquery">BigQuery</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-text-muted block mb-1">KEYWORD CASE</label>
+              <select
+                value={keywordCase}
+                disabled={mode === "minify"}
+                onChange={(e) => setKeywordCase(e.target.value as KeywordCase)}
+                className="input-field py-1 text-xs"
+              >
+                <option value="upper">UPPERCASE</option>
+                <option value="lower">lowercase</option>
+                <option value="preserve">Preserve</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-text-muted block mb-1">INDENT</label>
+              <select
+                value={tabWidth}
+                disabled={mode === "minify"}
+                onChange={(e) => setTabWidth(Number(e.target.value))}
+                className="input-field py-1 text-xs"
+              >
+                <option value={2}>2 spaces</option>
+                <option value={4}>4 spaces</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Input Area */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-sm font-medium text-text-secondary font-mono">
+                SQL Input Query
+              </label>
+              <button
+                onClick={() => setInput("")}
+                className="text-xs text-text-muted hover:text-text-primary font-mono"
+              >
+                clear
+              </button>
+            </div>
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Paste SQL query here..."
+              className="input-field min-h-[140px] resize-y font-mono text-xs"
+            />
+          </div>
+
+          {error && <p className="mb-4 text-xs text-error font-mono">{error}</p>}
+
+          {/* Output Area */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-sm font-medium text-text-secondary font-mono">
+                Formatted SQL
+              </label>
+              <div className="flex items-center gap-2">
+                <CopyButton text={output} label="copy sql" />
+                <button
+                  onClick={handleDownload}
+                  disabled={!output}
+                  className="btn-secondary text-xs py-1 px-3 disabled:opacity-40"
+                >
+                  Download .sql
+                </button>
+              </div>
+            </div>
+            <textarea
+              readOnly
+              value={output}
+              placeholder="Formatted SQL will appear here..."
+              className="output-field min-h-[200px] resize-y font-mono text-xs text-accent whitespace-pre"
+            />
+          </div>
+        </div>
+
+        {/* Right: Info Panel (desktop) */}
+        <div className="hidden lg:block">
+          <InfoPanel toolId="sql-formatter" stats={stats} />
+        </div>
+      </div>
+
+      {/* Mobile FAB */}
+      <button
+        onClick={() => setDrawerOpen(true)}
+        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
+      >
+        ?
+      </button>
+
+      {/* Mobile Drawer */}
+      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        <InfoPanel toolId="sql-formatter" stats={stats} />
+      </MobileInfoDrawer>
+    </div>
+  );
+}
