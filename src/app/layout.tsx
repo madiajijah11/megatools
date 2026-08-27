@@ -71,7 +71,7 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               name: "MegaTools",
-              url: "https://megatools.vercel.app",
+              url: "https://megatools-tau.vercel.app",
               description:
                 "Free online tools: QR generator, JSON formatter, password generator, and more. Privacy-first, runs in your browser.",
               applicationCategory: "UtilityApplication",
