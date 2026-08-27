@@ -19,6 +19,72 @@ export default function SteganographyClient() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const decodeFromImage = useCallback((img: HTMLImageElement) => {
+    setProcessing(true);
+    setError(null);
+
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) throw new Error("Canvas context unavailable");
+
+      ctx.drawImage(img, 0, 0);
+      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imgData.data;
+
+      // Extract first 32 bits for length header
+      let headerBits = 0;
+      let bitsRead = 0;
+      let dataIdx = 0;
+
+      while (bitsRead < 32 && dataIdx < data.length) {
+        if (dataIdx % 4 !== 3) {
+          headerBits = (headerBits << 1) | (data[dataIdx] & 1);
+          bitsRead++;
+        }
+        dataIdx++;
+      }
+
+      const msgLen = headerBits >>> 0;
+      const maxPossible = Math.floor((canvas.width * canvas.height * 3) / 8) - 4;
+
+      if (msgLen === 0 || msgLen > maxPossible) {
+        setDecodedMessage(null);
+        setError("No hidden message found in this image or format corrupted.");
+        return;
+      }
+
+      const messageBytes = new Uint8Array(msgLen);
+      let byteIdx = 0;
+      let curByte = 0;
+      let bitIdx = 0;
+
+      while (byteIdx < msgLen && dataIdx < data.length) {
+        if (dataIdx % 4 !== 3) {
+          curByte = (curByte << 1) | (data[dataIdx] & 1);
+          bitIdx++;
+          if (bitIdx === 8) {
+            messageBytes[byteIdx] = curByte;
+            byteIdx++;
+            curByte = 0;
+            bitIdx = 0;
+          }
+        }
+        dataIdx++;
+      }
+
+      const text = new TextDecoder("utf-8", { fatal: true }).decode(messageBytes);
+      setDecodedMessage(text);
+    } catch {
+      setError("Failed to decode text. The image might not contain a steganographic message.");
+      setDecodedMessage(null);
+    } finally {
+      setProcessing(false);
+    }
+  }, []);
+
   const handleFile = useCallback(
     (selectedFile: File) => {
       setError(null);
@@ -46,7 +112,7 @@ export default function SteganographyClient() {
       };
       img.src = url;
     },
-    [mode]
+    [mode, decodeFromImage]
   );
 
   // Cleanup object URLs on unmount
@@ -125,72 +191,6 @@ export default function SteganographyClient() {
       setEncodedUrl(url);
     } catch (err) {
       setError(`Encode failed: ${(err as Error).message}`);
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  const decodeFromImage = (img: HTMLImageElement) => {
-    setProcessing(true);
-    setError(null);
-
-    try {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) throw new Error("Canvas context unavailable");
-
-      ctx.drawImage(img, 0, 0);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-
-      // Extract first 32 bits for length header
-      let headerBits = 0;
-      let bitsRead = 0;
-      let dataIdx = 0;
-
-      while (bitsRead < 32 && dataIdx < data.length) {
-        if (dataIdx % 4 !== 3) {
-          headerBits = (headerBits << 1) | (data[dataIdx] & 1);
-          bitsRead++;
-        }
-        dataIdx++;
-      }
-
-      const msgLen = headerBits >>> 0;
-      const maxPossible = Math.floor((canvas.width * canvas.height * 3) / 8) - 4;
-
-      if (msgLen === 0 || msgLen > maxPossible) {
-        setDecodedMessage(null);
-        setError("No hidden message found in this image or format corrupted.");
-        return;
-      }
-
-      const messageBytes = new Uint8Array(msgLen);
-      let byteIdx = 0;
-      let curByte = 0;
-      let bitIdx = 0;
-
-      while (byteIdx < msgLen && dataIdx < data.length) {
-        if (dataIdx % 4 !== 3) {
-          curByte = (curByte << 1) | (data[dataIdx] & 1);
-          bitIdx++;
-          if (bitIdx === 8) {
-            messageBytes[byteIdx] = curByte;
-            byteIdx++;
-            curByte = 0;
-            bitIdx = 0;
-          }
-        }
-        dataIdx++;
-      }
-
-      const text = new TextDecoder("utf-8", { fatal: true }).decode(messageBytes);
-      setDecodedMessage(text);
-    } catch {
-      setError("Failed to decode text. The image might not contain a steganographic message.");
-      setDecodedMessage(null);
     } finally {
       setProcessing(false);
     }

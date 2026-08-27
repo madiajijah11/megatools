@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QuickSwitchBar from "@/components/QuickSwitchBar";
 import CopyButton from "@/components/CopyButton";
+import { Analytics } from "@vercel/analytics/next";
 
 const SUPPORT_ADDRESSES = [
   { chain: "BTC", address: "bc1q3aej7x9wlvl54syt4qm48xcdn6zqa64cm6dwj6" },
@@ -104,6 +105,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   );
