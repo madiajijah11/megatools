@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     description: "Free, fast, privacy-first tools for devs and everyone.",
   },
   verification: {
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+    google: "VNK6qw2Ov-15QBCr5sZYMYncz4GzXBmqcf1OZwBq2WE",
   },
 };
 
