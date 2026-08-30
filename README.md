@@ -1,12 +1,12 @@
 # [megatools]$ ✦
 
-> **38 free, client-side developer, media, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
+> **53 free, client-side developer, media, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
 
 🌐 **Live URL**: [megatools-tau.vercel.app](https://megatools-tau.vercel.app)
 
 ---
 
-## 🛠️ Complete Tools Directory (38 Tools)
+## 🛠️ Complete Tools Directory (53 Tools)
 
 ### 📄 PDF & Documents (3)
 | Tool | Route | Engine | Description |
@@ -15,9 +15,12 @@
 | **Split PDF** | `/pdf-split` | `pdf-lib` | Extract specific pages or custom ranges (e.g. `1-3, 5, 8-10`) |
 | **Image to PDF** | `/image-to-pdf` | `pdf-lib` + Canvas | Convert multiple photos (PNG/JPG/WebP) into a clean PDF document |
 
-### 🔐 Security & Cryptography (10)
+### 🔐 Security & Cryptography (13)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **HMAC Hash & Signature Generator** | `/hmac-generator` | Web Crypto API | Compute & verify HMAC (SHA-256, SHA-512, SHA-384, SHA-1) signatures |
+| **RSA & ECDSA Key Pair Generator** | `/keypair-generator` | Web Crypto API | Generate asymmetric keys (RSA 2048/4096-bit, ECDSA P-256/P-384) in PEM format |
+| **Password Entropy & Strength Analyzer** | `/password-analyzer` | Shannon Entropy | Evaluate password entropy bits, GPU crack time, and security weaknesses |
 | **Security Headers Generator** | `/security-headers` | Config Generator | Generate hardened HTTP headers (CSP, HSTS, X-Frame-Options) for Nginx, Vercel, Apache |
 | **SSL / X.509 Certificate Inspector** | `/cert-inspector` | ASN.1 Parser | Parse PEM certificates & CSRs locally, inspect validity, SANs, and issuer |
 | **Binary & Base Converter** | `/binary-converter` | Bitwise Math | Real-time multi-base converter (Text, Binary, Hex, Base58, Base32, Decimal) |
@@ -29,9 +32,11 @@
 | **UUID Generator** | `/uuid-generator` | `crypto.randomUUID` | Generate UUID v4 identifiers (single or bulk up to 100) |
 | **Image Steganography** | `/steganography` | Canvas Pixel LSB | Hide secret messages in image pixels or extract hidden payloads |
 
-### 📱 Media, Audio & Video (8)
+### 📱 Media, Audio & Video (10)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **SVG to PNG / JPG / WebP Converter** | `/svg-converter` | Canvas Rasterizer | Rasterize & upscale vector SVG files to 1x, 2x, 4x bitmap images |
+| **Image Color Palette Extractor** | `/color-extractor` | Color Quantization | Extract dominant palettes, HEX/RGB/HSL, and CSS variables from images |
 | **Screen & Audio Recorder** | `/screen-recorder` | MediaRecorder API | Record screen, browser tabs, or app windows with mic commentary |
 | **Audio Trimmer & Cutter** | `/audio-trimmer` | Web Audio API | Trim and cut MP3/WAV/OGG audio clips with visual waveform in browser |
 | **QR Code Generator** | `/qrcode` | `qrcode` + Canvas | Generate custom QR codes from text/URLs and download as PNG |
@@ -41,9 +46,15 @@
 | **EXIF & Metadata Stripper** | `/exif-stripper` | Canvas API | Strip GPS coordinates, device tags, and metadata from photos |
 | **Favicon & Icon Generator** | `/favicon-generator` | Canvas API | Generate standard icon sizes (16, 32, 48, 180, 192, 512px) + HTML tags |
 
-### 📝 Format & Code (11)
+### 📝 Format & Code (16)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **cURL to Code Converter** | `/curl-converter` | Shell AST Parser | Convert cURL commands into JavaScript fetch, Python requests, Axios, and Go code |
+| **JSON to TypeScript & Zod Schema** | `/json-to-ts` | AST Generator | Infer TypeScript interfaces, types, and Zod validation schemas from JSON |
+| **HTML / SVG to JSX Converter** | `/html-to-jsx` | Regex AST | Convert raw HTML and SVG into React/JSX with camelCase attributes & style objects |
+| **String & Regex Escaper / Unescaper** | `/string-escape` | String Encoding | Escape & unescape text for JSON, JS, SQL, RegEx, Shell, and HTML |
+| **CSS Glassmorphism & Shadow Generator** | `/css-generator` | CSS3 Engine | Visual generator for Glassmorphism, Box Shadows / Glow, and Gradients |
+| **OpenGraph & Social Meta Tag Previewer** | `/og-previewer` | OG Parser | Preview social cards for Google, Twitter/X, Discord, FB and export meta tags |
 | **SQL Formatter & Beautifier** | `/sql-formatter` | `sql-formatter` | Format, indent, and beautify SQL queries (PostgreSQL, MySQL, SQLite) |
 | **HTML & CSS Minifier** | `/code-minifier` | Regex Parser | Minify or beautify HTML and CSS code to optimize website load speeds |
 | **SVG Optimizer & Cleaner** | `/svg-optimizer` | DOM Parser | Clean and minify SVG vector files by stripping editor bloat & metadata |
@@ -56,8 +67,19 @@
 | **Text Transformer** | `/text-transformer` | String Ops | 10 case converters (camel, snake, kebab...) & HTML entity encoder |
 | **Markdown Preview** | `/markdown-preview` | `@mdx-js/mdx` | Live Markdown and MDX renderer with sanitized output |
 
-### ⚙️ Dev & Network (6)
+### ⚙️ Dev & Network (10)
 | Tool | Route | Engine | Description |
+|---|---|---|---|
+| **Cron Expression Generator & Parser** | `/cron-parser` | Cron Engine | Parse and explain crontab schedules in plain English & calculate upcoming runs |
+| **HTTP Status Codes & Headers Explorer** | `/http-status` | RFC Directory | Searchable directory for HTTP status codes (100–599) and common headers |
+| **Keyboard Event & KeyCode Tester** | `/keycode-tester` | KeyboardEvent API | Inspect event.key, code, legacy keyCode, and modifier keys in real time |
+| **IPv6 & Subnet Calculator** | `/ipv6-calculator` | Bitwise IPv6 Engine | Expand, compress, calculate CIDR subnet ranges, and inspect address scopes |
+| **Common Ports Reference** | `/port-lookup` | Port Database | Database of standard & security-sensitive TCP/UDP ports with risk notes |
+| **Color Contrast & Palette** | `/color-contrast` | Color Science | WCAG 2.1 contrast ratio checker (AA/AAA) with HEX/RGB/HSL conversions |
+| **Timestamp Converter** | `/timestamp-converter` | Date / Intl API | Convert Unix timestamps (s/ms auto-detect) to dates with live ticker |
+| **Regex Tester** | `/regex-tester` | Native RegExp | Live regex testing with match highlighting and capture group breakdowns |
+| **Chmod Calculator** | `/chmod-calculator` | Bitwise Logic | Interactive permission checkbox grid ↔ octal & symbolic notation |
+| **CIDR Calculator** | `/cidr-calculator` | Pure Math | IPv4 subnet calculator (network, broadcast, netmask, usable hosts) |
 |---|---|---|---|
 | **Common Ports Reference** | `/port-lookup` | Port Database | Database of standard & security-sensitive TCP/UDP ports with risk notes |
 | **Color Contrast & Palette** | `/color-contrast` | Color Science | WCAG 2.1 contrast ratio checker (AA/AAA) with HEX/RGB/HSL conversions |

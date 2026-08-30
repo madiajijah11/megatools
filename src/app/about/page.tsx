@@ -4,7 +4,7 @@ import Link from "next/link";
 export const metadata: Metadata = {
   title: "About MegaTools — Privacy-First Developer Tools",
   description:
-    "Learn about MegaTools: 38 fast, free, 100% in-browser developer, media, and cybersecurity tools running with zero server uploads.",
+    "Learn about MegaTools: 50+ fast, free, 100% in-browser developer, media, and cybersecurity tools running with zero server uploads.",
   openGraph: {
     title: "About MegaTools",
     description: "The story and architecture behind MegaTools.",
@@ -28,7 +28,7 @@ export default function AboutPage() {
             <span className="gradient-text">About MegaTools</span>
           </h1>
           <p className="mt-3 text-base text-text-secondary leading-relaxed">
-            MegaTools is a privacy-first suite of 38 free developer, media, and cybersecurity utilities engineered to run 100% inside your web browser.
+            MegaTools is a privacy-first suite of 50+ free developer, media, and cybersecurity utilities engineered to run 100% inside your web browser.
           </p>
         </div>
 
@@ -46,7 +46,7 @@ export default function AboutPage() {
 
         <div className="space-y-4 font-mono text-xs border-t border-border-subtle pt-6">
           <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider">
-            [2] What We Offer (38 Free Tools)
+            [2] What We Offer (50+ Free Tools)
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-text-secondary">
             <div className="rounded border border-border-subtle bg-bg-page p-3">

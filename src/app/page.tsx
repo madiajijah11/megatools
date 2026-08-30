@@ -23,7 +23,7 @@ export default function Home() {
           <span className="gradient-text">Zero Servers.</span>
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-text-secondary">
-          38 free tools running entirely in your browser. No uploads. No tracking.
+          {TOOLS.length} free tools running entirely in your browser. No uploads. No tracking.
         </p>
 
         {/* Search */}

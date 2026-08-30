@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture
 
-**MegaTools** is a Next.js 16 App Router site — 38 client-side developer, media, and cybersecurity tools that run entirely in the browser (no server-side data handling). Built with React 19, TypeScript, and Tailwind CSS v4.
+**MegaTools** is a Next.js 16 App Router site — 53 client-side developer, media, and cybersecurity tools that run entirely in the browser (no server-side data handling). Built with React 19, TypeScript, and Tailwind CSS v4.
 
 ### Tech Stack
 
@@ -40,7 +40,7 @@ src/
     TechBadge.tsx                 # Tech label badge bracket format [tech]
     QuickSwitchBar.tsx            # Top nav bar (tool switcher)
   lib/
-    tool-data.ts                  # ToolInfo interface + TOOLS (38 tools) + TOOL_CATEGORIES
+    tool-data.ts                  # ToolInfo interface + TOOLS (53 tools) + TOOL_CATEGORIES
 ```
 
 ### Design System — Dark Terminal Theme

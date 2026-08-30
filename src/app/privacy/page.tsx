@@ -37,7 +37,7 @@ export default function PrivacyPage() {
             1. Core Principle: 100% Client-Side Processing
           </h2>
           <p className="text-text-secondary leading-relaxed font-sans text-sm">
-            At MegaTools, your privacy is not just a policy — it is fundamentally baked into our technical architecture. All 38 developer, media, and security utilities available on this site execute entirely inside your web browser (client-side).
+            At MegaTools, your privacy is not just a policy — it is fundamentally baked into our technical architecture. All developer, media, and security utilities available on this site execute entirely inside your web browser (client-side).
           </p>
           <p className="text-text-secondary leading-relaxed font-sans text-sm">
             When you enter text, generate cryptographic keys, merge PDF documents, encode Base64, compress photos, or inspect SSL certificates:
