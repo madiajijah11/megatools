@@ -1,0 +1,77 @@
+export type ChangeType = "added" | "updated" | "improved" | "fixed";
+
+export interface ChangelogItem {
+  id: string;
+  date: string; // YYYY-MM-DD
+  title: string;
+  type: ChangeType;
+  toolHref?: string;
+  toolName?: string;
+  description: string;
+  highlights?: string[];
+}
+
+export const CHANGELOG_ITEMS: ChangelogItem[] = [
+  {
+    id: "2025-05-15-notifications-changelog",
+    date: "2025-05-15",
+    title: "Changelog & Live Notification System",
+    type: "added",
+    toolHref: "/changelog",
+    toolName: "Changelog",
+    description: "Added in-app notification bell and dedicated changelog page to keep track of new tools, major updates, and bug fixes.",
+    highlights: [
+      "Real-time unread badge indicator with local storage sync",
+      "Quick notification popover in header",
+      "Dedicated /changelog timeline page with type filtering",
+    ],
+  },
+  {
+    id: "2025-05-10-batch-5-tools",
+    date: "2025-05-10",
+    title: "12 New Developer, Media, & Security Utilities",
+    type: "added",
+    description: "Expanded the tool catalog to 65 total tools with new utilities for developers, audio/video editing, and cybersecurity.",
+    highlights: [
+      "Network Tools: DNS Lookup, Subnet Calculator, Port Scanner Simulator",
+      "Security: CSR Generator, SSL Certificate Decoder, Hash Cracker Simulator",
+      "Media: Audio Pitch/Speed Shifter, Video Frame Extractor",
+      "Developer: Crontab Guru, JSON to Typescript, SQL to Prisma",
+    ],
+  },
+  {
+    id: "2025-05-02-seo-indexnow",
+    date: "2025-05-02",
+    title: "IndexNow & Search Verification Integration",
+    type: "improved",
+    description: "Integrated automated IndexNow submission script and enhanced search engine verification tags for faster tool indexing.",
+    highlights: [
+      "Instant IndexNow ping to Bing and Yandex",
+      "Dynamic XML sitemap auto-sync with tool registry",
+    ],
+  },
+  {
+    id: "2025-04-25-batch-4-tools",
+    date: "2025-04-25",
+    title: "15 New Format Converters & Media Utilities",
+    type: "added",
+    description: "Reaching 53 total tools with rich client-side converters and utilities.",
+    highlights: [
+      "CSS Tools: Glassmorphism Generator, Neumorphism Generator, Box Shadow Builder",
+      "Audio/Video: BPM Tap Tempo, Audio Visualizer, Voice Recorder",
+      "Data: YAML to JSON, JSON to CSV, Regex Tester & Debugger",
+    ],
+  },
+  {
+    id: "2025-04-18-ui-improvements",
+    date: "2025-04-18",
+    title: "Responsive Layout & Dark Terminal Optimizations",
+    type: "improved",
+    description: "Optimized mobile drawer navigation, quick switcher keyboard shortcuts (Cmd/Ctrl + K), and UI space efficiency.",
+    highlights: [
+      "Enhanced OpenGraph previewer 2-column layout",
+      "Instant tool search with keyboard arrow navigation",
+      "Zero server latency - 100% client-side privacy architecture",
+    ],
+  },
+];

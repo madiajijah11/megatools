@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QuickSwitchBar from "@/components/QuickSwitchBar";
+import NotificationBell from "@/components/NotificationBell";
 import CopyButton from "@/components/CopyButton";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -62,10 +63,13 @@ export default function RootLayout({
               <span className="gradient-text">megatools</span>
               <span className="text-text-secondary">]$</span>
             </Link>
-            <QuickSwitchBar />
-            <a href="#support" className="btn-primary hidden sm:flex text-sm py-1.5 px-3">
-              Support
-            </a>
+            <div className="flex items-center gap-2">
+              <QuickSwitchBar />
+              <NotificationBell />
+              <a href="#support" className="btn-primary hidden sm:flex text-sm py-1.5 px-3">
+                Support
+              </a>
+            </div>
           </div>
         </header>
         <script
@@ -96,6 +100,10 @@ export default function RootLayout({
             <div className="mt-4 flex flex-wrap items-center gap-4 text-xs font-mono text-text-muted">
               <Link href="/about" className="hover:text-accent transition-colors">
                 About Us
+              </Link>
+              <span>·</span>
+              <Link href="/changelog" className="hover:text-accent transition-colors">
+                Changelog
               </Link>
               <span>·</span>
               <Link href="/privacy" className="hover:text-accent transition-colors">
