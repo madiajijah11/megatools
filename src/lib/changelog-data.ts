@@ -13,6 +13,18 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2025-05-16-batch-6-blockchain-ai",
+    date: "2025-05-16",
+    title: "8 New Blockchain & AI Engineering Utilities (73 Total)",
+    type: "added",
+    description: "Expanded the tool catalog with 5 in-browser cryptographic Web3 tools and 3 AI/LLM engineering utilities with models.dev sync support.",
+    highlights: [
+      "Blockchain: Ethereum Unit & Gas Fee Calculator (Wei/Gwei/ETH), EIP-55 Address Checksum & Validator",
+      "Blockchain: Solana SOL/Lamports & Ed25519 Inspector, Keccak-256 Hasher & 4-Byte Selector, Merkle Tree & Airdrop Proof Builder",
+      "AI & LLM: AI Model Pricing & Context Matrix (models.dev live sync), Universal Multi-Provider Payload Exporter, Vector Cosine Similarity Calculator",
+    ],
+  },
+  {
     id: "2025-05-15-cyber-terminal-boot",
     date: "2025-05-15",
     title: "Cyber Terminal UI, Boot Sequence & Tmux Telemetry",

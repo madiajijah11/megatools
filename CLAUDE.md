@@ -7,12 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — Start dev server (http://localhost:3000)
 - `npm run build` — Production build with type-checking (Next.js + Turbopack)
 - `npm run lint` — ESLint (Flat Config via `eslint.config.mjs`)
-- `npm run indexnow` — Submit all 65+ tool URLs to IndexNow (Bing / Yandex)
+- `npm run indexnow` — Submit all 73+ tool URLs to IndexNow (Bing / Yandex)
 - No test framework is configured.
 
 ## Architecture
 
-**MegaTools** is a Next.js 16 App Router site — 65 client-side developer, media, and cybersecurity tools that run entirely in the browser (no server-side data handling). Built with React 19, TypeScript, and Tailwind CSS v4.
+**MegaTools** is a Next.js 16 App Router site — 73 client-side developer, media, blockchain, AI, and cybersecurity tools that run entirely in the browser (no server-side data handling). Built with React 19, TypeScript, and Tailwind CSS v4.
 
 ### Tech Stack
 
@@ -41,7 +41,7 @@ src/
     TechBadge.tsx                 # Tech label badge bracket format [tech]
     QuickSwitchBar.tsx            # Top nav bar (tool switcher)
   lib/
-    tool-data.ts                  # ToolInfo interface + TOOLS (65 tools) + TOOL_CATEGORIES
+    tool-data.ts                  # ToolInfo interface + TOOLS (73 tools) + TOOL_CATEGORIES
 ```
 
 ### Design System — Dark Terminal Theme

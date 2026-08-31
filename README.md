@@ -1,12 +1,12 @@
 # [megatools]$ ✦
 
-> **65 free, client-side developer, media, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
+> **73 free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
 
 🌐 **Live URL**: [megatools-tau.vercel.app](https://megatools-tau.vercel.app)
 
 ---
 
-## 🛠️ Complete Tools Directory (65 Tools)
+## 🛠️ Complete Tools Directory (73 Tools)
 
 ### 📄 PDF & Documents (3)
 | Tool | Route | Engine | Description |
@@ -14,6 +14,22 @@
 | **Merge PDF** | `/pdf-merge` | `pdf-lib` | Combine multiple PDF files into one with custom page reordering |
 | **Split PDF** | `/pdf-split` | `pdf-lib` | Extract specific pages or custom ranges (e.g. `1-3, 5, 8-10`) |
 | **Image to PDF** | `/image-to-pdf` | `pdf-lib` + Canvas | Convert multiple photos (PNG/JPG/WebP) into a clean PDF document |
+
+### ⟠ Blockchain & Web3 (5)
+| Tool | Route | Engine | Description |
+|---|---|---|---|
+| **Ethereum Unit & Gas Fee Calculator** | `/eth-unit-converter` | BigInt Precision Math | High-precision conversion between Wei, Gwei, Finney, and ETH with EIP-1559 gas fee estimation |
+| **EIP-55 Address Checksum & Validator** | `/eip55-checksum` | Keccak-256 Checksum | Verify EVM wallet addresses and encode lowercase strings to official EIP-55 mixed-case checksums |
+| **Solana SOL / Lamports Converter & Inspector** | `/solana-converter` | Base58 & Ed25519 | Convert SOL ↔ Lamports ($10^9$), calculate account rent fees, and decode Ed25519 public keys |
+| **Keccak-256 Hasher & 4-Byte Selector** | `/keccak-calculator` | Keccak-256 Engine | Calculate Ethereum Keccak-256 hashes, Solidity 4-byte method selectors, and EVM event topics |
+| **Merkle Tree Root & Airdrop Proof Builder** | `/merkle-tree-generator` | Sorted Pair Keccak | Generate cryptographic Merkle roots and OpenZeppelin-compatible verification proofs for airdrops |
+
+### 🤖 AI & LLM Engineering (3)
+| Tool | Route | Engine | Description |
+|---|---|---|---|
+| **AI Model Pricing & Context Matrix** | `/ai-model-comparator` | models.dev Open API | Real-time cost calculator and specs matrix for 25+ LLM models with models.dev live sync support |
+| **Universal AI Payload & SDK Exporter** | `/ai-payload-converter` | Multi-Provider AST | Convert system prompts and parameters into official JSON payloads for OpenAI, Claude, Gemini, and Ollama |
+| **Vector Cosine Similarity & Distance Engine** | `/vector-similarity` | Vector Math Engine | Calculate Cosine Similarity, Dot Product, Euclidean (L2), and Manhattan (L1) metrics for AI embeddings |
 
 ### 🔐 Security & Cryptography (13)
 | Tool | Route | Engine | Description |
