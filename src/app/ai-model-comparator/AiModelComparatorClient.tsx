@@ -4,19 +4,61 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import InfoPanel from "@/components/InfoPanel";
 import MobileInfoDrawer from "@/components/MobileInfoDrawer";
-import INITIAL_MODELS_DATA from "@/lib/models-dev-data.json";
+import RAW_MODELS_DEV_DATA from "@/lib/models-dev-data.json";
 
-export interface ModelSpec {
+export interface ModelsDevCost {
+  input?: number;
+  output?: number;
+  cache_read?: number;
+  cache_write?: number;
+}
+
+export interface ModelsDevLimit {
+  context?: number;
+  input?: number;
+  output?: number;
+}
+
+export interface ModelsDevModalities {
+  input?: string[];
+  output?: string[];
+}
+
+export interface ModelsDevModel {
   id: string;
-  name: string;
-  provider: string;
-  context: number;
-  maxOutput: number;
-  inputPricePerM: number;
-  outputPricePerM: number;
+  name?: string;
+  description?: string;
+  family?: string;
+  attachment?: boolean;
   reasoning?: boolean;
-  vision?: boolean;
-  toolCall?: boolean;
+  tool_call?: boolean;
+  temperature?: boolean;
+  release_date?: string;
+  last_updated?: string;
+  modalities?: ModelsDevModalities;
+  limit?: ModelsDevLimit;
+  cost?: ModelsDevCost;
+}
+
+export interface ModelsDevProvider {
+  id: string;
+  name?: string;
+  env?: string[];
+  npm?: string;
+  api?: string;
+  doc?: string;
+  models?: Record<string, ModelsDevModel>;
+}
+
+export type ModelsDevApiResponse = Record<string, ModelsDevProvider>;
+
+export interface FlattenedModelView {
+  providerId: string;
+  providerName: string;
+  providerNpm?: string;
+  providerDoc?: string;
+  modelId: string;
+  model: ModelsDevModel;
 }
 
 const PRESETS = [
@@ -27,7 +69,9 @@ const PRESETS = [
 ];
 
 export default function AiModelComparatorClient() {
-  const [models, setModels] = useState<ModelSpec[]>(INITIAL_MODELS_DATA as ModelSpec[]);
+  const [data, setData] = useState<ModelsDevApiResponse>(
+    RAW_MODELS_DEV_DATA as unknown as ModelsDevApiResponse
+  );
   const [inputTokens, setInputTokens] = useState<number>(10000);
   const [outputTokens, setOutputTokens] = useState<number>(2000);
   const [selectedProvider, setSelectedProvider] = useState<string>("ALL");
@@ -38,70 +82,19 @@ export default function AiModelComparatorClient() {
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // Sync with live models.dev open API
+  // Sync with live models.dev open API directly
   const handleSyncModelsDev = useCallback(async () => {
     setIsSyncing(true);
     setSyncStatus("FETCHING...");
     try {
       const res = await fetch("https://models.dev/api.json");
       if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-      const data = await res.json();
+      const apiData: ModelsDevApiResponse = await res.json();
 
-      const syncedList: ModelSpec[] = [];
-      const seenIds = new Set<string>();
-
-      for (const [providerKey, providerObj] of Object.entries(data as Record<string, {
-        name?: string;
-        models?: Record<string, {
-          name?: string;
-          family?: string;
-          limit?: { context?: number; output?: number };
-          cost?: { input?: number; output?: number };
-          reasoning?: boolean;
-          tool_call?: boolean;
-          modalities?: { input?: string[] };
-        }>;
-      }>)) {
-        if (providerObj && providerObj.models && typeof providerObj.models === "object") {
-          for (const [modelKey, model] of Object.entries(providerObj.models)) {
-            if (model && model.cost && typeof model.cost.input === "number" && model.limit?.context) {
-              const uniqueKey = `${providerKey}/${modelKey}`;
-              if (seenIds.has(uniqueKey)) continue;
-              seenIds.add(uniqueKey);
-
-              let prov = providerObj.name || providerKey;
-              const lowerKey = (modelKey + " " + providerKey + " " + (model.family || "")).toLowerCase();
-              if (lowerKey.includes("deepseek")) prov = "DeepSeek";
-              else if (lowerKey.includes("claude") || lowerKey.includes("anthropic")) prov = "Anthropic";
-              else if (lowerKey.includes("gpt") || lowerKey.includes("openai") || lowerKey.includes("o1") || lowerKey.includes("o3") || lowerKey.includes("o4")) prov = "OpenAI";
-              else if (lowerKey.includes("gemini") || lowerKey.includes("google")) prov = "Google";
-              else if (lowerKey.includes("llama") || lowerKey.includes("meta")) prov = "Meta";
-              else if (lowerKey.includes("qwen") || lowerKey.includes("qwq")) prov = "Qwen";
-              else if (lowerKey.includes("mistral") || lowerKey.includes("codestral") || lowerKey.includes("pixtral")) prov = "Mistral";
-              else if (lowerKey.includes("grok") || lowerKey.includes("xai")) prov = "xAI";
-              else if (lowerKey.includes("kimi") || lowerKey.includes("moonshot")) prov = "Moonshot";
-
-              syncedList.push({
-                id: uniqueKey,
-                name: model.name || modelKey,
-                provider: prov,
-                context: model.limit.context,
-                maxOutput: model.limit.output || 4096,
-                inputPricePerM: model.cost.input || 0,
-                outputPricePerM: model.cost.output || 0,
-                reasoning: !!model.reasoning,
-                toolCall: !!model.tool_call,
-                vision: model.modalities?.input?.includes("image") || false,
-              });
-            }
-          }
-        }
-      }
-
-      if (syncedList.length > 10) {
-        setModels(syncedList);
-        localStorage.setItem("megatools_synced_models", JSON.stringify(syncedList));
-        setSyncStatus(`SYNCED (${syncedList.length.toLocaleString()} MODELS)`);
+      if (apiData && Object.keys(apiData).length > 5) {
+        setData(apiData);
+        localStorage.setItem("megatools_models_dev_raw", JSON.stringify(apiData));
+        setSyncStatus(`SYNCED (${Object.keys(apiData).length} PROVIDERS)`);
         setTimeout(() => setSyncStatus(null), 4000);
       }
     } catch {
@@ -114,42 +107,88 @@ export default function AiModelComparatorClient() {
 
   useEffect(() => {
     try {
-      const cached = localStorage.getItem("megatools_synced_models");
+      const cached = localStorage.getItem("megatools_models_dev_raw");
       if (cached) {
-        setModels(JSON.parse(cached));
+        setData(JSON.parse(cached));
       }
     } catch {
       // Ignore cache errors
     }
   }, []);
 
+  // Extract all models from native models.dev provider structure
+  const allModels = useMemo<FlattenedModelView[]>(() => {
+    const list: FlattenedModelView[] = [];
+    for (const [providerId, provider] of Object.entries(data)) {
+      if (provider && provider.models && typeof provider.models === "object") {
+        for (const [modelId, model] of Object.entries(provider.models)) {
+          if (model) {
+            list.push({
+              providerId,
+              providerName: provider.name || providerId,
+              providerNpm: provider.npm,
+              providerDoc: provider.doc,
+              modelId,
+              model,
+            });
+          }
+        }
+      }
+    }
+    return list;
+  }, [data]);
+
+  // Major provider filter list
+  const topProviders = useMemo(() => {
+    const counts = new Map<string, number>();
+    allModels.forEach((m) => {
+      const p = m.providerName;
+      counts.set(p, (counts.get(p) || 0) + 1);
+    });
+    const sorted = Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([name]) => name);
+    return ["ALL", ...sorted];
+  }, [allModels]);
+
   const filteredAndSorted = useMemo(() => {
-    const list = models.filter((m) => {
-      if (selectedProvider !== "ALL" && m.provider.toLowerCase() !== selectedProvider.toLowerCase()) {
+    const list = allModels.filter((item) => {
+      if (
+        selectedProvider !== "ALL" &&
+        item.providerName.toLowerCase() !== selectedProvider.toLowerCase() &&
+        item.providerId.toLowerCase() !== selectedProvider.toLowerCase()
+      ) {
         return false;
       }
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
+        const m = item.model;
         return (
-          m.name.toLowerCase().includes(q) ||
-          m.id.toLowerCase().includes(q) ||
-          m.provider.toLowerCase().includes(q)
+          item.modelId.toLowerCase().includes(q) ||
+          (m.name && m.name.toLowerCase().includes(q)) ||
+          item.providerName.toLowerCase().includes(q) ||
+          (m.family && m.family.toLowerCase().includes(q))
         );
       }
       return true;
     });
 
     return list.sort((a, b) => {
-      const aTotalCost = (inputTokens / 1e6) * a.inputPricePerM + (outputTokens / 1e6) * a.outputPricePerM;
-      const bTotalCost = (inputTokens / 1e6) * b.inputPricePerM + (outputTokens / 1e6) * b.outputPricePerM;
+      const aCost =
+        (inputTokens / 1e6) * (a.model.cost?.input || 0) +
+        (outputTokens / 1e6) * (a.model.cost?.output || 0);
+      const bCost =
+        (inputTokens / 1e6) * (b.model.cost?.input || 0) +
+        (outputTokens / 1e6) * (b.model.cost?.output || 0);
 
-      if (sortBy === "cost") return aTotalCost - bTotalCost;
-      if (sortBy === "context") return b.context - a.context;
-      if (sortBy === "inputPrice") return a.inputPricePerM - b.inputPricePerM;
-      if (sortBy === "outputPrice") return a.outputPricePerM - b.outputPricePerM;
+      if (sortBy === "cost") return aCost - bCost;
+      if (sortBy === "context") return (b.model.limit?.context || 0) - (a.model.limit?.context || 0);
+      if (sortBy === "inputPrice") return (a.model.cost?.input || 0) - (b.model.cost?.input || 0);
+      if (sortBy === "outputPrice") return (a.model.cost?.output || 0) - (b.model.cost?.output || 0);
       return 0;
     });
-  }, [models, selectedProvider, searchQuery, sortBy, inputTokens, outputTokens]);
+  }, [allModels, selectedProvider, searchQuery, sortBy, inputTokens, outputTokens]);
 
   const displayedList = useMemo(() => {
     return filteredAndSorted.slice(0, displayCount);
@@ -158,12 +197,12 @@ export default function AiModelComparatorClient() {
   const stats = (
     <div className="grid grid-cols-2 gap-3 text-sm">
       <div>
-        <p className="text-text-muted text-xs">models.dev Catalog</p>
-        <p className="text-accent font-mono text-xs font-bold">{models.length.toLocaleString()} Models</p>
+        <p className="text-text-muted text-xs">models.dev Providers</p>
+        <p className="text-accent font-mono text-xs font-bold">{Object.keys(data).length} Providers</p>
       </div>
       <div>
-        <p className="text-text-muted text-xs">Filtered Results</p>
-        <p className="text-text-primary font-mono text-xs">{filteredAndSorted.length.toLocaleString()} Active</p>
+        <p className="text-text-muted text-xs">Total Models Catalog</p>
+        <p className="text-text-primary font-mono text-xs">{allModels.length.toLocaleString()} Models</p>
       </div>
     </div>
   );
@@ -181,10 +220,10 @@ export default function AiModelComparatorClient() {
         <div className="card p-6 sm:p-8">
           <div className="mb-6 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">models.dev AI Pricing & Context Matrix</span>
+              <span className="gradient-text">models.dev API Pricing & Specs Matrix</span>
             </h1>
             <p className="mt-2 text-sm text-text-secondary">
-              Real-time token cost simulator & specs matrix for 7,000+ AI models powered by models.dev.
+              Real-time token simulator consuming native models.dev/api.json schema ({Object.keys(data).length} providers, {allModels.length.toLocaleString()} models).
             </p>
           </div>
 
@@ -264,7 +303,7 @@ export default function AiModelComparatorClient() {
           {/* Filters & Sorting Toolbar */}
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-1 font-mono text-xs">
-              {["ALL", "DeepSeek", "Anthropic", "OpenAI", "Google", "Meta", "Qwen", "Mistral", "Moonshot"].map((p) => (
+              {topProviders.map((p) => (
                 <button
                   key={p}
                   type="button"
@@ -307,7 +346,7 @@ export default function AiModelComparatorClient() {
                 setSearchQuery(e.target.value);
                 setDisplayCount(60);
               }}
-              placeholder="Search across 7,000+ models.dev models (e.g. 'claude-3-7', 'deepseek', 'gpt-4o', 'gemini-2.0', 'qwen', 'kimi')..."
+              placeholder="Search across models.dev schema (e.g. 'claude-3-7', 'deepseek', 'gpt-4o', 'gemini', 'qwen', 'llama')..."
               className="w-full p-2.5 rounded-lg bg-bg-page border border-border-subtle font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
             />
           </div>
@@ -322,49 +361,63 @@ export default function AiModelComparatorClient() {
                   <th className="p-3 text-right">Context</th>
                   <th className="p-3 text-right">In / 1M</th>
                   <th className="p-3 text-right">Out / 1M</th>
-                  <th className="p-3 text-center">Tags</th>
+                  <th className="p-3 text-center">Capabilities</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-subtle/60">
-                {displayedList.map((m) => {
-                  const cost =
-                    (inputTokens / 1e6) * m.inputPricePerM + (outputTokens / 1e6) * m.outputPricePerM;
+                {displayedList.map((item) => {
+                  const m = item.model;
+                  const inCost = m.cost?.input || 0;
+                  const outCost = m.cost?.output || 0;
+                  const totalEst = (inputTokens / 1e6) * inCost + (outputTokens / 1e6) * outCost;
+
+                  const contextLimit = m.limit?.context || 0;
                   const contextK =
-                    m.context >= 1e6
-                      ? `${(m.context / 1e6).toFixed(1)}M`
-                      : `${Math.round(m.context / 1024)}k`;
+                    contextLimit >= 1e6
+                      ? `${(contextLimit / 1e6).toFixed(1)}M`
+                      : contextLimit > 0
+                      ? `${Math.round(contextLimit / 1024)}k`
+                      : "-";
 
                   return (
-                    <tr key={m.id} className="hover:bg-accent-soft/20 transition-colors">
+                    <tr key={`${item.providerId}/${item.modelId}`} className="hover:bg-accent-soft/20 transition-colors">
                       <td className="p-3 font-semibold text-text-primary">
                         <div className="flex flex-col">
                           <div className="flex items-center gap-1.5">
-                            <span className="text-text-muted text-[10px]">[{m.provider}]</span>
-                            <span className="text-accent">{m.name}</span>
+                            <span className="text-text-muted text-[10px]">[{item.providerName}]</span>
+                            <span className="text-accent">{m.name || item.modelId}</span>
                           </div>
                           <span className="text-[10px] text-text-muted font-normal truncate max-w-[280px]">
-                            {m.id}
+                            {item.providerId}/{item.modelId}
                           </span>
                         </div>
                       </td>
                       <td className="p-3 text-right font-bold text-accent">
-                        ${cost < 0.0001 && cost > 0 ? "<$0.0001" : cost.toFixed(4)}
+                        {m.cost
+                          ? totalEst < 0.0001 && totalEst > 0
+                            ? "<$0.0001"
+                            : `$${totalEst.toFixed(4)}`
+                          : "Free / N/A"}
                       </td>
                       <td className="p-3 text-right text-text-secondary">{contextK}</td>
-                      <td className="p-3 text-right text-text-muted">${m.inputPricePerM}</td>
-                      <td className="p-3 text-right text-text-muted">${m.outputPricePerM}</td>
+                      <td className="p-3 text-right text-text-muted">
+                        {m.cost ? `$${inCost}` : "-"}
+                      </td>
+                      <td className="p-3 text-right text-text-muted">
+                        {m.cost ? `$${outCost}` : "-"}
+                      </td>
                       <td className="p-3 text-center space-x-1 whitespace-nowrap">
                         {m.reasoning && (
                           <span className="px-1 py-0.5 rounded text-[9px] bg-warning/10 text-warning border border-warning/30">
                             Reasoning
                           </span>
                         )}
-                        {m.vision && (
+                        {m.modalities?.input?.includes("image") && (
                           <span className="px-1 py-0.5 rounded text-[9px] bg-accent/10 text-accent border border-accent/30">
                             Vision
                           </span>
                         )}
-                        {m.toolCall && (
+                        {m.tool_call && (
                           <span className="px-1 py-0.5 rounded text-[9px] bg-success/10 text-success border border-success/30">
                             Tools
                           </span>
