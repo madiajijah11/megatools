@@ -130,6 +130,7 @@ If MegaTools saves you time, support the project via crypto:
 - **BTC**: `bc1q3aej7x9wlvl54syt4qm48xcdn6zqa64cm6dwj6`
 - **ETH**: `0xae69f5bcf7762bb5fe34d3832fd7d1954054674b`
 - **SOL**: `6Et2XmHSdAD4QBR9Apdt9AVeJ77ktr1piV49q7RD4SLk`
+- **KAS**: `kaspa:qypgw7xw60yvxv5pcjncdv4f30wanju0g64hw3204wreayajt3025qgde344ycq`
 
 ---
 
