@@ -6,6 +6,7 @@ import QuickSwitchBar from "@/components/QuickSwitchBar";
 import NotificationBell from "@/components/NotificationBell";
 import CrtToggle from "@/components/CrtToggle";
 import TerminalStatusBar from "@/components/TerminalStatusBar";
+import BootSplash from "@/components/BootSplash";
 import CopyButton from "@/components/CopyButton";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -59,6 +60,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased bg-bg-page text-text-primary">
+        <BootSplash />
         <header className="sticky top-0 z-50 border-b border-border-subtle bg-bg-card/80 backdrop-blur-md">
           <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
             <Link href="/" className="flex items-center gap-1 text-lg font-bold tracking-tight">

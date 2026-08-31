@@ -32,10 +32,14 @@ export default function TerminalStatusBar() {
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between px-3 py-1.5 gap-2">
         {/* Left items: Tmux / session info */}
         <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1 bg-accent/15 text-accent px-1.5 py-0.5 rounded text-[10px] font-bold">
+          <button
+            onClick={() => window.dispatchEvent(new Event("megatools:reboot"))}
+            title="Click to replay system boot sequence"
+            className="flex items-center gap-1 bg-accent/15 text-accent hover:bg-accent-soft px-1.5 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-colors"
+          >
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
             [0:megatools*]
-          </span>
+          </button>
 
           <span className="hidden sm:inline text-text-muted">|</span>
 
