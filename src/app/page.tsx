@@ -5,13 +5,12 @@ import { useState, useMemo } from "react";
 import { TOOLS, TOOL_CATEGORIES } from "@/lib/tool-data";
 import TechBadge from "@/components/TechBadge";
 
-const ASCII_LOGO = `
- ███╗   ███╗███████╗ ██████╗  █████╗ ████████╗ ██████╗  ██████╗ ██╗     ███████╗
- ████╗ ████║██╔════╝██╔════╝ ██╔══██╗╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██╔════╝
- ██╔████╔██║█████╗  ██║  ███╗███████║   ██║   ██║   ██║██║   ██║██║     ███████╗
- ██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║   ██║   ██║   ██║██║   ██║██║     ╚════██║
- ██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║   ██║   ╚██████╔╝╚██████╔╝███████╗███████║
- ╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚══════╝`;
+const ASCII_LOGO = `███╗   ███╗███████╗ ██████╗  █████╗ ████████╗ ██████╗  ██████╗ ██╗     ███████╗
+████╗ ████║██╔════╝██╔════╝ ██╔══██╗╚══██╔══╝██╔═══██╗██╔═══██╗██║     ██╔════╝
+██╔████╔██║█████╗  ██║  ███╗███████║   ██║   ██║   ██║██║   ██║██║     ███████╗
+██║╚██╔╝██║██╔══╝  ██║   ██║██╔══██║   ██║   ██║   ██║██║   ██║██║     ╚════██║
+██║ ╚═╝ ██║███████╗╚██████╔╝██║  ██║   ██║   ╚██████╔╝╚██████╔╝███████╗███████║
+╚═╝     ╚═╝╚══════╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝    ╚═════╝  ╚═════╝ ╚══════╝╚══════╝`;
 
 export default function Home() {
   const [query, setQuery] = useState("");
@@ -43,8 +42,8 @@ export default function Home() {
     <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
       {/* ASCII Art Hero Banner */}
       <section className="mb-10 text-center flex flex-col items-center">
-        <div className="max-w-full overflow-x-auto mb-3 flex justify-center">
-          <pre className="text-[7px] sm:text-[9px] md:text-[11px] font-mono text-accent leading-none tracking-tighter select-none opacity-90 drop-shadow-[0_0_10px_rgba(74,222,128,0.35)]">
+        <div className="max-w-full overflow-hidden mb-3 flex justify-center">
+          <pre className="text-[5.5px] min-[380px]:text-[7px] sm:text-[9px] md:text-[11px] lg:text-[12px] font-mono text-accent leading-none tracking-tight select-none opacity-90 drop-shadow-[0_0_12px_rgba(74,222,128,0.4)]">
             {ASCII_LOGO}
           </pre>
         </div>
