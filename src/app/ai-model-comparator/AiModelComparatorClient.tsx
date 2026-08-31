@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
 import InfoPanel from "@/components/InfoPanel";
 import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import INITIAL_MODELS_DATA from "@/lib/models-dev-data.json";
 
 export interface ModelSpec {
   id: string;
@@ -18,228 +19,6 @@ export interface ModelSpec {
   toolCall?: boolean;
 }
 
-const DEFAULT_MODELS: ModelSpec[] = [
-  // DeepSeek 2025
-  {
-    id: "deepseek/deepseek-r1",
-    name: "DeepSeek R1 (Reasoning)",
-    provider: "DeepSeek",
-    context: 64000,
-    maxOutput: 8192,
-    inputPricePerM: 0.55,
-    outputPricePerM: 2.19,
-    reasoning: true,
-    toolCall: true,
-  },
-  {
-    id: "deepseek/deepseek-v3",
-    name: "DeepSeek V3",
-    provider: "DeepSeek",
-    context: 64000,
-    maxOutput: 8192,
-    inputPricePerM: 0.14,
-    outputPricePerM: 0.28,
-    toolCall: true,
-  },
-
-  // Anthropic Claude 2025
-  {
-    id: "anthropic/claude-3-7-sonnet",
-    name: "Claude 3.7 Sonnet (Hybrid Reasoning)",
-    provider: "Anthropic",
-    context: 200000,
-    maxOutput: 64000,
-    inputPricePerM: 3.0,
-    outputPricePerM: 15.0,
-    reasoning: true,
-    vision: true,
-    toolCall: true,
-  },
-  {
-    id: "anthropic/claude-3-5-sonnet",
-    name: "Claude 3.5 Sonnet",
-    provider: "Anthropic",
-    context: 200000,
-    maxOutput: 8192,
-    inputPricePerM: 3.0,
-    outputPricePerM: 15.0,
-    vision: true,
-    toolCall: true,
-  },
-  {
-    id: "anthropic/claude-3-5-haiku",
-    name: "Claude 3.5 Haiku",
-    provider: "Anthropic",
-    context: 200000,
-    maxOutput: 8192,
-    inputPricePerM: 0.8,
-    outputPricePerM: 4.0,
-    vision: true,
-    toolCall: true,
-  },
-
-  // OpenAI 2025
-  {
-    id: "openai/o3-mini",
-    name: "o3-mini (High Reasoning)",
-    provider: "OpenAI",
-    context: 200000,
-    maxOutput: 100000,
-    inputPricePerM: 1.1,
-    outputPricePerM: 4.4,
-    reasoning: true,
-    toolCall: true,
-  },
-  {
-    id: "openai/o1",
-    name: "o1",
-    provider: "OpenAI",
-    context: 200000,
-    maxOutput: 100000,
-    inputPricePerM: 15.0,
-    outputPricePerM: 60.0,
-    reasoning: true,
-    vision: true,
-    toolCall: true,
-  },
-  {
-    id: "openai/gpt-4o",
-    name: "GPT-4o (Omni)",
-    provider: "OpenAI",
-    context: 128000,
-    maxOutput: 16384,
-    inputPricePerM: 2.5,
-    outputPricePerM: 10.0,
-    vision: true,
-    toolCall: true,
-  },
-  {
-    id: "openai/gpt-4o-mini",
-    name: "GPT-4o mini",
-    provider: "OpenAI",
-    context: 128000,
-    maxOutput: 16384,
-    inputPricePerM: 0.15,
-    outputPricePerM: 0.6,
-    vision: true,
-    toolCall: true,
-  },
-
-  // Google Gemini 2025
-  {
-    id: "google/gemini-2-0-flash",
-    name: "Gemini 2.0 Flash",
-    provider: "Google",
-    context: 1048576,
-    maxOutput: 8192,
-    inputPricePerM: 0.1,
-    outputPricePerM: 0.4,
-    vision: true,
-    toolCall: true,
-  },
-  {
-    id: "google/gemini-2-0-flash-thinking",
-    name: "Gemini 2.0 Flash Thinking",
-    provider: "Google",
-    context: 1048576,
-    maxOutput: 65536,
-    inputPricePerM: 0.1,
-    outputPricePerM: 0.4,
-    reasoning: true,
-    vision: true,
-    toolCall: true,
-  },
-  {
-    id: "google/gemini-1-5-pro",
-    name: "Gemini 1.5 Pro",
-    provider: "Google",
-    context: 2097152,
-    maxOutput: 8192,
-    inputPricePerM: 1.25,
-    outputPricePerM: 5.0,
-    vision: true,
-    toolCall: true,
-  },
-
-  // Meta Llama
-  {
-    id: "meta/llama-3-3-70b",
-    name: "Llama 3.3 70B",
-    provider: "Meta",
-    context: 128000,
-    maxOutput: 8192,
-    inputPricePerM: 0.59,
-    outputPricePerM: 0.79,
-    toolCall: true,
-  },
-  {
-    id: "meta/llama-3-1-405b",
-    name: "Llama 3.1 405B",
-    provider: "Meta",
-    context: 128000,
-    maxOutput: 8192,
-    inputPricePerM: 2.5,
-    outputPricePerM: 3.5,
-    toolCall: true,
-  },
-
-  // Qwen / Alibaba
-  {
-    id: "qwen/qwen-2-5-coder-32b",
-    name: "Qwen 2.5 Coder 32B",
-    provider: "Qwen",
-    context: 128000,
-    maxOutput: 8192,
-    inputPricePerM: 0.2,
-    outputPricePerM: 0.2,
-    toolCall: true,
-  },
-  {
-    id: "qwen/qwq-32b-preview",
-    name: "QwQ 32B (Reasoning)",
-    provider: "Qwen",
-    context: 32768,
-    maxOutput: 8192,
-    inputPricePerM: 0.25,
-    outputPricePerM: 0.5,
-    reasoning: true,
-  },
-
-  // Mistral AI
-  {
-    id: "mistral/codestral-2501",
-    name: "Codestral 2501",
-    provider: "Mistral",
-    context: 256000,
-    maxOutput: 8192,
-    inputPricePerM: 0.3,
-    outputPricePerM: 0.9,
-    toolCall: true,
-  },
-  {
-    id: "mistral/mistral-large-2411",
-    name: "Mistral Large 2411",
-    provider: "Mistral",
-    context: 128000,
-    maxOutput: 8192,
-    inputPricePerM: 2.0,
-    outputPricePerM: 6.0,
-    toolCall: true,
-  },
-
-  // Moonshot / Kimi
-  {
-    id: "moonshotai/kimi-k2.5",
-    name: "Kimi K2.5",
-    provider: "Moonshot",
-    context: 256000,
-    maxOutput: 8192,
-    inputPricePerM: 0.6,
-    outputPricePerM: 3.0,
-    toolCall: true,
-  },
-];
-
 const PRESETS = [
   { label: "Code Assistant Prompt", input: 5000, output: 1200 },
   { label: "Large PDF / Doc Analysis", input: 85000, output: 3500 },
@@ -248,18 +27,19 @@ const PRESETS = [
 ];
 
 export default function AiModelComparatorClient() {
-  const [models, setModels] = useState<ModelSpec[]>(DEFAULT_MODELS);
+  const [models, setModels] = useState<ModelSpec[]>(INITIAL_MODELS_DATA as ModelSpec[]);
   const [inputTokens, setInputTokens] = useState<number>(10000);
   const [outputTokens, setOutputTokens] = useState<number>(2000);
   const [selectedProvider, setSelectedProvider] = useState<string>("ALL");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortBy, setSortBy] = useState<"cost" | "context" | "inputPrice" | "outputPrice">("cost");
+  const [displayCount, setDisplayCount] = useState<number>(60);
   const [syncStatus, setSyncStatus] = useState<string | null>(null);
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  // Sync with models.dev open API
-  const handleSyncModelsDev = useCallback(async (isManual = false) => {
+  // Sync with live models.dev open API
+  const handleSyncModelsDev = useCallback(async () => {
     setIsSyncing(true);
     setSyncStatus("FETCHING...");
     try {
@@ -270,7 +50,6 @@ export default function AiModelComparatorClient() {
       const syncedList: ModelSpec[] = [];
       const seenIds = new Set<string>();
 
-      // Traverse provider objects and their nested .models
       for (const [providerKey, providerObj] of Object.entries(data as Record<string, {
         name?: string;
         models?: Record<string, {
@@ -290,7 +69,6 @@ export default function AiModelComparatorClient() {
               if (seenIds.has(uniqueKey)) continue;
               seenIds.add(uniqueKey);
 
-              // Normalize provider name
               let prov = providerObj.name || providerKey;
               const lowerKey = (modelKey + " " + providerKey + " " + (model.family || "")).toLowerCase();
               if (lowerKey.includes("deepseek")) prov = "DeepSeek";
@@ -323,14 +101,12 @@ export default function AiModelComparatorClient() {
       if (syncedList.length > 10) {
         setModels(syncedList);
         localStorage.setItem("megatools_synced_models", JSON.stringify(syncedList));
-        setSyncStatus(`SYNCED (${syncedList.length} MODELS)`);
+        setSyncStatus(`SYNCED (${syncedList.length.toLocaleString()} MODELS)`);
         setTimeout(() => setSyncStatus(null), 4000);
       }
     } catch {
-      if (isManual) {
-        setSyncStatus("OFFLINE (USING LOCAL SNAPSHOT)");
-        setTimeout(() => setSyncStatus(null), 3000);
-      }
+      setSyncStatus("OFFLINE (USED LOCAL)");
+      setTimeout(() => setSyncStatus(null), 3000);
     } finally {
       setIsSyncing(false);
     }
@@ -341,14 +117,11 @@ export default function AiModelComparatorClient() {
       const cached = localStorage.getItem("megatools_synced_models");
       if (cached) {
         setModels(JSON.parse(cached));
-      } else {
-        // Auto sync once on first mount
-        handleSyncModelsDev(false);
       }
     } catch {
-      // Ignore storage errors
+      // Ignore cache errors
     }
-  }, [handleSyncModelsDev]);
+  }, []);
 
   const filteredAndSorted = useMemo(() => {
     const list = models.filter((m) => {
@@ -378,15 +151,19 @@ export default function AiModelComparatorClient() {
     });
   }, [models, selectedProvider, searchQuery, sortBy, inputTokens, outputTokens]);
 
+  const displayedList = useMemo(() => {
+    return filteredAndSorted.slice(0, displayCount);
+  }, [filteredAndSorted, displayCount]);
+
   const stats = (
     <div className="grid grid-cols-2 gap-3 text-sm">
       <div>
-        <p className="text-text-muted text-xs">Active Models</p>
-        <p className="text-accent font-mono text-xs font-bold">{models.length} Models</p>
+        <p className="text-text-muted text-xs">models.dev Catalog</p>
+        <p className="text-accent font-mono text-xs font-bold">{models.length.toLocaleString()} Models</p>
       </div>
       <div>
-        <p className="text-text-muted text-xs">Live Data Source</p>
-        <p className="text-text-primary font-mono text-xs">models.dev Open API</p>
+        <p className="text-text-muted text-xs">Filtered Results</p>
+        <p className="text-text-primary font-mono text-xs">{filteredAndSorted.length.toLocaleString()} Active</p>
       </div>
     </div>
   );
@@ -404,10 +181,10 @@ export default function AiModelComparatorClient() {
         <div className="card p-6 sm:p-8">
           <div className="mb-6 text-center">
             <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">AI Model Pricing & Context Matrix</span>
+              <span className="gradient-text">models.dev AI Pricing & Context Matrix</span>
             </h1>
             <p className="mt-2 text-sm text-text-secondary">
-              Real-time token cost simulator & specs matrix for 1,000+ LLM models with models.dev live sync.
+              Real-time token cost simulator & specs matrix for 7,000+ AI models powered by models.dev.
             </p>
           </div>
 
@@ -420,10 +197,10 @@ export default function AiModelComparatorClient() {
               <button
                 type="button"
                 disabled={isSyncing}
-                onClick={() => handleSyncModelsDev(true)}
+                onClick={handleSyncModelsDev}
                 className="px-2.5 py-1 text-xs font-mono rounded border border-accent/40 bg-accent-soft text-accent hover:bg-accent-hover hover:text-bg-page transition-colors cursor-pointer flex items-center gap-1 disabled:opacity-50"
               >
-                <span>$ sync models.dev</span>
+                <span>$ sync models.dev/api.json</span>
                 {syncStatus && <span className="font-bold text-[10px]">[{syncStatus}]</span>}
               </button>
             </div>
@@ -491,7 +268,10 @@ export default function AiModelComparatorClient() {
                 <button
                   key={p}
                   type="button"
-                  onClick={() => setSelectedProvider(p)}
+                  onClick={() => {
+                    setSelectedProvider(p);
+                    setDisplayCount(60);
+                  }}
                   className={`px-2 py-1 rounded transition-colors ${
                     selectedProvider === p
                       ? "bg-accent text-bg-page font-bold"
@@ -523,18 +303,21 @@ export default function AiModelComparatorClient() {
             <input
               type="text"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search by model name (e.g. 'claude-3-7', 'r1', 'gpt-4o', 'gemini')..."
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setDisplayCount(60);
+              }}
+              placeholder="Search across 7,000+ models.dev models (e.g. 'claude-3-7', 'deepseek', 'gpt-4o', 'gemini-2.0', 'qwen', 'kimi')..."
               className="w-full p-2.5 rounded-lg bg-bg-page border border-border-subtle font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
             />
           </div>
 
           {/* Models Matrix Table */}
-          <div className="overflow-x-auto rounded-xl border border-border-subtle bg-bg-page max-h-[560px] overflow-y-auto">
+          <div className="overflow-x-auto rounded-xl border border-border-subtle bg-bg-page max-h-[600px] overflow-y-auto">
             <table className="w-full text-left font-mono text-xs">
               <thead className="sticky top-0 z-10 border-b border-border-subtle bg-bg-card text-text-secondary uppercase">
                 <tr>
-                  <th className="p-3">Model</th>
+                  <th className="p-3">Model & Provider</th>
                   <th className="p-3 text-right">Est. Cost</th>
                   <th className="p-3 text-right">Context</th>
                   <th className="p-3 text-right">In / 1M</th>
@@ -543,7 +326,7 @@ export default function AiModelComparatorClient() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-subtle/60">
-                {filteredAndSorted.map((m) => {
+                {displayedList.map((m) => {
                   const cost =
                     (inputTokens / 1e6) * m.inputPricePerM + (outputTokens / 1e6) * m.outputPricePerM;
                   const contextK =
@@ -557,9 +340,9 @@ export default function AiModelComparatorClient() {
                         <div className="flex flex-col">
                           <div className="flex items-center gap-1.5">
                             <span className="text-text-muted text-[10px]">[{m.provider}]</span>
-                            <span>{m.name}</span>
+                            <span className="text-accent">{m.name}</span>
                           </div>
-                          <span className="text-[10px] text-text-muted font-normal truncate max-w-[260px]">
+                          <span className="text-[10px] text-text-muted font-normal truncate max-w-[280px]">
                             {m.id}
                           </span>
                         </div>
@@ -581,12 +364,36 @@ export default function AiModelComparatorClient() {
                             Vision
                           </span>
                         )}
+                        {m.toolCall && (
+                          <span className="px-1 py-0.5 rounded text-[9px] bg-success/10 text-success border border-success/30">
+                            Tools
+                          </span>
+                        )}
                       </td>
                     </tr>
                   );
                 })}
               </tbody>
             </table>
+
+            {/* Pagination / Load more */}
+            {filteredAndSorted.length > displayedList.length && (
+              <div className="p-4 text-center border-t border-border-subtle bg-bg-card/50 font-mono text-xs">
+                <button
+                  type="button"
+                  onClick={() => setDisplayCount((prev) => prev + 100)}
+                  className="px-4 py-1.5 rounded border border-border-subtle bg-bg-page hover:border-accent/50 text-accent font-semibold transition-colors cursor-pointer"
+                >
+                  $ load more (showing {displayedList.length} of {filteredAndSorted.length.toLocaleString()} models)
+                </button>
+              </div>
+            )}
+
+            {filteredAndSorted.length === 0 && (
+              <div className="p-8 text-center font-mono text-xs text-text-muted">
+                No models found matching query &quot;{searchQuery}&quot;.
+              </div>
+            )}
           </div>
         </div>
 
