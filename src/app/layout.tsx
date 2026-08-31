@@ -4,6 +4,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import QuickSwitchBar from "@/components/QuickSwitchBar";
 import NotificationBell from "@/components/NotificationBell";
+import CrtToggle from "@/components/CrtToggle";
+import TerminalStatusBar from "@/components/TerminalStatusBar";
 import CopyButton from "@/components/CopyButton";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -66,6 +68,7 @@ export default function RootLayout({
             </Link>
             <div className="flex items-center gap-2">
               <QuickSwitchBar />
+              <CrtToggle />
               <NotificationBell />
               <a href="#support" className="btn-primary hidden sm:flex text-sm py-1.5 px-3">
                 Support
@@ -90,6 +93,7 @@ export default function RootLayout({
           }}
         />
         <main className="flex-1">{children}</main>
+        <TerminalStatusBar />
         <footer className="border-t border-border-subtle py-6 text-sm text-text-muted">
           <div className="mx-auto max-w-6xl px-4">
             <p className="text-text-secondary">

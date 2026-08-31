@@ -196,3 +196,32 @@ body {
 .animate-pulse-soft {
   animation: pulse-soft 1.2s ease-in-out infinite;
 }
+
+/* CRT Retro Scanline & Phosphor Effect */
+html.crt-active {
+  text-shadow: 0 0 1.5px rgba(74, 222, 128, 0.4);
+}
+
+html.crt-active::after {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+      rgba(18, 16, 16, 0) 50%,
+      rgba(0, 0, 0, 0.25) 50%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.02),
+      rgba(0, 255, 0, 0.01),
+      rgba(0, 0, 255, 0.02)
+    );
+  z-index: 999999;
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.85;
+}
