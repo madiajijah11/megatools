@@ -42,14 +42,14 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:py-12">
       {/* ASCII Art Hero Banner */}
-      <section className="mb-10 text-center">
-        <div className="inline-block max-w-full overflow-hidden mb-4">
+      <section className="mb-10 text-center flex flex-col items-center">
+        <div className="max-w-full overflow-x-auto mb-3 flex justify-center">
           <pre className="text-[7px] sm:text-[9px] md:text-[11px] font-mono text-accent leading-none tracking-tighter select-none opacity-90 drop-shadow-[0_0_10px_rgba(74,222,128,0.35)]">
             {ASCII_LOGO}
           </pre>
         </div>
 
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-4">
+        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-4 shadow-sm">
           <span className="text-accent">$</span>
           <span>megatools --client-sandbox --zero-telemetry</span>
           <span className="animate-pulse text-accent">▊</span>
