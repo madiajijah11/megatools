@@ -177,7 +177,7 @@ export default function MarkdownClient() {
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
             {/* Editor */}
             <div>
-              <div className="mb-2 flex items-center justify-between">
+              <div className="h-8 mb-2 flex items-center justify-between">
                 <label className="text-sm font-medium text-text-secondary">
                   {mode === "md" ? "Markdown" : "MDX"}
                 </label>
@@ -196,7 +196,7 @@ export default function MarkdownClient() {
 
             {/* Preview */}
             <div>
-              <div className="mb-2">
+              <div className="h-8 mb-2 flex items-center justify-between">
                 <label className="text-sm font-medium text-text-secondary">
                   Preview
                 </label>

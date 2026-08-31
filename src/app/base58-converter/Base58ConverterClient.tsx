@@ -122,7 +122,7 @@ function z85Encode(bytes: Uint8Array): string {
   }
   let res = "";
   for (let i = 0; i < bytes.length; i += 4) {
-    let value =
+    const value =
       ((bytes[i] << 24) >>> 0) +
       ((bytes[i + 1] << 16) >>> 0) +
       ((bytes[i + 2] << 8) >>> 0) +
@@ -275,34 +275,41 @@ export default function Base58ConverterClient() {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {/* Left: Input */}
             <div className="flex flex-col space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="h-8 flex items-center justify-between">
                 <label className="text-xs font-mono text-text-secondary font-bold uppercase">
                   {mode === "encode" ? "Plaintext Input:" : `${encoding.toUpperCase()} Input:`}
                 </label>
-                <button
-                  type="button"
-                  onClick={() => setInputText("")}
-                  className="text-[11px] font-mono text-text-muted hover:text-error transition-colors"
-                >
-                  Clear
-                </button>
+                {inputText && (
+                  <button
+                    type="button"
+                    onClick={() => setInputText("")}
+                    className="text-xs font-mono text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle/60 hover:border-error/40 bg-bg-page/60"
+                  >
+                    Clear
+                  </button>
+                )}
               </div>
               <textarea
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 placeholder={mode === "encode" ? "Enter plaintext text to encode..." : "Enter encoded string to decode..."}
                 rows={12}
-                className="w-full p-3.5 rounded-xl bg-bg-page border border-border-subtle font-mono text-xs text-text-primary focus:border-accent focus:outline-none resize-none leading-relaxed"
+                className="w-full h-[280px] p-3.5 rounded-xl bg-bg-page border border-border-subtle font-mono text-xs text-text-primary focus:border-accent focus:outline-none resize-none leading-relaxed"
               />
             </div>
 
             {/* Right: Output */}
             <div className="flex flex-col space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="h-8 flex items-center justify-between">
                 <label className="text-xs font-mono text-text-secondary font-bold uppercase">
                   {mode === "encode" ? `${encoding.toUpperCase()} Output:` : "Decoded Plaintext:"}
                 </label>
-                {outputText && <CopyButton text={outputText} />}
+                {outputText && (
+                  <CopyButton
+                    text={outputText}
+                    className="text-xs font-mono px-2 py-1 rounded border border-border-subtle/80 bg-bg-page/80 text-text-primary hover:border-accent/50 hover:bg-accent-soft transition-colors cursor-pointer"
+                  />
+                )}
               </div>
 
               {error ? (

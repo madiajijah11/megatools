@@ -5,9 +5,10 @@ import { useState, useCallback } from "react";
 interface CopyButtonProps {
   text: string;
   label?: string;
+  className?: string;
 }
 
-export default function CopyButton({ text, label = "Copy" }: CopyButtonProps) {
+export default function CopyButton({ text, label = "Copy", className }: CopyButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(async () => {
@@ -21,11 +22,14 @@ export default function CopyButton({ text, label = "Copy" }: CopyButtonProps) {
     <button
       onClick={handleCopy}
       disabled={!text}
-      className="btn-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+      className={
+        className ??
+        "btn-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+      }
     >
       {copied ? (
         <span className="flex items-center gap-1 text-success">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           Copied!

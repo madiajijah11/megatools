@@ -310,34 +310,41 @@ export default function DockerComposeConverterClient() {
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {/* Left: Input Docker Run Command */}
             <div className="flex flex-col space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="h-8 flex items-center justify-between">
                 <label className="text-xs font-mono text-text-secondary font-bold uppercase">
                   Docker Run Command:
                 </label>
-                <button
-                  type="button"
-                  onClick={() => setInputCommand("")}
-                  className="text-[11px] font-mono text-text-muted hover:text-error transition-colors"
-                >
-                  Clear
-                </button>
+                {inputCommand && (
+                  <button
+                    type="button"
+                    onClick={() => setInputCommand("")}
+                    className="text-xs font-mono text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle/60 hover:border-error/40 bg-bg-page/60"
+                  >
+                    Clear
+                  </button>
+                )}
               </div>
               <textarea
                 value={inputCommand}
                 onChange={(e) => setInputCommand(e.target.value)}
                 placeholder="docker run -d --name my-app -p 8080:80 -v /data:/data nginx:latest"
                 rows={12}
-                className="w-full p-3.5 rounded-xl bg-bg-page border border-border-subtle font-mono text-xs text-text-primary focus:border-accent focus:outline-none resize-none leading-relaxed"
+                className="w-full h-[280px] p-3.5 rounded-xl bg-bg-page border border-border-subtle font-mono text-xs text-text-primary focus:border-accent focus:outline-none resize-none leading-relaxed"
               />
             </div>
 
             {/* Right: Output docker-compose.yml */}
             <div className="flex flex-col space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="h-8 flex items-center justify-between">
                 <label className="text-xs font-mono text-text-secondary font-bold uppercase">
                   docker-compose.yml:
                 </label>
-                {composeYaml && <CopyButton text={composeYaml} />}
+                {composeYaml && (
+                  <CopyButton
+                    text={composeYaml}
+                    className="text-xs font-mono px-2 py-1 rounded border border-border-subtle/80 bg-bg-page/80 text-text-primary hover:border-accent/50 hover:bg-accent-soft transition-colors cursor-pointer"
+                  />
+                )}
               </div>
 
               {error ? (

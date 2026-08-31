@@ -192,22 +192,40 @@ export default function HtmlToJsxClient() {
           {/* Side-by-side or stacked layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div>
+              <div className="h-8 flex items-center justify-between mb-2">
+                <label className="text-xs font-mono uppercase tracking-wider text-text-secondary">
+                  HTML / SVG Input:
+                </label>
+                {htmlInput && (
+                  <button
+                    type="button"
+                    onClick={() => setHtmlInput("")}
+                    className="text-xs font-mono text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle/60 hover:border-error/40 bg-bg-page/60"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
               <textarea
                 value={htmlInput}
                 onChange={(e) => setHtmlInput(e.target.value)}
                 placeholder="Paste HTML or SVG code here..."
-                rows={16}
-                className="w-full rounded-lg bg-bg-page border border-border-subtle p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-y"
+                className="w-full h-[320px] rounded-lg bg-bg-page border border-border-subtle p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-none"
                 spellCheck={false}
               />
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="h-8 flex items-center justify-between mb-2">
                 <label className="text-xs font-mono uppercase tracking-wider text-text-secondary">
                   React JSX Output:
                 </label>
-                <CopyButton text={jsxOutput} />
+                {jsxOutput && (
+                  <CopyButton
+                    text={jsxOutput}
+                    className="text-xs font-mono px-2 py-1 rounded border border-border-subtle/80 bg-bg-page/80 text-text-primary hover:border-accent/50 hover:bg-accent-soft transition-colors cursor-pointer"
+                  />
+                )}
               </div>
               <div className="relative rounded-lg bg-bg-page border border-border-subtle p-3 font-mono text-xs text-text-primary overflow-x-auto h-[320px] overflow-y-auto">
                 <pre className="whitespace-pre">{jsxOutput || "// Converted JSX will appear here"}</pre>
