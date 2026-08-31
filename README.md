@@ -105,6 +105,16 @@
 
 ---
 
+## 🖥️ Terminal & Hacker Features
+
+- **Cyber Boot Sequence** (`BootSplash`): Fast Linux kernel initialization splash on first visit, replayable anytime via status bar.
+- **CRT Scanline Mode** (`[CRT: ON/OFF]`): Retro CRT monitor scanlines and phosphor glow toggle with local persistence.
+- **Tmux Telemetry Status Bar**: Real-time UTC clock, heap memory estimate, and client latency monitoring.
+- **Notification & Changelog**: Realtime unread indicator and complete release timeline at `/changelog`.
+- **System Architecture**: Detailed in [ARCHITECTURE.md](./ARCHITECTURE.md).
+
+---
+
 ## ⚡ Development
 
 ```bash

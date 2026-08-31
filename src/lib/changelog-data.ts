@@ -13,6 +13,20 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2025-05-15-cyber-terminal-boot",
+    date: "2025-05-15",
+    title: "Cyber Terminal UI, Boot Sequence & Tmux Telemetry",
+    type: "added",
+    description: "Enhanced the interface with an authentic terminal experience including Linux kernel boot animation, live telemetry status bar, and CRT scanlines.",
+    highlights: [
+      "Cyber kernel boot sequence splash screen with quick skip and replay",
+      "Realtime Tmux telemetry status bar with UTC clock, memory heap, and 0ms latency",
+      "Retro CRT scanline mode with persistent header toggle",
+      "ASCII Art glowing hero banner with interactive grep search",
+      "Standardized 2-column input/output alignment across converter tools",
+    ],
+  },
+  {
     id: "2025-05-15-notifications-changelog",
     date: "2025-05-15",
     title: "Changelog & Live Notification System",
