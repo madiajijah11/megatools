@@ -19,7 +19,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Tailwind CSS v4 — configured entirely via `@import "tailwindcss"` + `@theme inline` in `src/app/globals.css`. No `tailwind.config.js`.
 - Dependencies: `pdf-lib` (PDF manipulation), `js-yaml` (YAML parser), `sql-formatter` (SQL beautifier), `qrcode` (QR generator), `@mdx-js/mdx` (Markdown renderer), `@vercel/analytics` (Vercel Analytics).
 - All other tools use native browser APIs (Canvas, Web Audio API, MediaRecorder API, Web Crypto API, TextEncoder, Intl, clipboard).
-- Deployed on Vercel at `https://megatools.vercel.app`.
+- Deployed on Vercel at `https://megatools-tau.vercel.app`.
 
 ### Directory Layout
 

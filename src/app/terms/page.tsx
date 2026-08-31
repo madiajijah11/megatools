@@ -37,7 +37,7 @@ export default function TermsPage() {
             1. Agreement to Terms
           </h2>
           <p className="text-text-secondary leading-relaxed font-sans text-sm">
-            By accessing or using MegaTools (<span className="font-mono text-accent">megatools.vercel.app</span>), you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you should discontinue use of the site.
+            By accessing or using MegaTools (<span className="font-mono text-accent">megatools-tau.vercel.app</span>), you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you should discontinue use of the site.
           </p>
         </div>
 

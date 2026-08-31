@@ -24,6 +24,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://megatools-tau.vercel.app"),
   title: "MegaTools — Free Online Tools for Everyone",
   description:
     "Free, fast, privacy-first online tools. QR Generator, JSON Formatter, Password Generator, UUID Generator, Base64, Markdown Preview, and more — all in your browser.",

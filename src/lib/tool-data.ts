@@ -393,7 +393,7 @@ export const TOOLS: ToolInfo[] = [
     tech: "ASN.1 Parser",
     steps: ["Paste public certificate (.pem / .crt) or CSR block", "Parser extracts Common Name, Subject Alternative Names (SAN), Validity, and Issuer", "Check expiry warnings and public key strength"],
     tips: ["Everything parses client-side — your certificates and public keys are never uploaded", "Inspect SANs to see all domains covered by a single wildcard or multi-domain cert", "Check validity dates to prevent unexpected production SSL outages"],
-    example: { input: "-----BEGIN CERTIFICATE-----\nMIIE...", output: "Subject: *.megatools.vercel.app · Valid until: 2027-01-01" },
+    example: { input: "-----BEGIN CERTIFICATE-----\nMIIE...", output: "Subject: *.megatools-tau.vercel.app · Valid until: 2027-01-01" },
   },
   {
     id: "sql-formatter",

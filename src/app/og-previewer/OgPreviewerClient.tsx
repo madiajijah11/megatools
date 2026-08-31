@@ -13,7 +13,7 @@ export default function OgPreviewerClient() {
   const [description, setDescription] = useState(
     "Developer, media, and security tools running 100% in your browser. Zero server uploads, instant execution, dark terminal UI."
   );
-  const [url, setUrl] = useState("https://megatools.vercel.app");
+  const [url, setUrl] = useState("https://megatools-tau.vercel.app");
   const [imageUrl, setImageUrl] = useState("https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1200&auto=format&fit=crop&q=80");
   const [siteName, setSiteName] = useState("MegaTools");
   const [twitterHandle, setTwitterHandle] = useState("@megatools");
