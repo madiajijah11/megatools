@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — Start dev server (http://localhost:3000)
 - `npm run build` — Production build with type-checking (Next.js + Turbopack)
 - `npm run lint` — ESLint (Flat Config via `eslint.config.mjs`)
+- `npm run indexnow` — Submit all 53+ tool URLs to IndexNow (Bing / Yandex)
 - No test framework is configured.
 
 ## Architecture
