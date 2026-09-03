@@ -13,6 +13,36 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-09-03-binary-converter-omnidirectional",
+    date: "2026-09-03",
+    title: "Binary & Base Converter: Omnidirectional Multi-Input",
+    type: "improved",
+    toolHref: "/binary-converter",
+    toolName: "Binary & Base Converter",
+    description: "Upgraded the converter to support full omnidirectional input. Edit any of the 6 data representations in real time to synchronize all other formats automatically.",
+    highlights: [
+      "All 6 representations (Text UTF-8, Binary 8-bit, Hexadecimal, Base58, Base32, Decimal) are now editable inputs",
+      "Editing any field automatically decodes and updates all other fields instantaneously",
+      "Inline error validation per field (e.g. invalid base58 characters or odd-length hex) without overwriting valid data",
+      "Quick action Reset Sample and Clear All buttons with per-field copy buttons",
+    ],
+  },
+  {
+    id: "2026-08-31-ai-model-comparator-overhaul",
+    date: "2026-08-31",
+    title: "AI Model Comparator: Native models.dev Dataset & Advanced Sorting",
+    type: "improved",
+    toolHref: "/ai-model-comparator",
+    toolName: "AI Model Comparator",
+    description: "Overhauled the AI Model Comparator to ingest the native models.dev schema verbatim, adding frontier model metrics, context window filters, and smart release sorting.",
+    highlights: [
+      "Direct models.dev open dataset integration powering real-time frontier LLM comparisons",
+      "Default sorting by newest release date with toggleable price, context length, and modality sorting",
+      "Comprehensive token pricing breakdown per 1M tokens (input, output, cached, reasoning)",
+      "Context window and parameter size filters covering major labs (OpenAI, Anthropic, Google, Meta, DeepSeek)",
+    ],
+  },
+  {
     id: "2025-05-16-batch-6-blockchain-ai",
     date: "2025-05-16",
     title: "8 New Blockchain & AI Engineering Utilities (73 Total)",

@@ -45,3 +45,4 @@ For **every** addition, fix, feature, or refactor:
 2. **Realtime To-Dos**: Break work into granular steps with `todo_write`. Mark `in_progress` when working and `completed` the moment each step settles.
 3. **Zero Lint & Build Errors**: Always verify with `npm run build` prior to committing.
 4. **Git Discipline**: Conventional commit messages (`feat:`, `fix:`, `refactor:`, `docs:`) with pushed changes to `main`.
+5. **Changelog Record**: Record tool additions, feature enhancements, or significant fixes in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`).

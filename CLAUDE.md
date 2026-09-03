@@ -80,3 +80,4 @@ Refer to `ARCHITECTURE.md` for complete system design and component specificatio
 2. **Realtime To-Dos**: Track progress actively using todo tools — update task status step-by-step as each task begins and finishes.
 3. **2-Column Layout Alignment**: Keep input/output header bars at `h-8 flex items-center justify-between` with compact font-mono buttons to prevent vertical misalignments.
 4. **Verification Before Commit**: Always verify builds with `npm run build` and ensure clean builds before pushing commits.
+5. **Changelog Record**: Whenever adding a new tool, updating features/capabilities, or applying significant fixes, record the update in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`).
