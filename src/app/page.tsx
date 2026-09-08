@@ -55,7 +55,7 @@ export default function Home() {
         </div>
 
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-text-primary">
-          65+ Browser-Based <span className="gradient-text">Hacker & Dev Utilities</span>
+          {TOOLS.length}+ Browser-Based <span className="gradient-text">Hacker & Dev Utilities</span>
         </h1>
         <p className="mx-auto mt-3 max-w-2xl text-sm sm:text-base text-text-secondary">
           100% Client-Side. Zero server processing. Offline-ready cryptographic, media, and networking tools.

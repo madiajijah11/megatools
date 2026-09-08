@@ -14,7 +14,7 @@ const toolDataPath = path.resolve(__dirname, "../src/lib/tool-data.ts");
 const toolDataContent = fs.readFileSync(toolDataPath, "utf-8");
 const hrefMatches = [...toolDataContent.matchAll(/href:\s*"([^"]+)"/g)].map((m) => m[1]);
 
-const staticPages = ["", "/about", "/privacy", "/terms"];
+const staticPages = ["", "/about", "/changelog", "/privacy", "/terms"];
 const allPaths = Array.from(new Set([...staticPages, ...hrefMatches]));
 const urlList = allPaths.map((p) => `https://${HOST}${p}`);
 

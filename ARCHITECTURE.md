@@ -43,6 +43,36 @@ Every tool follows a two-file pattern:
 For **every** addition, fix, feature, or refactor:
 1. **Plan First**: Propose approach and obtain approval before editing code.
 2. **Realtime To-Dos**: Break work into granular steps with `todo_write`. Mark `in_progress` when working and `completed` the moment each step settles.
-3. **Zero Lint & Build Errors**: Always verify with `npm run build` prior to committing.
+3. **Zero Lint & Build Errors**: Always verify with `npx tsc --noEmit` and `npm run build` prior to committing.
 4. **Git Discipline**: Conventional commit messages (`feat:`, `fix:`, `refactor:`, `docs:`) with pushed changes to `main`.
 5. **Changelog Record**: Record tool additions, feature enhancements, or significant fixes in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`).
+
+---
+
+## 5. Tool Creation & SEO Pipeline SOP
+
+Every new tool must follow this end-to-end integration checklist:
+
+1. **Registry & Category Mapping** (`src/lib/tool-data.ts`):
+   - Add tool object to `TOOLS` with `id`, `title`, `shortTitle`, `description`, `href`, `category`, `tech`, `steps`, `tips`, and `example`.
+   - Register `tool.id` in `TOOL_CATEGORIES` under the target category's `toolIds` array.
+
+2. **Route Files Creation** (`src/app/<tool-slug>/`):
+   - `page.tsx`: Server Component exporting SEO `Metadata` (`title: "<Tool> — MegaTools"`, `description`, `keywords`, `openGraph`, `alternates: { canonical: "/<tool-slug>" }`).
+   - `<ToolName>Client.tsx`: `"use client"` component.
+     - **Header Baseline**: Both input and output toolbars must strictly use `h-8 flex items-center justify-between` with compact font-mono buttons (`text-xs font-mono px-2 py-1 rounded border`).
+     - **Typography**: Geist Mono / `JetBrains Mono` (`font-mono`) for all numbers, hashes, keys, metrics, addresses, and hex tables.
+     - **Help & Info**: Mount desktop `InfoPanel` and mobile `MobileInfoDrawer` using `getToolInfo("<tool-id>")`.
+     - **Privacy**: 100% client-side execution. No user inputs sent to any remote server.
+
+3. **Changelog & Documentation**:
+   - Add entry in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`) with version, date, type (`"feature"`), title, description, and tags.
+   - Add new tool row to corresponding category table in `README.md`.
+
+4. **SEO & Search Indexing Pipeline**:
+   - Dynamic sitemap (`src/app/sitemap.ts`) automatically derives URLs from `TOOLS`.
+   - Run `npm run indexnow` to immediately submit new/updated URLs to IndexNow (Bing, Yandex, etc.).
+
+5. **Quality Verification**:
+   - Run `npx tsc --noEmit` for instant strict type verification.
+   - Run `npm run build` to confirm full Turbopack static compilation passes with zero errors.

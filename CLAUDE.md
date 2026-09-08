@@ -7,12 +7,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `npm run dev` — Start dev server (http://localhost:3000)
 - `npm run build` — Production build with type-checking (Next.js + Turbopack)
 - `npm run lint` — ESLint (Flat Config via `eslint.config.mjs`)
-- `npm run indexnow` — Submit all 73+ tool URLs to IndexNow (Bing / Yandex)
+- `npm run indexnow` — Submit all tool URLs to IndexNow (Bing / Yandex)
 - No test framework is configured.
 
 ## Architecture
 
-**MegaTools** is a Next.js 16 App Router site — 73 client-side developer, media, blockchain, AI, and cybersecurity tools that run entirely in the browser (no server-side data handling). Built with React 19, TypeScript, and Tailwind CSS v4.
+**MegaTools** is a Next.js 16 App Router site — 77 client-side developer, media, blockchain, AI, and cybersecurity tools that run entirely in the browser (no server-side data handling). Built with React 19, TypeScript, and Tailwind CSS v4.
 
 ### Tech Stack
 
@@ -41,7 +41,7 @@ src/
     TechBadge.tsx                 # Tech label badge bracket format [tech]
     QuickSwitchBar.tsx            # Top nav bar (tool switcher)
   lib/
-    tool-data.ts                  # ToolInfo interface + TOOLS (73 tools) + TOOL_CATEGORIES
+    tool-data.ts                  # ToolInfo interface + TOOLS (77 tools) + TOOL_CATEGORIES
 ```
 
 ### Design System — Dark Terminal Theme
@@ -67,10 +67,20 @@ Custom tokens in `globals.css` via `@theme inline`:
 
 Every tool uses a two-file pattern:
 
-1. **`page.tsx`** — Server component. Exports `Metadata` for SEO. Renders the client component.
-2. **`<Tool>Client.tsx`** — `"use client"`. Contains all state, event handlers, and browser API calls with InfoPanel + MobileInfoDrawer.
+1. **`page.tsx`** — Server component. Exports complete SEO `Metadata` (`title: "<Tool> — MegaTools"`, `description`, `keywords`, `openGraph`, `alternates: { canonical: "/<tool-slug>" }`). Renders the client component.
+2. **`<Tool>Client.tsx`** — `"use client"`. Contains all state, event handlers, and browser API calls with `InfoPanel` + `MobileInfoDrawer`.
+   - **Header Baseline**: Input/output header bars must strictly use `h-8 flex items-center justify-between` with compact font-mono buttons (`text-xs font-mono px-2 py-1 rounded border`).
+   - **Typography**: Geist Mono / `JetBrains Mono` (`font-mono`) for all numbers, hashes, keys, metrics, addresses, and hex tables.
+   - **Zero Leakage**: 100% client-side execution. No user inputs sent to any remote server.
 
-When adding a new tool: add to `TOOLS` and `TOOL_CATEGORIES` in `src/lib/tool-data.ts`, then create `page.tsx` + `<Tool>Client.tsx`.
+### Tool Addition Checklist
+
+When adding any new tool:
+1. **Registry & Category Sync**: Add to `TOOLS` and register `tool.id` in `TOOL_CATEGORIES` under the target category's `toolIds` array in `src/lib/tool-data.ts`.
+2. **Create Routes**: Implement `src/app/<tool-slug>/page.tsx` and `src/app/<tool-slug>/<Tool>Client.tsx`.
+3. **Changelog & README**: Add an entry in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`) and add a row to the matching category table in `README.md`.
+4. **SEO & Indexing**: Dynamic sitemap automatically includes the tool. Run `npm run indexnow` after deployment to ping search engines (Bing, Yandex).
+5. **Verification**: Run `npx tsc --noEmit` and `npm run build` before committing.
 
 ## Development Workflow & Rules
 
@@ -79,5 +89,5 @@ Refer to `ARCHITECTURE.md` for complete system design and component specificatio
 1. **Plan & Confirm First**: For all feature requests, design changes, or non-trivial fixes, present an implementation plan before writing code.
 2. **Realtime To-Dos**: Track progress actively using todo tools — update task status step-by-step as each task begins and finishes.
 3. **2-Column Layout Alignment**: Keep input/output header bars at `h-8 flex items-center justify-between` with compact font-mono buttons to prevent vertical misalignments.
-4. **Verification Before Commit**: Always verify builds with `npm run build` and ensure clean builds before pushing commits.
+4. **Verification Before Commit**: Always verify builds with `npx tsc --noEmit` and `npm run build` to ensure clean builds before pushing commits.
 5. **Changelog Record**: Whenever adding a new tool, updating features/capabilities, or applying significant fixes, record the update in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`).

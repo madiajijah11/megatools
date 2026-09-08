@@ -63,7 +63,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} h-full`}>
+    <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased bg-bg-page text-text-primary">
         <BootSplash />
         <header className="sticky top-0 z-50 border-b border-border-subtle bg-bg-card/80 backdrop-blur-md">

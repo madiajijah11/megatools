@@ -887,6 +887,102 @@ export const TOOLS: ToolInfo[] = [
     tips: ["Cosine similarity measures the cosine of the angle between two embedding vectors in [-1.0, 1.0]", "Essential for building and debugging RAG (Retrieval-Augmented Generation) search indexes", "Supports arbitrary vector dimensionality (3D, 128D, 768D, 1536D, 3072D)"],
     example: { input: "[0.8, 0.4] vs [0.7, 0.5]", output: "Cosine Sim: 0.9938" },
   },
+  {
+    id: "secret-scanner",
+    title: "Secret & API Key Leak Scanner",
+    shortTitle: "Secret Scanner",
+    description: "Detect leaked API keys, tokens, database credentials, and high-entropy secrets client-side with 1-click auto-masking.",
+    emoji: "🛡️",
+    href: "/secret-scanner",
+    tech: "Shannon Entropy & Regex Heuristics",
+    steps: [
+      "Paste text, code snippet, .env file, or git diff into the editor",
+      "Tool inspects lines for 14+ known key signatures and high-entropy strings client-side",
+      "Review detected secrets with line numbers, severity, and entropy bits",
+      "Click Auto-Mask to sanitize secrets before sharing or committing code"
+    ],
+    tips: [
+      "100% client-side: no code or keys ever leave your browser or hit any server",
+      "Shannon entropy identifies pseudo-random tokens even when vendor prefixes are missing",
+      "Always revoke leaked API keys immediately even after masking or rewriting git history"
+    ],
+    example: {
+      input: 'AWS_KEY="AKIAIOSFODNN7EXAMPLE"\nOPENAI_KEY="sk-proj-98af38bf8c..."',
+      output: "Found 2 secrets: AWS Access Key ID, OpenAI API Key"
+    },
+  },
+  {
+    id: "pwned-checker",
+    title: "Pwned Password & Data Breach Checker",
+    shortTitle: "Pwned Checker",
+    description: "Check if your password has been exposed in billions of leaked records using mathematical k-Anonymity privacy.",
+    emoji: "🔓",
+    href: "/pwned-checker",
+    tech: "HIBP k-Anonymity & SHA-1",
+    steps: [
+      "Type or paste any password into the input field",
+      "Web Crypto computes the 40-character SHA-1 hash locally on your machine",
+      "Only the 5-character prefix is queried against HaveIBeenPwned's k-Anonymity API",
+      "Inspect breach count, severity risk, and recommendations in real time"
+    ],
+    tips: [
+      "k-Anonymity guarantees your password is never transmitted across the network",
+      "HIBP only receives a 5-hex prefix shared by thousands of unrelated hashes",
+      "If a password shows even 1 breach exposure, change it everywhere immediately"
+    ],
+    example: {
+      input: "P@ssword1",
+      output: "Breached 178,212 times in known data dumps"
+    },
+  },
+  {
+    id: "webrtc-leak",
+    title: "WebRTC IP Leak & VPN Shield Tester",
+    shortTitle: "WebRTC Leak Test",
+    description: "Detect if your real public or local IP address leaks through WebRTC STUN requests even while using a VPN or proxy.",
+    emoji: "🌐",
+    href: "/webrtc-leak",
+    tech: "WebRTC RTCPeerConnection & STUN",
+    steps: [
+      "Open the tool to automatically probe STUN ICE candidate generation",
+      "Inspect discovered local (host) and public (srflx) IP candidates",
+      "Compare WebRTC candidates against your primary HTTP public IP",
+      "Follow step-by-step browser guides to disable WebRTC leaks if exposed"
+    ],
+    tips: [
+      "WebRTC can bypass standard proxy and VPN tunnels at the browser engine level",
+      "Modern privacy browsers like Brave and Tor randomize or block ICE host candidates",
+      "Check both IPv4 and IPv6 WebRTC candidates for multi-homing leaks"
+    ],
+    example: {
+      input: "WebRTC STUN Probe",
+      output: "Public WebRTC IP: 203.0.113.42 · Host: 192.168.1.15 · Status: Shielded"
+    },
+  },
+  {
+    id: "dns-lookup",
+    title: "DNS over HTTPS (DoH) Lookup & Records Inspector",
+    shortTitle: "DNS Lookup",
+    description: "Query A, AAAA, MX, TXT, CNAME, NS, and SOA records directly from Cloudflare and Google DoH resolvers.",
+    emoji: "🔍",
+    href: "/dns-lookup",
+    tech: "Cloudflare & Google DoH JSON APIs",
+    steps: [
+      "Enter any domain name (e.g. google.com, github.com)",
+      "Select specific record type (A, AAAA, MX, TXT, CNAME, NS, SOA) or 'ANY'",
+      "Choose preferred DoH provider (Cloudflare 1.1.1.1 or Google 8.8.8.8)",
+      "Inspect TTLs, record values, DNSSEC validation flags, and latency"
+    ],
+    tips: [
+      "DoH encrypts DNS requests via HTTPS, protecting lookups from ISP snooping and spoofing",
+      "TXT records are commonly used to verify domain ownership and configure SPF/DKIM/DMARC",
+      "TTL indicates the remaining duration (in seconds) the record may be cached"
+    ],
+    example: {
+      input: "google.com (Type A)",
+      output: "142.251.12.101, 142.251.12.138 (TTL: 300s, Status: NOERROR)"
+    },
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
@@ -933,6 +1029,9 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "sri-hash-generator",
       "totp-generator",
       "base58-converter",
+      "secret-scanner",
+      "pwned-checker",
+      "webrtc-leak",
     ],
   },
   {
@@ -999,6 +1098,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "docker-compose-converter",
       "device-inspector",
       "email-dns-generator",
+      "dns-lookup",
     ],
   },
   {

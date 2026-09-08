@@ -1,12 +1,12 @@
 # [megatools]$ ✦
 
-> **73 free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
+> **77 free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
 
 🌐 **Live URL**: [megatools-tau.vercel.app](https://megatools-tau.vercel.app)
 
 ---
 
-## 🛠️ Complete Tools Directory (73 Tools)
+## 🛠️ Complete Tools Directory (77 Tools)
 
 ### 📄 PDF & Documents (3)
 | Tool | Route | Engine | Description |
@@ -31,9 +31,12 @@
 | **Universal AI Payload & SDK Exporter** | `/ai-payload-converter` | Multi-Provider AST | Convert system prompts and parameters into official JSON payloads for OpenAI, Claude, Gemini, and Ollama |
 | **Vector Cosine Similarity & Distance Engine** | `/vector-similarity` | Vector Math Engine | Calculate Cosine Similarity, Dot Product, Euclidean (L2), and Manhattan (L1) metrics for AI embeddings |
 
-### 🔐 Security & Cryptography (13)
+### 🔐 Security & Cryptography (16)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **WebRTC IP Leak & VPN Shield Tester** | `/webrtc-leak` | WebRTC STUN & ICE | Detect real IP leaks bypassing VPN tunnels via browser STUN candidate probes |
+| **Pwned Password & Data Breach Checker** | `/pwned-checker` | HIBP k-Anonymity & SHA-1 | Check password exposures against 800M+ breach records with mathematical privacy |
+| **Secret & API Key Leak Scanner** | `/secret-scanner` | Shannon Entropy & Regex | Detect leaked cloud keys, tokens, and DB credentials client-side with 1-click auto-masking |
 | **HMAC Hash & Signature Generator** | `/hmac-generator` | Web Crypto API | Compute & verify HMAC (SHA-256, SHA-512, SHA-384, SHA-1) signatures |
 | **RSA & ECDSA Key Pair Generator** | `/keypair-generator` | Web Crypto API | Generate asymmetric keys (RSA 2048/4096-bit, ECDSA P-256/P-384) in PEM format |
 | **Password Entropy & Strength Analyzer** | `/password-analyzer` | Shannon Entropy | Evaluate password entropy bits, GPU crack time, and security weaknesses |
@@ -83,9 +86,10 @@
 | **Text Transformer** | `/text-transformer` | String Ops | 10 case converters (camel, snake, kebab...) & HTML entity encoder |
 | **Markdown Preview** | `/markdown-preview` | `@mdx-js/mdx` | Live Markdown and MDX renderer with sanitized output |
 
-### ⚙️ Dev & Network (10)
+### ⚙️ Dev & Network (11)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **DNS over HTTPS (DoH) Lookup** | `/dns-lookup` | Cloudflare & Google DoH | Query A, AAAA, MX, TXT, CNAME, NS, SOA records with DNSSEC validation |
 | **Cron Expression Generator & Parser** | `/cron-parser` | Cron Engine | Parse and explain crontab schedules in plain English & calculate upcoming runs |
 | **HTTP Status Codes & Headers Explorer** | `/http-status` | RFC Directory | Searchable directory for HTTP status codes (100–599) and common headers |
 | **Keyboard Event & KeyCode Tester** | `/keycode-tester` | KeyboardEvent API | Inspect event.key, code, legacy keyCode, and modifier keys in real time |
