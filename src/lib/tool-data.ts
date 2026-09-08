@@ -983,6 +983,198 @@ export const TOOLS: ToolInfo[] = [
       output: "142.251.12.101, 142.251.12.138 (TTL: 300s, Status: NOERROR)"
     },
   },
+  {
+    id: "rag-chunker",
+    title: "RAG Document Chunker & Overlap Visualizer",
+    shortTitle: "RAG Chunker",
+    description: "Partition documents into optimized semantic chunks with configurable size, overlap, and vector database export.",
+    emoji: "🧩",
+    href: "/rag-chunker",
+    tech: "Recursive Splitting Engine",
+    steps: [
+      "Paste text or load markdown/document presets into the workspace",
+      "Adjust target chunk size, token limit, overlap window, and separator hierarchy",
+      "Inspect visually color-coded chunk cards with token counts and overlap markers",
+      "Export chunks as clean JSON array or JSONL ready for Vector DB embeddings"
+    ],
+    tips: [
+      "Overlap ensures contextual continuity across boundaries so retrieved queries don't lose vital context",
+      "Recursive splitting prioritizes paragraph breaks (\n\n) before sentence or word breaks",
+      "Average embedding models (like text-embedding-3-small) perform best with 500-1000 character chunks"
+    ],
+    example: {
+      input: "1,500 word article (Chunk Size: 400, Overlap: 50)",
+      output: "12 chunks generated with 12.5% overlap ratio"
+    },
+  },
+  {
+    id: "prompt-architect",
+    title: "Structured System Prompt Architect",
+    shortTitle: "Prompt Architect",
+    description: "Engineer production-grade, anti-hallucination XML/Markdown system prompts with role constraints and few-shot examples.",
+    emoji: "📐",
+    href: "/prompt-architect",
+    tech: "Prompt Engineering AST",
+    steps: [
+      "Select a proven prompt archetype (Code Reviewer, SQL DBA, RAG Agent, API Orchestrator)",
+      "Customize structured blocks: Persona & Role, Context, Constraints & Guardrails, Output Schema, and Few-Shot examples",
+      "Preview synthesized prompt in standardized Anthropic XML, OpenAI Markdown, or JSON format",
+      "Copy ready-to-use prompt or direct API payload"
+    ],
+    tips: [
+      "XML tags (<instructions>, <constraints>) prevent prompt injection and improve adherence in frontier LLMs",
+      "Negative constraints ('NEVER do X') work best when paired with clear alternative instructions ('DO Y instead')",
+      "Always provide at least 1-2 few-shot input/output examples for reliable structured data formatting"
+    ],
+    example: {
+      input: "Role: Senior Rust Engineer · Output: Validated JSON schema",
+      output: "<role>You are a Senior Rust Engineer...</role><constraints>No unwrap()...</constraints>"
+    },
+  },
+  {
+    id: "pdf-organizer",
+    title: "PDF Page Rotator & Reorder Grid",
+    shortTitle: "PDF Organizer",
+    description: "Reorder pages, rotate orientations (90°/180°/270°), and delete unwanted pages visually with in-browser compilation.",
+    emoji: "📑",
+    href: "/pdf-organizer",
+    tech: "pdf-lib Client Engine",
+    steps: [
+      "Upload or drop any PDF document into the workspace",
+      "Inspect the page grid displaying page numbers, dimensions, and rotation angles",
+      "Use directional arrows to reorder pages, rotate buttons to adjust orientation, or trash to remove pages",
+      "Click Export Organized PDF to compile and download your updated document"
+    ],
+    tips: [
+      "100% client-side manipulation — your confidential PDFs are never uploaded to any server",
+      "You can fix landscape pages scanned sideways by applying 90° clockwise rotations",
+      "Use 'Rotate All' or 'Reverse Order' for fast bulk operations across multi-page files"
+    ],
+    example: {
+      input: "10-page document with sideways scans",
+      output: "Pages reordered [2, 1, 3...], Page 2 rotated 90° CW, compiled to new PDF"
+    },
+  },
+  {
+    id: "bip39-generator",
+    title: "BIP-39 Mnemonic Seed Phrase Studio",
+    shortTitle: "BIP-39 Studio",
+    description: "Generate cryptographically secure 12 & 24-word seed phrases, verify checksums, and derive PBKDF2 512-bit binary seeds.",
+    emoji: "🔑",
+    href: "/bip39-generator",
+    tech: "BIP-39 & Web Crypto PBKDF2",
+    steps: [
+      "Select mnemonic length (12 words / 128-bit entropy or 24 words / 256-bit entropy)",
+      "Click Generate to sample CSPRNG bytes via Web Crypto crypto.getRandomValues",
+      "Inspect numbered word grid, binary bitstream, and SHA-256 checksum bits",
+      "Optionally add a passphrase to compute the official 512-bit PBKDF2 seed hex"
+    ],
+    tips: [
+      "100% offline & airgapped — seed generation operates entirely in browser RAM without network requests",
+      "Never store recovery phrases in plain text, cloud storage, or screenshots",
+      "The last word contains the checksum bits derived from SHA-256(entropy)"
+    ],
+    example: {
+      input: "128-bit Entropy (16 bytes)",
+      output: "abandon ability able about above absent absorb abstract absurd abuse access accident"
+    },
+  },
+  {
+    id: "data-url",
+    title: "Base64 Data URL & Asset Embedder",
+    shortTitle: "Data URL Embedder",
+    description: "Convert images, fonts, SVGs, and files into inline Base64 Data URLs, CSS background snippets, and HTML tags.",
+    emoji: "📦",
+    href: "/data-url",
+    tech: "FileReader API & Base64 Encoder",
+    steps: [
+      "Upload or drop any file (PNG, JPG, SVG, WOFF2, JSON) or paste raw text",
+      "Inspect the generated RFC 2397 Data URI with auto-detected MIME type",
+      "Check original file size, encoded Base64 size, and transmission overhead percentage",
+      "Copy as raw Data URL, CSS background-image snippet, or HTML <img> element"
+    ],
+    tips: [
+      "Data URLs eliminate additional HTTP roundtrips by inlining small assets directly into CSS or HTML",
+      "Base64 encoding introduces a ~33.3% payload size expansion due to 6-bit grouping",
+      "Ideal for small icons, favicons, critical SVG graphics, and offline web apps"
+    ],
+    example: {
+      input: "icon.svg (1.2 KB)",
+      output: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmci... (+33% overhead)"
+    },
+  },
+  {
+    id: "rdap-lookup",
+    title: "RDAP Domain & IP Registration Inspector",
+    shortTitle: "RDAP / WHOIS",
+    description: "Query authoritative domain registration, expiration dates, status flags, and IP ownership via ICANN's RESTful RDAP protocol.",
+    emoji: "🔎",
+    href: "/rdap-lookup",
+    tech: "ICANN & Regional Internet Registry RDAP",
+    steps: [
+      "Enter any domain name (e.g. google.com, wikipedia.org) or IPv4/IPv6 address",
+      "Tool queries authoritative RDAP registries (Verisign, PIR, ARIN, APNIC) via encrypted HTTPS",
+      "Inspect domain registration, expiration countdown, status codes, and registrar abuse contacts",
+      "View nameservers and raw structured RDAP JSON tree"
+    ],
+    tips: [
+      "RDAP is the official cryptographic JSON replacement for the legacy port-43 WHOIS protocol",
+      "Status flags like 'clientTransferProhibited' prevent unauthorized domain hijacking between registrars",
+      "IP queries against ARIN/APNIC reveal network block ranges (CIDR), organization handles, and abuse emails"
+    ],
+    example: {
+      input: "google.com",
+      output: "Registrar: MarkMonitor · Registered: 1997-09-15 · Expires: 2028-09-14 · Status: Active"
+    },
+  },
+  {
+    id: "tone-generator",
+    title: "Web Audio Tone & Frequency Synthesizer",
+    shortTitle: "Tone Generator",
+    description: "Generate pure acoustic frequencies (20Hz - 20kHz), binaural beats, and colored noise (white, pink, brown) with a live oscilloscope.",
+    emoji: "🔊",
+    href: "/tone-generator",
+    tech: "Web Audio API Synthesizer",
+    steps: [
+      "Select oscillator mode: Pure Tone (Sine/Square/Saw/Triangle), Binaural Beats, or Colored Noise",
+      "Adjust target frequency (20 Hz to 20,000 Hz) using the slider or pitch presets (440Hz A4, 432Hz)",
+      "Inspect real-time waveform oscillations on the HTML5 Canvas oscilloscope",
+      "Toggle audio playback and adjust safe volume levels directly in your browser"
+    ],
+    tips: [
+      "Keep volume modest when testing high frequencies above 8,000 Hz to protect your hearing",
+      "Binaural beats require stereo headphones because two slightly offset frequencies are routed to each ear",
+      "Pink noise has equal energy per octave, making it the industry reference for room acoustic calibration"
+    ],
+    example: {
+      input: "440 Hz Sine Wave",
+      output: "Concert Pitch A4 · Pure sinusoidal audio stream · Live oscilloscope output"
+    },
+  },
+  {
+    id: "pdf-watermark",
+    title: "PDF Watermark & Stamp Studio",
+    shortTitle: "PDF Watermark",
+    description: "Stamp diagonal or centered watermarks ('CONFIDENTIAL', 'DRAFT') across PDF pages with custom opacity, color, and angle.",
+    emoji: "🏷️",
+    href: "/pdf-watermark",
+    tech: "pdf-lib Client Engine",
+    steps: [
+      "Upload or drop any PDF document into the workspace",
+      "Type custom watermark text or pick quick presets ('CONFIDENTIAL', 'DRAFT', 'DO NOT COPY')",
+      "Customize rotation angle (e.g. 45° diagonal), font size, opacity (10% to 80%), and color",
+      "Click Stamp & Download PDF to compile the watermarked document instantly in browser memory"
+    ],
+    tips: [
+      "100% private & client-side — your confidential documents are never uploaded to any remote server",
+      "45° diagonal watermarks with 20-30% opacity provide maximum deterrence without obscuring body text",
+      "Works on multi-page PDF documents of any page count"
+    ],
+    example: {
+      input: "contract.pdf with 'CONFIDENTIAL' text at 45° (30% opacity)",
+      output: "All pages stamped with vector text overlay and saved as contract-watermarked.pdf"
+    },
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
@@ -1005,7 +1197,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
     id: "pdf-docs",
     name: "PDF & Documents",
     emoji: "📄",
-    toolIds: ["pdf-merge", "pdf-split", "image-to-pdf"],
+    toolIds: ["pdf-merge", "pdf-split", "image-to-pdf", "pdf-organizer", "pdf-watermark"],
   },
   {
     id: "crypto-security",
@@ -1051,6 +1243,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "color-extractor",
       "ascii-banner",
       "aspect-ratio-calculator",
+      "tone-generator",
     ],
   },
   {
@@ -1078,6 +1271,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "json-schema-generator",
       "markdown-table",
       "clip-path-generator",
+      "data-url",
     ],
   },
   {
@@ -1099,6 +1293,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "device-inspector",
       "email-dns-generator",
       "dns-lookup",
+      "rdap-lookup",
     ],
   },
   {
@@ -1111,6 +1306,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "solana-converter",
       "keccak-calculator",
       "merkle-tree-generator",
+      "bip39-generator",
     ],
   },
   {
@@ -1121,6 +1317,8 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "ai-model-comparator",
       "ai-payload-converter",
       "vector-similarity",
+      "rag-chunker",
+      "prompt-architect",
     ],
   },
 ];

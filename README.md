@@ -1,21 +1,23 @@
 # [megatools]$ ✦
 
-> **77 free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
+> **85 free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
 
 🌐 **Live URL**: [megatools-tau.vercel.app](https://megatools-tau.vercel.app)
 
 ---
 
-## 🛠️ Complete Tools Directory (77 Tools)
+## 🛠️ Complete Tools Directory (85 Tools)
 
-### 📄 PDF & Documents (3)
+### 📄 PDF & Documents (5)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **Merge PDF** | `/pdf-merge` | `pdf-lib` | Combine multiple PDF files into one with custom page reordering |
 | **Split PDF** | `/pdf-split` | `pdf-lib` | Extract specific pages or custom ranges (e.g. `1-3, 5, 8-10`) |
 | **Image to PDF** | `/image-to-pdf` | `pdf-lib` + Canvas | Convert multiple photos (PNG/JPG/WebP) into a clean PDF document |
+| **PDF Page Rotator & Reorder Grid** | `/pdf-organizer` | `pdf-lib` Client Engine | Reorder pages, rotate orientations (90°/180°), and delete pages visually |
+| **PDF Watermark & Stamp Studio** | `/pdf-watermark` | `pdf-lib` Client Engine | Stamp diagonal/centered text watermarks across PDF pages with opacity control |
 
-### ⟠ Blockchain & Web3 (5)
+### ⟠ Blockchain & Web3 (6)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **Ethereum Unit & Gas Fee Calculator** | `/eth-unit-converter` | BigInt Precision Math | High-precision conversion between Wei, Gwei, Finney, and ETH with EIP-1559 gas fee estimation |
@@ -23,13 +25,16 @@
 | **Solana SOL / Lamports Converter & Inspector** | `/solana-converter` | Base58 & Ed25519 | Convert SOL ↔ Lamports ($10^9$), calculate account rent fees, and decode Ed25519 public keys |
 | **Keccak-256 Hasher & 4-Byte Selector** | `/keccak-calculator` | Keccak-256 Engine | Calculate Ethereum Keccak-256 hashes, Solidity 4-byte method selectors, and EVM event topics |
 | **Merkle Tree Root & Airdrop Proof Builder** | `/merkle-tree-generator` | Sorted Pair Keccak | Generate cryptographic Merkle roots and OpenZeppelin-compatible verification proofs for airdrops |
+| **BIP-39 Mnemonic Seed Phrase Studio** | `/bip39-generator` | BIP-39 & PBKDF2 | Generate 12/24-word recovery phrases, verify checksums, and derive master seeds |
 
-### 🤖 AI & LLM Engineering (3)
+### 🤖 AI & LLM Engineering (5)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **AI Model Pricing & Context Matrix** | `/ai-model-comparator` | models.dev Open API | Real-time cost calculator and specs matrix for 25+ LLM models with models.dev live sync support |
 | **Universal AI Payload & SDK Exporter** | `/ai-payload-converter` | Multi-Provider AST | Convert system prompts and parameters into official JSON payloads for OpenAI, Claude, Gemini, and Ollama |
 | **Vector Cosine Similarity & Distance Engine** | `/vector-similarity` | Vector Math Engine | Calculate Cosine Similarity, Dot Product, Euclidean (L2), and Manhattan (L1) metrics for AI embeddings |
+| **RAG Document Chunker & Splitter** | `/rag-chunker` | Recursive Splitting | Partition documents into semantic chunks with overlap visualizer and Vector DB export |
+| **Structured System Prompt Architect** | `/prompt-architect` | Prompt AST | Engineer hardened XML/Markdown system prompts with guardrails and few-shot examples |
 
 ### 🔐 Security & Cryptography (16)
 | Tool | Route | Engine | Description |
@@ -51,7 +56,7 @@
 | **UUID Generator** | `/uuid-generator` | `crypto.randomUUID` | Generate UUID v4 identifiers (single or bulk up to 100) |
 | **Image Steganography** | `/steganography` | Canvas Pixel LSB | Hide secret messages in image pixels or extract hidden payloads |
 
-### 📱 Media, Audio & Video (10)
+### 📱 Media, Audio & Video (11)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **SVG to PNG / JPG / WebP Converter** | `/svg-converter` | Canvas Rasterizer | Rasterize & upscale vector SVG files to 1x, 2x, 4x bitmap images |
@@ -64,8 +69,9 @@
 | **Image Compressor** | `/image-compressor` | Canvas API | Compress and resize image dimensions with side-by-side comparison |
 | **EXIF & Metadata Stripper** | `/exif-stripper` | Canvas API | Strip GPS coordinates, device tags, and metadata from photos |
 | **Favicon & Icon Generator** | `/favicon-generator` | Canvas API | Generate standard icon sizes (16, 32, 48, 180, 192, 512px) + HTML tags |
+| **Web Audio Tone & Frequency Synthesizer** | `/tone-generator` | Web Audio API | Generate pure tones (20Hz-20kHz), binaural beats, and colored noise with oscilloscope |
 
-### 📝 Format & Code (16)
+### 📝 Format & Code (17)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **cURL to Code Converter** | `/curl-converter` | Shell AST Parser | Convert cURL commands into JavaScript fetch, Python requests, Axios, and Go code |
@@ -85,10 +91,12 @@
 | **Text Diff Checker** | `/text-diff` | LCS Algorithm | Compare two texts and highlight line-by-line differences |
 | **Text Transformer** | `/text-transformer` | String Ops | 10 case converters (camel, snake, kebab...) & HTML entity encoder |
 | **Markdown Preview** | `/markdown-preview` | `@mdx-js/mdx` | Live Markdown and MDX renderer with sanitized output |
+| **Base64 Data URL & Asset Embedder** | `/data-url` | FileReader API | Convert images, fonts, and SVGs into RFC 2397 Data URLs & CSS rules |
 
-### ⚙️ Dev & Network (11)
+### ⚙️ Dev & Network (12)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **RDAP Domain & Registration Inspector** | `/rdap-lookup` | ICANN RDAP Protocol | Query domain registration, expiration, transfer locks, and IP ownership |
 | **DNS over HTTPS (DoH) Lookup** | `/dns-lookup` | Cloudflare & Google DoH | Query A, AAAA, MX, TXT, CNAME, NS, SOA records with DNSSEC validation |
 | **Cron Expression Generator & Parser** | `/cron-parser` | Cron Engine | Parse and explain crontab schedules in plain English & calculate upcoming runs |
 | **HTTP Status Codes & Headers Explorer** | `/http-status` | RFC Directory | Searchable directory for HTTP status codes (100–599) and common headers |
