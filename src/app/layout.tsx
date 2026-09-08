@@ -9,6 +9,7 @@ import TerminalStatusBar from "@/components/TerminalStatusBar";
 import BootSplash from "@/components/BootSplash";
 import CopyButton from "@/components/CopyButton";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
 const SUPPORT_ADDRESSES = [
@@ -149,6 +150,7 @@ export default function RootLayout({
           </div>
         </footer>
         <Analytics />
+        <SpeedInsights />
         {process.env.NEXT_PUBLIC_GA_ID && (
           <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         )}
