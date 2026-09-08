@@ -78,7 +78,7 @@ export default function NotificationBell() {
     };
   }, [isOpen]);
 
-  const recentItems = CHANGELOG_ITEMS.slice(0, 3);
+  const recentItems = CHANGELOG_ITEMS.slice(0, 15);
 
   return (
     <div className="relative inline-block" ref={popoverRef}>
@@ -111,11 +111,12 @@ export default function NotificationBell() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-lg border border-border-subtle bg-bg-card shadow-2xl p-3 z-50 animate-in fade-in-0 zoom-in-95 duration-100">
-          <div className="flex items-center justify-between border-b border-border-subtle pb-2.5 mb-2.5">
+        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-lg border border-border-subtle bg-bg-card shadow-2xl p-3 z-50 animate-in fade-in-0 zoom-in-95 duration-100 flex flex-col">
+          <div className="flex items-center justify-between border-b border-border-subtle pb-2.5 mb-2.5 shrink-0">
             <div className="flex items-center gap-1.5 text-xs font-mono font-medium text-text-primary">
               <span className="text-accent">&gt;</span>
               <span>what&apos;s new</span>
+              <span className="text-[10px] text-text-muted">({recentItems.length})</span>
             </div>
             <Link
               href="/changelog"
@@ -126,7 +127,7 @@ export default function NotificationBell() {
             </Link>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2.5 max-h-[360px] sm:max-h-[420px] overflow-y-auto pr-1.5 overscroll-contain">
             {recentItems.map((item) => (
               <div
                 key={item.id}
