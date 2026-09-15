@@ -11,7 +11,7 @@
   --color-accent-soft: rgba(74, 222, 128, 0.12);
   --color-text-primary: #d6e8dc;
   --color-text-secondary: #8aa396;
-  --color-text-muted: #5a6f63;
+  --color-text-muted: #6e8879;
   --color-success: #34d399;
   --color-warning: #fbbf24;
   --color-error: #f87171;
@@ -196,6 +196,17 @@ body {
 }
 .animate-pulse-soft {
   animation: pulse-soft 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* CRT Retro Scanline & Phosphor Effect */

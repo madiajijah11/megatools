@@ -67,6 +67,8 @@ export default function Home() {
             <span className="text-accent font-bold mr-2 select-none">root@megatools:~$</span>
             <input
               type="text"
+              id="tool-search-input"
+              aria-label="Search tools by name, technology, or algorithm"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="grep -i 'tool name / algorithm'..."
@@ -77,6 +79,7 @@ export default function Home() {
                 onClick={() => setQuery("")}
                 className="text-xs text-text-muted hover:text-error transition-colors px-1.5"
                 title="Clear filter"
+                aria-label="Clear search input"
               >
                 [ESC]
               </button>

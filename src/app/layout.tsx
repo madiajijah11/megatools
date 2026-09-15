@@ -66,6 +66,12 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased bg-bg-page text-text-primary">
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-bg-page focus:font-mono focus:text-xs focus:font-bold focus:rounded focus:outline-none focus:ring-2 focus:ring-accent-hover"
+        >
+          Skip to main content
+        </a>
         <BootSplash />
         <header className="sticky top-0 z-50 border-b border-border-subtle bg-bg-card/80 backdrop-blur-md">
           <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
@@ -100,7 +106,7 @@ export default function RootLayout({
             }),
           }}
         />
-        <main className="flex-1">{children}</main>
+        <main id="main-content" tabIndex={-1} className="flex-1 outline-none">{children}</main>
         <TerminalStatusBar />
         <footer className="border-t border-border-subtle py-6 text-sm text-text-muted">
           <div className="mx-auto max-w-6xl px-4">
