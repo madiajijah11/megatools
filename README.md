@@ -1,12 +1,12 @@
 # [megatools]$ ✦
 
-> **85 free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
+> **92+ free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
 
 🌐 **Live URL**: [megatools-tau.vercel.app](https://megatools-tau.vercel.app)
 
 ---
 
-## 🛠️ Complete Tools Directory (85 Tools)
+## 🛠️ Complete Tools Directory (92 Tools)
 
 ### 📄 PDF & Documents (5)
 | Tool | Route | Engine | Description |
@@ -102,13 +102,6 @@
 | **HTTP Status Codes & Headers Explorer** | `/http-status` | RFC Directory | Searchable directory for HTTP status codes (100–599) and common headers |
 | **Keyboard Event & KeyCode Tester** | `/keycode-tester` | KeyboardEvent API | Inspect event.key, code, legacy keyCode, and modifier keys in real time |
 | **IPv6 & Subnet Calculator** | `/ipv6-calculator` | Bitwise IPv6 Engine | Expand, compress, calculate CIDR subnet ranges, and inspect address scopes |
-| **Common Ports Reference** | `/port-lookup` | Port Database | Database of standard & security-sensitive TCP/UDP ports with risk notes |
-| **Color Contrast & Palette** | `/color-contrast` | Color Science | WCAG 2.1 contrast ratio checker (AA/AAA) with HEX/RGB/HSL conversions |
-| **Timestamp Converter** | `/timestamp-converter` | Date / Intl API | Convert Unix timestamps (s/ms auto-detect) to dates with live ticker |
-| **Regex Tester** | `/regex-tester` | Native RegExp | Live regex testing with match highlighting and capture group breakdowns |
-| **Chmod Calculator** | `/chmod-calculator` | Bitwise Logic | Interactive permission checkbox grid ↔ octal & symbolic notation |
-| **CIDR Calculator** | `/cidr-calculator` | Pure Math | IPv4 subnet calculator (network, broadcast, netmask, usable hosts) |
-|---|---|---|---|
 | **Common Ports Reference** | `/port-lookup` | Port Database | Database of standard & security-sensitive TCP/UDP ports with risk notes |
 | **Color Contrast & Palette** | `/color-contrast` | Color Science | WCAG 2.1 contrast ratio checker (AA/AAA) with HEX/RGB/HSL conversions |
 | **Timestamp Converter** | `/timestamp-converter` | Date / Intl API | Convert Unix timestamps (s/ms auto-detect) to dates with live ticker |
