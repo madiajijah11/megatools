@@ -1,121 +1,143 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
-const ALGORITHMS = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] as const;
+interface HashResult {
+  algorithm: string;
+  hash: string;
+  bits: number;
+}
 
-async function digestHex(algo: string, bytes: Uint8Array): Promise<string> {
-  const buf = await crypto.subtle.digest(algo, bytes as unknown as BufferSource);
-  return Array.from(new Uint8Array(buf))
+const ALGORITHMS = [
+  { name: "SHA-256", bits: 256 },
+  { name: "SHA-512", bits: 512 },
+  { name: "SHA-384", bits: 384 },
+  { name: "SHA-1", bits: 160 },
+];
+
+async function computeHash(
+  algorithm: string,
+  data: string
+): Promise<string> {
+  const encoder = new TextEncoder();
+  const buffer = await crypto.subtle.digest(
+    algorithm,
+    encoder.encode(data)
+  );
+  return Array.from(new Uint8Array(buffer))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
 }
 
 export default function HashClient() {
   const [input, setInput] = useState("");
-  const [hashes, setHashes] = useState<Record<string, string>>({});
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [hashes, setHashes] = useState<HashResult[]>([]);
+  const [uppercase, setUppercase] = useState(false);
 
-  const computeHashes = useCallback(async (text: string) => {
+  const calculateHashes = useCallback(async (text: string) => {
     if (!text) {
-      setHashes({});
+      setHashes([]);
       return;
     }
-    const bytes = new TextEncoder().encode(text);
-    const entries = await Promise.all(
-      ALGORITHMS.map(async (algo) => [algo, await digestHex(algo, bytes)] as const)
+
+    const results = await Promise.all(
+      ALGORITHMS.map(async ({ name, bits }) => {
+        const hash = await computeHash(name, text);
+        return { algorithm: name, hash, bits };
+      })
     );
-    setHashes(Object.fromEntries(entries));
+
+    setHashes(results);
   }, []);
 
   useEffect(() => {
-    const t = setTimeout(() => computeHashes(input), 150);
-    return () => clearTimeout(t);
-  }, [input, computeHashes]);
+    calculateHashes(input);
+  }, [input, calculateHashes]);
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Input</p>
-        <p className="text-text-primary font-mono">
-          {input ? `${new TextEncoder().encode(input).length} B` : "—"}
-        </p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Input Size:</span>
+        <span className="text-text-primary">{input.length} chars</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Digests</p>
-        <p className="text-text-primary font-mono">{Object.keys(hashes).length}/4</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Algorithms:</span>
+        <span className="text-accent font-bold">4 Web Crypto Ciphers</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Engine:</span>
+        <span className="text-success font-bold">Hardware Accelerated</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Hash Generator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Compute SHA hashes from text. Everything stays in your browser.
-            </p>
+    <ToolLayout toolId="hash-generator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Input Header & Textarea */}
+        <div className="space-y-2">
+          <div className="h-8 flex items-center justify-between text-xs">
+            <span className="font-semibold text-text-primary">Source Text Input</span>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-1.5 text-xs text-text-secondary cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={uppercase}
+                  onChange={(e) => setUppercase(e.target.checked)}
+                  className="accent-accent cursor-pointer"
+                />
+                <span>UPPERCASE Hex</span>
+              </label>
+              <button
+                type="button"
+                onClick={() => setInput("")}
+                className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+              >
+                [Clear]
+              </button>
+            </div>
           </div>
 
-          <label className="mb-2 block text-sm font-medium text-text-secondary">
-            Input text
-          </label>
           <textarea
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Enter text to hash..."
-            className="input-field min-h-[120px] resize-y font-mono text-sm"
+            placeholder="Type or paste text to compute cryptographic hashes in real-time..."
+            rows={5}
+            className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-y leading-relaxed"
+            spellCheck={false}
           />
-
-          <div className="mt-6 space-y-3">
-            {ALGORITHMS.map((algo) => (
-              <div key={algo} className="flex flex-wrap items-center gap-2">
-                <span className="w-20 shrink-0 text-sm font-semibold text-accent">
-                  {algo.toLowerCase()}
-                </span>
-                <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs sm:text-sm text-text-primary">
-                  {hashes[algo] ?? <span className="text-text-muted">—</span>}
-                </code>
-                <CopyButton text={hashes[algo] ?? ""} label="copy" />
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="hash-generator" stats={stats} />
+        {/* Hashes List */}
+        <div className="pt-2 border-t border-border-subtle space-y-3">
+          {ALGORITHMS.map(({ name, bits }) => {
+            const found = hashes.find((h) => h.algorithm === name);
+            const val = found
+              ? uppercase
+                ? found.hash.toUpperCase()
+                : found.hash
+              : "";
+
+            return (
+              <div key={name} className="p-3 rounded-lg border border-border-subtle bg-bg-page space-y-1.5">
+                <div className="flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-accent">{name}</span>
+                    <span className="text-[10px] text-text-muted font-mono">{bits} bits</span>
+                  </div>
+                  {val && <CopyButton text={val} label="Copy Hash" />}
+                </div>
+
+                <div className="font-mono text-xs text-text-primary break-all bg-bg-card p-2 rounded border border-border-subtle/50 min-h-[36px] flex items-center">
+                  {val || <span className="text-text-muted italic">Awaiting input...</span>}
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="hash-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

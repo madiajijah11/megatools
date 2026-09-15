@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 const BASE58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
@@ -55,8 +54,6 @@ export default function SolanaConverterClient() {
   const [addressInput, setAddressInput] = useState<string>(
     "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
   );
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   // Conversion calculations
   const lamportsValue = useMemo(() => {
     const clean = solInput.trim();
@@ -129,28 +126,10 @@ export default function SolanaConverterClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Solana SOL / Lamports Converter & Inspector</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Convert between SOL and Lamports ($10^9$), calculate rent fees, and decode Ed25519 Base58 addresses.
-            </p>
-          </div>
-
-          {/* SOL <-> Lamport Converter */}
+return (
+    <ToolLayout toolId="solana-converter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* SOL <-> Lamport Converter */}
           <div className="mb-8 space-y-4">
             <h3 className="text-xs font-mono font-bold text-text-secondary uppercase tracking-wider">
               [1] SOL ↔ Lamports Unit Conversion
@@ -282,17 +261,7 @@ export default function SolanaConverterClient() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="solana-converter" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="solana-converter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

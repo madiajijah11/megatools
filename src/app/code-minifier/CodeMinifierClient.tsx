@@ -1,9 +1,11 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+
+
+
 import CopyButton from "@/components/CopyButton";
 
 function minifyHtml(html: string): string {
@@ -111,7 +113,6 @@ export default function CodeMinifierClient() {
   const [lang, setLang] = useState<"html" | "css">("html");
   const [action, setAction] = useState<"minify" | "beautify">("minify");
   const [input, setInput] = useState(SAMPLE_HTML);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const output = useMemo(() => {
     if (!input.trim()) return "";
@@ -142,27 +143,9 @@ export default function CodeMinifierClient() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">HTML &amp; CSS Minifier</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Minify or beautify HTML and CSS code to boost website speed and clean syntax.
-            </p>
-          </div>
-
-          {/* Lang & Action Tabs */}
+    <ToolLayout toolId="code-minifier" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Lang & Action Tabs */}
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
             <div className="flex rounded border border-border-subtle bg-bg-page p-1">
               <button
@@ -260,26 +243,7 @@ export default function CodeMinifierClient() {
               className="output-field min-h-[180px] resize-y font-mono text-xs text-accent whitespace-pre"
             />
           </div>
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="code-minifier" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="code-minifier" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

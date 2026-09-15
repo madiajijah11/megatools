@@ -1,192 +1,237 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
+import CopyButton from "@/components/CopyButton";
 
-type Decoded =
-  | { status: "empty" }
-  | { status: "invalid"; error: string }
-  | {
-      status: "valid";
-      header: string;
-      payload: Record<string, unknown>;
-      payloadJson: string;
-      signature: string;
-      now: number;
-    };
-
-function b64urlDecode(part: string): string | null {
-  try {
-    const b64 = part.replace(/-/g, "+").replace(/_/g, "/");
-    const bin = atob(b64 + "=".repeat((4 - (b64.length % 4)) % 4));
-    const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
-    return new TextDecoder().decode(bytes);
-  } catch {
-    return null;
+function base64UrlDecode(str: string): string {
+  let base64 = str.replace(/-/g, "+").replace(/_/g, "/");
+  while (base64.length % 4) {
+    base64 += "=";
   }
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new TextDecoder().decode(bytes);
 }
 
+type DecodedState =
+  | { status: "empty" }
+  | {
+      status: "valid";
+      header: Record<string, unknown>;
+      payload: Record<string, unknown>;
+      signatureHex: string;
+    }
+  | { status: "invalid"; error: string };
+
+const SAMPLE_JWT = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFudGlncmF2aXR5IFVzZXIiLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTk5OTk5OTk5OX0.4pcPyMD09olUV_AlFac2sQWbDu10YGGaQioKHjGoGoU";
+
 export default function JwtDecoderClient() {
-  const [input, setInput] = useState("");
-  const [decoded, setDecoded] = useState<Decoded>({ status: "empty" });
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [token, setToken] = useState(SAMPLE_JWT);
+  const [decoded, setDecoded] = useState<DecodedState>({ status: "empty" });
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      if (!input.trim()) {
-        setDecoded({ status: "empty" });
-        return;
-      }
-      const parts = input.trim().split(".");
-      if (parts.length !== 3 || parts.some((p) => !p)) {
-        setDecoded({ status: "invalid", error: "Invalid format — a JWT must have 3 dot-separated parts." });
-        return;
-      }
-      const headerJson = b64urlDecode(parts[0]);
-      const payloadJson = b64urlDecode(parts[1]);
-      if (headerJson === null || payloadJson === null) {
-        setDecoded({ status: "invalid", error: "Malformed base64url encoding." });
-        return;
-      }
-      let headerObj: unknown;
-      let payloadObj: unknown;
+    const trimmed = token.trim();
+    if (!trimmed) {
+      setDecoded({ status: "empty" });
+      return;
+    }
+
+    const parts = trimmed.split(".");
+    if (parts.length !== 3) {
+      setDecoded({
+        status: "invalid",
+        error: "Invalid format — a standard JWT must have 3 dot-separated parts (header.payload.signature).",
+      });
+      return;
+    }
+
+    try {
+      const headerStr = base64UrlDecode(parts[0]);
+      const payloadStr = base64UrlDecode(parts[1]);
+
+      let header: Record<string, unknown>;
+      let payload: Record<string, unknown>;
+
       try {
-        headerObj = JSON.parse(headerJson);
-        payloadObj = JSON.parse(payloadJson);
+        header = JSON.parse(headerStr);
+        payload = JSON.parse(payloadStr);
       } catch {
-        setDecoded({ status: "invalid", error: "JSON parse error — header/payload are not valid JSON." });
+        setDecoded({
+          status: "invalid",
+          error: "JSON parse error — header or payload are not valid JSON objects.",
+        });
         return;
       }
+
+      const sigBinary = atob(parts[2].replace(/-/g, "+").replace(/_/g, "/"));
+      const sigHex = Array.from(sigBinary)
+        .map((c) => c.charCodeAt(0).toString(16).padStart(2, "0"))
+        .join("");
+
       setDecoded({
         status: "valid",
-        header: JSON.stringify(headerObj, null, 2),
-        payload: payloadObj as Record<string, unknown>,
-        payloadJson: JSON.stringify(payloadObj, null, 2),
-        signature: parts[2],
-        now: Date.now(),
+        header,
+        payload,
+        signatureHex: sigHex,
       });
-    }, 150);
-    return () => clearTimeout(t);
-  }, [input]);
+    } catch {
+      setDecoded({
+        status: "invalid",
+        error: "Malformed Base64URL string.",
+      });
+    }
+  }, [token]);
 
   const expInfo = useMemo(() => {
-    if (decoded.status !== "valid") return null;
-    const exp = decoded.payload.exp;
-    const iat = decoded.payload.iat;
-    if (typeof exp !== "number") return { hasExp: false, expired: false, date: "", iatDate: typeof iat === "number" ? new Date(iat * 1000).toLocaleString() : "" };
-    const date = new Date(exp * 1000).toLocaleString();
-    return { hasExp: true, expired: exp * 1000 <= decoded.now, date, iatDate: typeof iat === "number" ? new Date(iat * 1000).toLocaleString() : "" };
+    if (decoded.status !== "valid" || typeof decoded.payload.exp !== "number") {
+      return null;
+    }
+    const expSec = decoded.payload.exp;
+    const expDate = new Date(expSec * 1000);
+    const now = new Date();
+    const isExpired = now.getTime() > expDate.getTime();
+    return {
+      expired: isExpired,
+      date: expDate.toLocaleString(),
+    };
   }, [decoded]);
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Parts</p>
-        <p className="text-text-primary font-mono">{input.trim() ? input.trim().split(".").length : "—"}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Algorithm:</span>
+        <span className="text-accent font-bold">
+          {decoded.status === "valid" ? String(decoded.header.alg || "none") : "—"}
+        </span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Status</p>
-        <p
-          className={`font-mono ${
-            decoded.status === "valid" ? "text-success" : decoded.status === "invalid" ? "text-error" : "text-text-muted"
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Type:</span>
+        <span className="text-text-primary">
+          {decoded.status === "valid" ? String(decoded.header.typ || "JWT") : "—"}
+        </span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Token Status:</span>
+        <span
+          className={`font-bold ${
+            decoded.status === "valid"
+              ? "text-success"
+              : decoded.status === "invalid"
+              ? "text-error"
+              : "text-text-muted"
           }`}
         >
-          {decoded.status === "valid" ? "valid" : decoded.status === "invalid" ? "invalid" : "—"}
-        </p>
+          {decoded.status === "valid"
+            ? "VALID FORMAT"
+            : decoded.status === "invalid"
+            ? "INVALID FORMAT"
+            : "EMPTY"}
+        </span>
       </div>
+      {expInfo && (
+        <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+          <span className="text-text-muted">Expiration:</span>
+          <span className={expInfo.expired ? "text-error font-bold" : "text-success font-bold"}>
+            {expInfo.expired ? "EXPIRED" : "ACTIVE"}
+          </span>
+        </div>
+      )}
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">JWT Decoder</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Paste a JWT to inspect its header and payload. Everything stays in your browser.
-            </p>
+    <ToolLayout toolId="jwt-decoder" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Token Input Area */}
+        <div className="space-y-2">
+          <div className="h-8 flex items-center justify-between text-xs">
+            <span className="font-semibold text-text-primary">Raw Encoded JWT</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setToken("")}
+                className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+              >
+                [Clear]
+              </button>
+              <CopyButton text={token} label="Copy Token" />
+            </div>
           </div>
-
-          <label className="mb-2 block text-sm font-medium text-text-secondary">Token (JWT)</label>
           <textarea
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature"
-            className="input-field min-h-[100px] resize-y font-mono text-xs sm:text-sm break-all"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            placeholder="Paste JWT string (header.payload.signature)..."
+            rows={4}
+            className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-y leading-relaxed"
+            spellCheck={false}
           />
-
-          {decoded.status === "invalid" && (
-            <p className="mt-3 text-sm text-error font-mono">✗ {decoded.error}</p>
-          )}
-
-          {decoded.status === "valid" && (
-            <>
-              <div className="mt-4 flex flex-wrap gap-2 text-xs font-mono">
-                {expInfo?.hasExp ? (
-                  expInfo.expired ? (
-                    <span className="rounded bg-error/10 px-2 py-1 text-error">EXPIRED · {expInfo.date}</span>
-                  ) : (
-                    <span className="rounded bg-success/10 px-2 py-1 text-success">VALID until {expInfo.date}</span>
-                  )
-                ) : (
-                  <span className="rounded bg-bg-page border border-border-subtle px-2 py-1 text-text-muted">no exp claim</span>
-                )}
-                {expInfo?.iatDate && (
-                  <span className="rounded bg-bg-page border border-border-subtle px-2 py-1 text-text-secondary">iat: {expInfo.iatDate}</span>
-                )}
-              </div>
-
-              <div className="mt-6 space-y-4">
-                <div>
-                  <span className="text-sm font-semibold text-accent">header</span>
-                  <pre className="output-field mt-1 overflow-x-auto p-3 text-xs">{decoded.header}</pre>
-                </div>
-                <div>
-                  <span className="text-sm font-semibold text-accent">payload</span>
-                  <pre className="output-field mt-1 overflow-x-auto p-3 text-xs">{decoded.payloadJson}</pre>
-                </div>
-                <div>
-                  <span className="text-sm font-semibold text-accent">signature</span>
-                  <code className="mt-1 block break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs text-text-primary">
-                    {decoded.signature}
-                  </code>
-                </div>
-              </div>
-            </>
-          )}
         </div>
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="jwt-decoder" stats={stats} />
-        </div>
+        {/* Error Notification */}
+        {decoded.status === "invalid" && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            {decoded.error}
+          </div>
+        )}
+
+        {/* Decoded Sections */}
+        {decoded.status === "valid" && (
+          <div className="pt-2 border-t border-border-subtle space-y-4">
+            {/* Expiry Pill */}
+            {expInfo && (
+              <div
+                className={`p-3 rounded-lg border text-xs flex items-center justify-between ${
+                  expInfo.expired
+                    ? "border-error/30 bg-error/10 text-error"
+                    : "border-success/30 bg-success/10 text-success"
+                }`}
+              >
+                <span className="font-bold">
+                  {expInfo.expired ? "✗ Token has Expired" : "✓ Token is Currently Active"}
+                </span>
+                <span>{expInfo.date}</span>
+              </div>
+            )}
+
+            {/* Header JSON */}
+            <div className="space-y-1.5">
+              <div className="h-8 flex items-center justify-between text-xs">
+                <span className="font-semibold text-accent">Decoded Header (Algorithm & Token Type)</span>
+                <CopyButton text={JSON.stringify(decoded.header, null, 2)} label="Copy Header" />
+              </div>
+              <pre className="p-3 rounded-lg border border-border-subtle bg-bg-page font-mono text-xs text-text-primary whitespace-pre-wrap break-all leading-relaxed">
+                {JSON.stringify(decoded.header, null, 2)}
+              </pre>
+            </div>
+
+            {/* Payload JSON */}
+            <div className="space-y-1.5">
+              <div className="h-8 flex items-center justify-between text-xs">
+                <span className="font-semibold text-cyan-300">Decoded Payload (Claims & Data)</span>
+                <CopyButton text={JSON.stringify(decoded.payload, null, 2)} label="Copy Payload" />
+              </div>
+              <pre className="p-3 rounded-lg border border-border-subtle bg-bg-page font-mono text-xs text-text-primary whitespace-pre-wrap break-all leading-relaxed">
+                {JSON.stringify(decoded.payload, null, 2)}
+              </pre>
+            </div>
+
+            {/* Signature Hex */}
+            <div className="space-y-1.5">
+              <div className="h-8 flex items-center justify-between text-xs">
+                <span className="font-semibold text-text-muted">Signature Hex Bytes</span>
+                <CopyButton text={decoded.signatureHex} label="Copy Signature" />
+              </div>
+              <div className="p-3 rounded-lg border border-border-subtle bg-bg-page font-mono text-xs text-text-secondary break-all">
+                {decoded.signatureHex || "(empty signature)"}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="jwt-decoder" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

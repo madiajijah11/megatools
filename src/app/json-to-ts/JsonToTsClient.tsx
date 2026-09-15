@@ -1,9 +1,11 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+
+
+
 import CopyButton from "@/components/CopyButton";
 
 function capitalize(s: string): string {
@@ -115,7 +117,6 @@ export default function JsonToTsClient() {
   const [jsonInput, setJsonInput] = useState(SAMPLE_JSON);
   const [rootName, setRootName] = useState("UserResponse");
   const [outputMode, setOutputMode] = useState<"interface" | "type" | "zod">("interface");
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const result = useMemo(() => {
     if (!jsonInput.trim()) return { code: "// Paste JSON to generate types", error: null };
@@ -157,27 +158,9 @@ export default function JsonToTsClient() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">JSON to TypeScript & Zod Schema</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Infer strong TypeScript interfaces, type definitions, or Zod validation schemas from JSON data.
-            </p>
-          </div>
-
-          {/* Controls Bar */}
+    <ToolLayout toolId="json-to-ts" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Controls Bar */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-4 p-3 bg-bg-page rounded-lg border border-border-subtle">
             <div className="flex items-center gap-2">
               <label className="text-xs font-mono text-text-muted">Root Name:</label>
@@ -260,17 +243,7 @@ export default function JsonToTsClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="json-to-ts" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="json-to-ts" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

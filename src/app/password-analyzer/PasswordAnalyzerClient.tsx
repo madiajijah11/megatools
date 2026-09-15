@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 function calculateEntropy(pwd: string) {
@@ -102,8 +101,6 @@ function calculateEntropy(pwd: string) {
 export default function PasswordAnalyzerClient() {
   const [password, setPassword] = useState("Tr0ub4dor&3_secure!");
   const [showPassword, setShowPassword] = useState(true);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const analysis = useMemo(() => calculateEntropy(password), [password]);
 
   const getScoreColor = () => {
@@ -129,29 +126,10 @@ export default function PasswordAnalyzerClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Password Entropy & Strength Analyzer</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Evaluate password complexity, Shannon entropy bits, and brute-force cracking resistance.
-            </p>
-          </div>
-
-          {/* Password Input Box */}
+return (
+    <ToolLayout toolId="password-analyzer" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Password Input Box */}
           <div className="relative mb-6">
             <div className="flex items-center justify-between mb-2">
               <label className="text-xs font-mono uppercase tracking-wider text-text-secondary">
@@ -261,17 +239,7 @@ export default function PasswordAnalyzerClient() {
               </ul>
             </div>
           )}
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="password-analyzer" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="password-analyzer" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

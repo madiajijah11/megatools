@@ -1,287 +1,301 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
-import Link from "next/link";
 import { PDFDocument } from "pdf-lib";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 
-function parsePageRanges(rangeStr: string, maxPages: number): number[] {
-  if (!rangeStr.trim()) return [];
-  const pagesSet = new Set<number>();
-  const parts = rangeStr.split(",").map((s) => s.trim()).filter(Boolean);
+function parsePageRanges(input: string, totalPages: number): number[] {
+  const pages = new Set<number>();
+  const parts = input.split(",").map((s) => s.trim()).filter(Boolean);
 
   for (const part of parts) {
     if (part.includes("-")) {
       const [startStr, endStr] = part.split("-").map((s) => s.trim());
       const start = parseInt(startStr, 10);
       const end = parseInt(endStr, 10);
-      if (!isNaN(start) && !isNaN(end) && start <= end) {
-        for (let i = Math.max(1, start); i <= Math.min(maxPages, end); i++) {
-          pagesSet.add(i - 1);
+      if (!isNaN(start) && !isNaN(end)) {
+        const from = Math.max(1, Math.min(start, end));
+        const to = Math.min(totalPages, Math.max(start, end));
+        for (let p = from; p <= to; p++) {
+          pages.add(p);
         }
       }
     } else {
-      const p = parseInt(part, 10);
-      if (!isNaN(p) && p >= 1 && p <= maxPages) {
-        pagesSet.add(p - 1);
+      const page = parseInt(part, 10);
+      if (!isNaN(page) && page >= 1 && page <= totalPages) {
+        pages.add(page);
       }
     }
   }
 
-  return Array.from(pagesSet).sort((a, b) => a - b);
+  return Array.from(pages).sort((a, b) => a - b);
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
 }
 
 export default function PdfSplitClient() {
   const [file, setFile] = useState<File | null>(null);
   const [buffer, setBuffer] = useState<ArrayBuffer | null>(null);
   const [pageCount, setPageCount] = useState<number>(0);
-  const [rangeInput, setRangeInput] = useState("");
-  const [splitting, setSplitting] = useState(false);
+  const [rangeInput, setRangeInput] = useState<string>("1");
+  const [isSplitting, setIsSplitting] = useState<boolean>(false);
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
-  const [dragOver, setDragOver] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [downloadSize, setDownloadSize] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+
+  const selectedPages = useMemo(() => {
+    if (pageCount === 0) return [];
+    return parsePageRanges(rangeInput, pageCount);
+  }, [rangeInput, pageCount]);
 
   const handleFile = useCallback(async (selectedFile: File) => {
+    if (selectedFile.type !== "application/pdf" && !selectedFile.name.endsWith(".pdf")) {
+      setError("Please select a valid .pdf document.");
+      return;
+    }
     setError(null);
     setDownloadUrl(null);
 
-    if (selectedFile.type !== "application/pdf" && !selectedFile.name.toLowerCase().endsWith(".pdf")) {
-      setError("Please select a valid .pdf file.");
-      return;
-    }
-
     try {
-      const buf = await selectedFile.arrayBuffer();
-      const doc = await PDFDocument.load(buf, { ignoreEncryption: true });
-      const count = doc.getPageCount();
+      const arrayBuf = await selectedFile.arrayBuffer();
+      const pdfDoc = await PDFDocument.load(arrayBuf, { ignoreEncryption: true });
+      const count = pdfDoc.getPageCount();
+
       setFile(selectedFile);
-      setBuffer(buf);
+      setBuffer(arrayBuf);
       setPageCount(count);
-      setRangeInput(`1-${Math.min(count, 3)}`);
+      setRangeInput(count >= 2 ? "1-2" : "1");
     } catch (err) {
       setError(`Failed to read PDF: ${(err as Error).message}`);
     }
   }, []);
 
-  const parsedIndices = useMemo(() => {
-    return parsePageRanges(rangeInput, pageCount);
-  }, [rangeInput, pageCount]);
-
   const handleSplit = async () => {
-    if (!buffer || parsedIndices.length === 0) {
-      setError("No valid pages selected.");
+    if (!buffer || selectedPages.length === 0) {
+      setError("No valid pages selected for extraction.");
       return;
     }
-    setSplitting(true);
+
+    setIsSplitting(true);
     setError(null);
 
     try {
       const srcDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
-      const outDoc = await PDFDocument.create();
-      const copiedPages = await outDoc.copyPages(srcDoc, parsedIndices);
-      copiedPages.forEach((p) => outDoc.addPage(p));
+      const newDoc = await PDFDocument.create();
 
-      const pdfBytes = await outDoc.save();
-      const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
+      const pageIndices = selectedPages.map((p) => p - 1);
+      const copiedPages = await newDoc.copyPages(srcDoc, pageIndices);
+      copiedPages.forEach((page) => newDoc.addPage(page));
+
+      const pdfBytes = await newDoc.save();
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
       setDownloadUrl(url);
+      setDownloadSize(blob.size);
     } catch (err) {
       setError(`Split failed: ${(err as Error).message}`);
     } finally {
-      setSplitting(false);
+      setIsSplitting(false);
     }
   };
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Total Pages</p>
-        <p className="text-text-primary font-mono">{pageCount || "—"}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Total Pages:</span>
+        <span className="text-accent font-bold">{pageCount || "—"}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Selected</p>
-        <p className="text-text-primary font-mono">
-          {parsedIndices.length ? `${parsedIndices.length} pgs` : "—"}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Extracted Pages:</span>
+        <span className="text-success font-bold">{selectedPages.length}</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Source Size:</span>
+        <span className="text-text-primary">{file ? formatBytes(file.size) : "—"}</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Split PDF</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Extract pages or custom ranges from a PDF document.
-            </p>
-          </div>
-
-          {/* Upload Dropzone */}
-          {!file ? (
-            <label
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(true);
-              }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setDragOver(false);
-                const f = e.dataTransfer.files?.[0];
+    <ToolLayout toolId="pdf-split" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-5 font-mono">
+        {/* Upload Dropzone */}
+        {!file ? (
+          <label
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              const dropped = e.dataTransfer.files[0];
+              if (dropped) handleFile(dropped);
+            }}
+            className={`flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+              dragOver
+                ? "border-accent bg-accent/5"
+                : "border-border-subtle hover:border-accent/40 bg-bg-page"
+            }`}
+          >
+            <span className="text-2xl mb-2">✂️</span>
+            <span className="text-sm font-semibold text-text-primary">
+              Drop PDF document here to split
+            </span>
+            <span className="text-xs text-text-muted mt-1">
+              Extract specific page ranges locally in your browser memory.
+            </span>
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
                 if (f) handleFile(f);
               }}
-              className={`flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded border border-dashed px-6 py-8 text-center transition-colors ${
-                dragOver
-                  ? "border-accent bg-accent-soft"
-                  : "border-border-subtle bg-bg-page hover:border-accent"
-              }`}
+              className="hidden"
+            />
+          </label>
+        ) : (
+          <div className="p-3 rounded-lg border border-border-subtle bg-bg-page flex items-center justify-between text-xs">
+            <div className="flex items-center gap-3 truncate">
+              <span className="text-base">📄</span>
+              <div className="truncate">
+                <span className="font-bold text-text-primary block truncate">{file.name}</span>
+                <span className="text-text-muted text-[10px]">
+                  {pageCount} total pages · {formatBytes(file.size)}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => {
+                setFile(null);
+                setBuffer(null);
+                setPageCount(0);
+                setDownloadUrl(null);
+              }}
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle shrink-0"
             >
+              [Change Document]
+            </button>
+          </div>
+        )}
+
+        {/* Error Notification */}
+        {error && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            {error}
+          </div>
+        )}
+
+        {/* Page Range Extraction Input */}
+        {file && pageCount > 0 && (
+          <div className="pt-2 border-t border-border-subtle space-y-3">
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-text-primary">Page Ranges to Extract</span>
+                <span className="text-text-muted">
+                  Valid page range: 1 to {pageCount}
+                </span>
+              </div>
               <input
-                type="file"
-                accept="application/pdf"
-                className="hidden"
+                type="text"
+                value={rangeInput}
                 onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleFile(f);
+                  setRangeInput(e.target.value);
+                  setDownloadUrl(null);
                 }}
+                placeholder="e.g. 1-3, 5, 8-10"
+                className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
               />
-              <span className="font-mono text-sm text-text-secondary">
-                $ drop a .pdf file here -- or click to select
-              </span>
-              <span className="text-xs text-text-muted">100% in-browser processing</span>
-            </label>
-          ) : (
-            <div className="space-y-6">
-              {/* Selected File Card */}
-              <div className="flex items-center justify-between rounded border border-border-subtle bg-bg-page p-4">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-mono text-sm font-semibold text-text-primary">
-                    {file.name}
-                  </p>
-                  <p className="text-xs text-text-muted mt-1">
-                    {pageCount} total pages · {(file.size / 1024).toFixed(1)} KB
-                  </p>
-                </div>
+            </div>
+
+            {/* Quick Range Presets */}
+            <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              <span className="text-text-muted text-[11px]">Presets:</span>
+              <button
+                type="button"
+                onClick={() => setRangeInput("1")}
+                className="px-2 py-0.5 rounded border border-border-subtle bg-bg-page text-text-secondary hover:border-accent hover:text-accent"
+              >
+                Page 1
+              </button>
+              {pageCount >= 2 && (
                 <button
-                  onClick={() => {
-                    setFile(null);
-                    setBuffer(null);
-                    setPageCount(0);
-                    setDownloadUrl(null);
-                  }}
-                  className="btn-secondary text-xs shrink-0"
+                  type="button"
+                  onClick={() => setRangeInput(`1-${Math.min(pageCount, 5)}`)}
+                  className="px-2 py-0.5 rounded border border-border-subtle bg-bg-page text-text-secondary hover:border-accent hover:text-accent"
                 >
-                  Change File
+                  First {Math.min(pageCount, 5)} Pages
                 </button>
-              </div>
-
-              {/* Range Input */}
-              <div>
-                <label className="mb-2 block text-sm font-medium text-text-secondary">
-                  Page range to extract
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={rangeInput}
-                    onChange={(e) => {
-                      setRangeInput(e.target.value);
-                      setDownloadUrl(null);
-                    }}
-                    placeholder="e.g. 1-3, 5, 8-10"
-                    className="input-field flex-1 font-mono"
-                  />
-                  <button
-                    onClick={() => {
-                      setRangeInput(`1-${pageCount}`);
-                      setDownloadUrl(null);
-                    }}
-                    className="btn-secondary text-xs shrink-0"
-                  >
-                    All Pages
-                  </button>
-                </div>
-                <p className="mt-1 text-xs text-text-muted">
-                  Use commas and hyphens: <span className="text-accent font-mono">1-3, 5, 8</span>{" "}
-                  (Valid page numbers: 1 to {pageCount})
-                </p>
-              </div>
-
-              {/* Quick Preview of Parsed Pages */}
-              <div className="rounded border border-border-subtle bg-bg-page p-3 text-xs">
-                <span className="text-text-muted font-semibold">Selected Pages: </span>
-                {parsedIndices.length > 0 ? (
-                  <span className="font-mono text-accent">
-                    {parsedIndices.map((i) => i + 1).join(", ")} ({parsedIndices.length} pages total)
-                  </span>
-                ) : (
-                  <span className="text-error font-mono">No valid pages in range</span>
-                )}
-              </div>
-
-              <div className="flex justify-end">
+              )}
+              {pageCount >= 2 && (
                 <button
-                  onClick={handleSplit}
-                  disabled={splitting || parsedIndices.length === 0}
-                  className="btn-primary"
+                  type="button"
+                  onClick={() => setRangeInput(String(pageCount))}
+                  className="px-2 py-0.5 rounded border border-border-subtle bg-bg-page text-text-secondary hover:border-accent hover:text-accent"
                 >
-                  {splitting ? "Extracting..." : `$ extract ${parsedIndices.length} pages`}
+                  Last Page ({pageCount})
                 </button>
-              </div>
-
-              {/* Download link */}
-              {downloadUrl && (
-                <div className="mt-4 rounded border border-accent/40 bg-accent-soft p-4 text-center">
-                  <p className="text-sm font-semibold text-accent mb-2">
-                    ✓ PDF pages extracted ({parsedIndices.length} pages)
-                  </p>
-                  <a
-                    href={downloadUrl}
-                    download={`extracted-${file.name}`}
-                    className="btn-primary inline-flex items-center gap-2"
-                  >
-                    Download extracted.pdf
-                  </a>
-                </div>
               )}
             </div>
-          )}
 
-          {error && <p className="mt-4 text-sm text-error text-center">{error}</p>}
-        </div>
+            {/* Active Selected Pages Summary */}
+            <div className="p-3 rounded-lg border border-border-subtle bg-bg-page text-xs">
+              <span className="text-text-muted block mb-1 text-[11px]">Selected Pages for Extraction:</span>
+              {selectedPages.length > 0 ? (
+                <div className="flex flex-wrap gap-1">
+                  {selectedPages.map((p) => (
+                    <span
+                      key={p}
+                      className="px-2 py-0.5 rounded bg-accent/15 text-accent border border-accent/30 font-bold text-xs"
+                    >
+                      Page {p}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-error text-xs">No valid pages in range.</span>
+              )}
+            </div>
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="pdf-split" stats={stats} />
-        </div>
+            {/* Split Button */}
+            <button
+              type="button"
+              onClick={handleSplit}
+              disabled={isSplitting || selectedPages.length === 0}
+              className="w-full py-2.5 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              {isSplitting ? "Extracting Pages..." : `Extract ${selectedPages.length} Pages`}
+            </button>
+          </div>
+        )}
+
+        {/* Download Button */}
+        {downloadUrl && (
+          <div className="pt-3 border-t border-border-subtle space-y-2">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-success">
+                ✓ Extracted PDF Ready ({formatBytes(downloadSize)})
+              </span>
+              <a
+                href={downloadUrl}
+                download={`extracted-${file?.name || "pages.pdf"}`}
+                className="px-4 py-1.5 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors"
+              >
+                Download Extracted PDF
+              </a>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="pdf-split" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

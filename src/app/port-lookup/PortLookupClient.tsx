@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
 interface PortInfo {
@@ -300,8 +298,7 @@ export default function PortLookupClient() {
   const [query, setQuery] = useState("");
   const [protocolFilter, setProtocolFilter] = useState<string>("ALL");
   const [riskFilter, setRiskFilter] = useState<string>("ALL");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
+  
   const filteredPorts = useMemo(() => {
     return PORTS_DATA.filter((p) => {
       const matchQuery =
@@ -332,25 +329,8 @@ export default function PortLookupClient() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Common Ports Reference</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Inspect standard & security-sensitive TCP/UDP ports, vulnerabilities, and hardening tips.
-            </p>
-          </div>
+    <ToolLayout toolId="port-lookup" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
 
           {/* Search bar */}
           <div className="mb-6">
@@ -474,26 +454,7 @@ export default function PortLookupClient() {
               </p>
             )}
           </div>
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="port-lookup" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="port-lookup" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

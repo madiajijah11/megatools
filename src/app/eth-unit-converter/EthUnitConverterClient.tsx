@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 const UNITS = [
@@ -46,9 +45,6 @@ export default function EthUnitConverterClient() {
   const [gasLimit, setGasLimit] = useState<number>(21000);
   const [gasPriceGwei, setGasPriceGwei] = useState<number>(25);
   const [ethPriceUsd, setEthPriceUsd] = useState<number>(2700);
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   // Compute all units based on input
   const values = useMemo(() => {
     const activeUnitObj = UNITS.find((u) => u.key === activeUnit) || UNITS[3];
@@ -97,28 +93,10 @@ export default function EthUnitConverterClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Ethereum Unit & Gas Fee Calculator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              High-precision BigInt converter between Wei, Gwei, and Ether with EIP-1559 gas fee estimation.
-            </p>
-          </div>
-
-          {/* Unit Converter Section */}
+return (
+    <ToolLayout toolId="eth-unit-converter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Unit Converter Section */}
           <div className="mb-8 space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle pb-3">
               <span className="text-xs font-mono text-text-secondary font-bold uppercase">
@@ -279,17 +257,7 @@ export default function EthUnitConverterClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="eth-unit-converter" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="eth-unit-converter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

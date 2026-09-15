@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 import { toChecksumAddress, keccak256Hex } from "@/lib/keccak";
 
@@ -16,8 +15,6 @@ const SAMPLE_ADDRESSES = [
 
 export default function Eip55ChecksumClient() {
   const [addressInput, setAddressInput] = useState<string>(SAMPLE_ADDRESSES[0]);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const analysis = useMemo(() => {
     const raw = addressInput.trim();
     if (!raw) {
@@ -107,28 +104,10 @@ export default function Eip55ChecksumClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">EIP-55 Address Checksum & Validator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Verify EVM wallet addresses and convert lowercase strings to official EIP-55 checksum format.
-            </p>
-          </div>
-
-          {/* Sample Presets */}
+return (
+    <ToolLayout toolId="eip55-checksum" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Sample Presets */}
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span className="text-xs font-mono text-text-muted">Sample Wallets:</span>
             {SAMPLE_ADDRESSES.map((addr, idx) => (
@@ -244,17 +223,7 @@ export default function Eip55ChecksumClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="eip55-checksum" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="eip55-checksum" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

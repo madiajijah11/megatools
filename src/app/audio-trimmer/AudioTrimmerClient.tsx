@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 
 // Encode AudioBuffer to 16-bit PCM WAV Blob
 function audioBufferToWav(buffer: AudioBuffer): Blob {
@@ -76,8 +75,6 @@ export default function AudioTrimmerClient() {
   const [exporting, setExporting] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
@@ -264,29 +261,10 @@ export default function AudioTrimmerClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Audio Trimmer &amp; Cutter</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Trim and cut audio tracks with interactive waveform visualization in your browser.
-            </p>
-          </div>
-
-          {/* Upload Dropzone */}
+return (
+    <ToolLayout toolId="audio-trimmer" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Upload Dropzone */}
           {!file ? (
             <label
               onDragOver={(e) => {
@@ -435,26 +413,7 @@ export default function AudioTrimmerClient() {
           )}
 
           {error && <p className="mt-4 text-xs text-error font-mono text-center">{error}</p>}
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="audio-trimmer" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="audio-trimmer" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

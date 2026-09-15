@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 function gcd(a: number, b: number): number {
@@ -28,8 +27,6 @@ export default function AspectRatioCalculatorClient() {
 
   // Scaling tool
   const [newWidth, setNewWidth] = useState<number>(1280);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const { ratioStr, decimalRatio, megapixels, totalPixels } = useMemo(() => {
     const w = Math.max(1, width || 1);
     const h = Math.max(1, height || 1);
@@ -66,29 +63,10 @@ export default function AspectRatioCalculatorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Aspect Ratio & Resolution Calculator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Calculate exact GCD aspect ratios, resize pixel dimensions proportionally, and inspect video resolutions.
-            </p>
-          </div>
-
-          {/* Quick Presets */}
+return (
+    <ToolLayout toolId="aspect-ratio-calculator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Quick Presets */}
           <div className="mb-6">
             <label className="text-xs font-mono text-text-secondary block mb-2 font-bold">
               Standard Resolution Presets:
@@ -230,25 +208,7 @@ export default function AspectRatioCalculatorClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="aspect-ratio-calculator" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="aspect-ratio-calculator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

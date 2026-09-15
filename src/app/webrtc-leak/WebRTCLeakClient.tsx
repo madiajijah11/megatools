@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useEffect, useCallback, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface IceCandidateItem {
@@ -223,59 +222,10 @@ export default function WebRTCLeakClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* Top Breadcrumb */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-text-muted hover:text-accent transition-colors"
-        >
-          <span>←</span> [cd .. / home]
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="lg:hidden text-xs font-mono px-2.5 py-1 rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary"
-        >
-          [?] Tool Info
-        </button>
-      </div>
-
-      {/* Hero Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-3">
-          <span className="text-accent">$</span>
-          <span>megatools --webrtc-leak-test --stun-probe</span>
-          <span className="animate-pulse text-accent">▊</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-          WebRTC IP Leak & <span className="gradient-text">VPN Shield Tester</span>
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Detect if your real public or private IP address leaks through WebRTC STUN candidate requests while using a VPN or proxy.
-        </p>
-
-        {/* Action button */}
-        <div className="mt-4 flex items-center gap-3">
-          <button
-            onClick={() => {
-              probeWebRTC();
-              fetchHttpIp();
-            }}
-            disabled={probing}
-            className="text-xs font-mono px-3 py-1.5 rounded border border-accent/40 bg-accent-soft text-accent hover:bg-accent hover:text-bg-page font-bold transition-colors cursor-pointer disabled:opacity-50"
-          >
-            {probing ? "Probing STUN..." : "↻ Re-Run WebRTC Diagnostic"}
-          </button>
-        </div>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left 2 Cols: Main Inspection Panel */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Status Alert Banner */}
+return (
+    <ToolLayout toolId="webrtc-leak" stats={stats}>
+      <div className="space-y-4 font-mono">
+        {/* Status Alert Banner */}
           <div className={"p-5 rounded-lg border font-mono " + leakAnalysis.color}>
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
@@ -443,18 +393,7 @@ export default function WebRTCLeakClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right 1 Col: InfoPanel Desktop */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="webrtc-leak" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="webrtc-leak" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

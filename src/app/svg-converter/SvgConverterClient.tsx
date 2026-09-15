@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 
 const SAMPLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
   <defs>
@@ -27,8 +26,6 @@ export default function SvgConverterClient() {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dimensions, setDimensions] = useState({ width: 400, height: 400 });
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -146,29 +143,10 @@ export default function SvgConverterClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">SVG to PNG / JPG / WebP Converter</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Rasterize and upscale vector SVG files to high-resolution bitmap images in your browser.
-            </p>
-          </div>
-
-          {/* Controls Bar */}
+return (
+    <ToolLayout toolId="svg-converter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Controls Bar */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 bg-bg-page rounded-lg border border-border-subtle">
             {/* Resolution Scale */}
             <div className="flex items-center gap-1">
@@ -274,17 +252,7 @@ export default function SvgConverterClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="svg-converter" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="svg-converter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

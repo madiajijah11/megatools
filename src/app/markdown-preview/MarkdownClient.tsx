@@ -1,252 +1,194 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
-import { compile, run } from "@mdx-js/mdx";
-import type { RunOptions } from "@mdx-js/mdx";
+import { useState, useMemo, useEffect, ComponentType } from "react";
+import ToolLayout from "@/components/ToolLayout";
+import CopyButton from "@/components/CopyButton";
 import * as runtime from "react/jsx-runtime";
+import { evaluate } from "@mdx-js/mdx";
 
-function parseMarkdown(text: string): string {
-  let html = text;
-
-  // Code blocks (``` ... ```)
-  html = html.replace(/```(\w*)\n([\s\S]*?)```/g, (_match, _lang, code) => {
-    return `<pre class="rounded-lg bg-bg-page border border-border-subtle p-4 overflow-x-auto"><code class="text-sm font-mono">${escapeHtml(code.trim())}</code></pre>`;
-  });
-
-  // Inline code
-  html = html.replace(/`([^`]+)`/g, '<code class="rounded bg-bg-page px-1.5 py-0.5 text-sm font-mono text-accent">$1</code>');
-
-  // Strip img and script tags entirely (prevent XSS)
-  html = html.replace(/<img[^>]*>/gi, "");
-  html = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
-  html = html.replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, "");
-
-  // Headers
-  html = html.replace(/^### (.+)$/gm, '<h3 class="text-lg font-bold text-text-primary mt-4 mb-2">$1</h3>');
-  html = html.replace(/^## (.+)$/gm, '<h2 class="text-xl font-bold text-text-primary mt-5 mb-2">$1</h2>');
-  html = html.replace(/^# (.+)$/gm, '<h1 class="text-2xl font-bold text-text-primary mt-6 mb-3">$1</h1>');
-
-  // Bold and italic
-  html = html.replace(/\*\*\*(.+?)\*\*\*/g, "<strong><em>$1</em></strong>");
-  html = html.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
-  html = html.replace(/\*(.+?)\*/g, "<em>$1</em>");
-
-  // Links
-  html = html.replace(
-    /\[([^\]]+)\]\(([^)]+)\)/g,
-    '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-accent underline hover:text-accent-hover transition-colors">$1</a>'
-  );
-
-  // Unordered lists
-  html = html.replace(/^[-*] (.+)$/gm, '<li class="ml-4 list-disc">$1</li>');
-  html = html.replace(/(<li[^>]*>.*<\/li>\n?)+/g, '<ul class="my-2 space-y-1">$&</ul>');
-
-  // Ordered lists
-  html = html.replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>');
-
-  // Horizontal rule
-  html = html.replace(/^---$/gm, '<hr class="my-4 border-border-subtle" />');
-
-  // Paragraphs: wrap remaining lines
-  html = html.replace(/^(?!<[a-z])((?!^\s*$).+)$/gm, '<p class="my-1">$1</p>');
-
-  // Line breaks
-  html = html.replace(/\n\n/g, '<br />');
-
-  return html;
-}
-
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+const DEFAULT_MARKDOWN = "# Markdown Live Studio\n\n" +
+  "MegaTools **Markdown & MDX Previewer** executes entirely in your browser with zero data leakage.\n\n" +
+  "## Features\n" +
+  "- Full GitHub Flavored Markdown (GFM)\n" +
+  "- Instant HTML / MDX AST compilation\n" +
+  "- Clean monospace terminal UI\n\n" +
+  "```typescript\n" +
+  "interface ToolConfig {\n" +
+  "  id: string;\n" +
+  "  clientOnly: boolean;\n" +
+  "  zeroLeakage: true;\n" +
+  "}\n" +
+  "```\n\n" +
+  "> \"Simplicity is prerequisite for reliability.\" — Edsger W. Dijkstra\n";
 
 function sanitizeHtml(html: string): string {
-  // Strip dangerous event handler attributes (onerror, onload, onclick, etc.)
-  return html.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "");
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/\son\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, 'href="#"');
 }
 
-async function parseMDX(text: string) {
+async function parseMDX(
+  code: string
+): Promise<{ Content: ComponentType | null; error: string | null }> {
   try {
-    const code = String(await compile(text, { outputFormat: "function-body" }));
-    const { default: Content } = await run(code, runtime as unknown as RunOptions);
-    return { Content, error: null };
+    const cleanCode = sanitizeHtml(code);
+    const exports = await evaluate(cleanCode, {
+      ...runtime,
+      baseUrl: typeof window !== "undefined" ? window.location.href : undefined,
+    });
+    return { Content: exports.default, error: null };
   } catch (err) {
     return { Content: null, error: (err as Error).message };
   }
 }
 
 export default function MarkdownClient() {
-  const [markdown, setMarkdown] = useState(
-    `# Hello World\n\nThis is a **bold** and *italic* demo.\n\n## Features\n\n- Headers\n- **Bold** and *italic*\n- [Links](https://example.com)\n- \`Inline code\` and code blocks\n\n\`\`\`js\nconsole.log("Hello!");\n\`\`\`\n\n---\n\nA [link](https://example.com) in a paragraph.`
-  );
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [mode, setMode] = useState<"md" | "mdx">("md");
-  const [MDXContent, setMDXContent] = useState<React.ComponentType<Record<string, never>> | null>(null);
+  const [markdown, setMarkdown] = useState(DEFAULT_MARKDOWN);
+  const [viewMode, setViewMode] = useState<"split" | "edit" | "preview">("split");
+  const [MDXContent, setMDXContent] = useState<ComponentType | null>(null);
   const [mdxError, setMdxError] = useState<string | null>(null);
 
-  // Parse MDX when mode is MDX
-  useMemo(() => {
-    if (mode === "mdx") {
+  useEffect(() => {
+    let active = true;
+    if (markdown.trim()) {
       parseMDX(markdown).then(({ Content, error }) => {
-        setMDXContent(Content ? () => Content : null);
+        if (!active) return;
+        setMDXContent(() => Content);
         setMdxError(error);
       });
+    } else {
+      setMDXContent(null);
+      setMdxError(null);
     }
-  }, [markdown, mode]);
+    return () => {
+      active = false;
+    };
+  }, [markdown]);
 
-  const html = useMemo(() => sanitizeHtml(parseMarkdown(markdown)), [markdown]);
   const charCount = markdown.length;
-  const wordCount = markdown.trim() ? markdown.trim().split(/\s+/).length : 0;
-  const lineCount = markdown ? markdown.split("\n").length : 0;
-  const readTime = Math.max(1, Math.ceil(wordCount / 200));
+  const wordCount = useMemo(() => {
+    return markdown.trim() ? markdown.trim().split(/\s+/).length : 0;
+  }, [markdown]);
+  const lineCount = useMemo(() => {
+    return markdown ? markdown.split("\n").length : 0;
+  }, [markdown]);
+  const readTimeMin = useMemo(() => {
+    return Math.max(1, Math.ceil(wordCount / 200));
+  }, [wordCount]);
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Characters</p>
-        <p className="text-text-primary font-mono">{charCount}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Characters:</span>
+        <span className="text-accent font-bold">{charCount}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Words</p>
-        <p className="text-text-primary font-mono">{wordCount}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Words:</span>
+        <span className="text-text-primary">{wordCount}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Lines</p>
-        <p className="text-text-primary font-mono">{lineCount}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Lines:</span>
+        <span className="text-text-primary">{lineCount}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Read Time</p>
-        <p className="text-text-primary font-mono">{readTime} min</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Read Time:</span>
+        <span className="text-success font-bold">~{readTimeMin} min</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../ 
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Markdown Preview</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Write Markdown and see the rendered HTML preview side by side.
-            </p>
-          </div>
-
-          {/* Mode Toggle */}
-          <div className="mb-4 flex justify-center gap-2">
+    <ToolLayout toolId="markdown-preview" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* View Mode Bar */}
+        <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-1.5 p-1 bg-bg-page rounded-lg border border-border-subtle text-xs">
             <button
-              onClick={() => setMode("md")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                mode === "md"
-                  ? "bg-accent text-white"
-                  : "bg-bg-page text-text-secondary hover:bg-accent-soft"
+              onClick={() => setViewMode("split")}
+              className={`px-3 py-1 rounded font-bold transition-colors ${
+                viewMode === "split" ? "bg-accent text-bg-page" : "text-text-secondary hover:text-text-primary"
               }`}
             >
-              .md (Markdown)
+              Split View
             </button>
             <button
-              onClick={() => setMode("mdx")}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                mode === "mdx"
-                  ? "bg-accent text-white"
-                  : "bg-bg-page text-text-secondary hover:bg-accent-soft"
+              onClick={() => setViewMode("edit")}
+              className={`px-3 py-1 rounded font-bold transition-colors ${
+                viewMode === "edit" ? "bg-accent text-bg-page" : "text-text-secondary hover:text-text-primary"
               }`}
             >
-              .mdx (MDX)
+              Editor Only
+            </button>
+            <button
+              onClick={() => setViewMode("preview")}
+              className={`px-3 py-1 rounded font-bold transition-colors ${
+                viewMode === "preview" ? "bg-accent text-bg-page" : "text-text-secondary hover:text-text-primary"
+              }`}
+            >
+              Preview Only
             </button>
           </div>
 
-          {/* Editor + Preview */}
-          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-            {/* Editor */}
-            <div>
-              <div className="h-8 mb-2 flex items-center justify-between">
-                <label className="text-sm font-medium text-text-secondary">
-                  {mode === "md" ? "Markdown" : "MDX"}
-                </label>
-                <span className="text-xs text-text-muted">
-                  {charCount} chars · {wordCount} words
-                </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setMarkdown("")}
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+            >
+              [Clear]
+            </button>
+            <CopyButton text={markdown} label="Copy MD" />
+          </div>
+        </div>
+
+        {/* Content View Grid */}
+        <div
+          className={`grid gap-4 ${
+            viewMode === "split" ? "grid-cols-1 lg:grid-cols-2" : "grid-cols-1"
+          }`}
+        >
+          {/* Editor */}
+          {(viewMode === "split" || viewMode === "edit") && (
+            <div className="space-y-2">
+              <div className="h-8 flex items-center justify-between text-xs">
+                <span className="font-semibold text-text-primary">Markdown Source</span>
               </div>
               <textarea
                 value={markdown}
                 onChange={(e) => setMarkdown(e.target.value)}
-                placeholder="Write your markdown here..."
-                className="input-field min-h-[260px] sm:min-h-[320px] md:min-h-[32rem] resize-y font-mono text-sm"
+                placeholder="Write markdown or MDX code here..."
+                rows={16}
+                className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-y leading-relaxed"
                 spellCheck={false}
               />
             </div>
+          )}
 
-            {/* Preview */}
-            <div>
-              <div className="h-8 mb-2 flex items-center justify-between">
-                <label className="text-sm font-medium text-text-secondary">
-                  Preview
-                </label>
+          {/* Preview */}
+          {(viewMode === "split" || viewMode === "preview") && (
+            <div className="space-y-2">
+              <div className="h-8 flex items-center justify-between text-xs">
+                <span className="font-semibold text-text-primary">Compiled Preview</span>
               </div>
-              <div className="min-h-[260px] sm:min-h-[320px] md:min-h-[32rem] overflow-y-auto rounded-xl border border-border-subtle bg-bg-page p-4 text-sm text-text-primary leading-relaxed break-words">
-                {markdown.trim() ? (
-                  mode === "md" ? (
-                    <div dangerouslySetInnerHTML={{ __html: html }} />
-                  ) : mdxError ? (
-                    <div className="text-error">
-                      <p className="font-semibold mb-2">MDX Parse Error:</p>
-                      <pre className="text-xs bg-bg-card p-3 rounded border border-border-subtle overflow-x-auto">
-                        {mdxError}
-                      </pre>
-                    </div>
-                  ) : MDXContent ? (
-                    <div className="mdx-preview"><MDXContent /></div>
-                  ) : (
-                    <p className="text-text-muted animate-pulse-soft">
-                      Parsing MDX...
-                    </p>
-                  )
+              <div className="rounded-lg border border-border-subtle bg-bg-page p-4 min-h-[360px] max-h-[500px] overflow-y-auto prose prose-invert prose-green text-xs leading-relaxed max-w-none">
+                {MDXContent ? (
+                  <MDXContent />
+                ) : mdxError ? (
+                  <div className="text-error font-mono">
+                    <p className="font-bold mb-1">MDX Compile Error:</p>
+                    <pre className="text-[11px] whitespace-pre-wrap bg-error/10 p-2 rounded border border-error/30">
+                      {mdxError}
+                    </pre>
+                  </div>
                 ) : (
-                  <p className="text-text-muted">
-                    Preview will appear here...
-                  </p>
+                  <p className="text-text-muted italic">Nothing to preview.</p>
                 )}
               </div>
             </div>
-          </div>
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="markdown-preview" stats={stats} />
+          )}
         </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="markdown-preview" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

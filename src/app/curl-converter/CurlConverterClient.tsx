@@ -1,9 +1,11 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+
+
+
 import CopyButton from "@/components/CopyButton";
 
 interface ParsedCurl {
@@ -275,7 +277,6 @@ const SAMPLE_CURL = `curl -X POST https://api.example.com/v1/users \\
 export default function CurlConverterClient() {
   const [curlInput, setCurlInput] = useState(SAMPLE_CURL);
   const [targetLang, setTargetLang] = useState<"fetch" | "python" | "axios" | "go">("fetch");
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const parsed = useMemo(() => parseCurl(curlInput), [curlInput]);
 
@@ -312,27 +313,9 @@ export default function CurlConverterClient() {
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">cURL to Code Converter</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Transform terminal cURL commands into clean JavaScript fetch, Python requests, Axios, or Go code.
-            </p>
-          </div>
-
-          {/* Quick Presets */}
+    <ToolLayout toolId="curl-converter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Quick Presets */}
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <label className="text-xs font-mono uppercase tracking-wider text-text-secondary">
               cURL Input:
@@ -410,17 +393,7 @@ export default function CurlConverterClient() {
           <div className="relative rounded-lg bg-bg-page border border-border-subtle p-4 font-mono text-sm overflow-x-auto">
             <pre className="text-text-primary whitespace-pre-wrap">{outputCode}</pre>
           </div>
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="curl-converter" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="curl-converter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

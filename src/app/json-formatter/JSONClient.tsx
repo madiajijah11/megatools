@@ -1,185 +1,227 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
-type ValidationResult =
-  | { valid: true }
-  | { valid: false; error: string };
+type IndentSize = 2 | 4 | "tab";
 
 export default function JSONClient() {
   const [input, setInput] = useState("");
-  const [validation, setValidation] = useState<ValidationResult | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [output, setOutput] = useState("");
+  const [indent, setIndent] = useState<IndentSize>(2);
+  const [error, setError] = useState("");
+  const [validation, setValidation] = useState<
+    | null
+    | { valid: true; keys: number; depth: number }
+    | { valid: false; error: string }
+  >(null);
+
+  const getIndent = () => (indent === "tab" ? "\t" : indent);
 
   const handleFormat = () => {
+    setError("");
     setValidation(null);
     try {
       const parsed = JSON.parse(input);
-      setInput(JSON.stringify(parsed, null, 2));
+      setOutput(JSON.stringify(parsed, null, getIndent()));
     } catch (err) {
-      setValidation({ valid: false, error: (err as Error).message });
+      setError((err as Error).message);
     }
   };
 
   const handleMinify = () => {
+    setError("");
     setValidation(null);
     try {
       const parsed = JSON.parse(input);
-      setInput(JSON.stringify(parsed));
+      setOutput(JSON.stringify(parsed));
     } catch (err) {
-      setValidation({ valid: false, error: (err as Error).message });
+      setError((err as Error).message);
     }
+  };
+
+  const getDepth = (obj: unknown, current = 0): number => {
+    if (typeof obj !== "object" || obj === null) return current;
+    const values = Object.values(obj);
+    if (values.length === 0) return current + 1;
+    return Math.max(...values.map((v) => getDepth(v, current + 1)));
+  };
+
+  const getKeyCount = (obj: unknown): number => {
+    if (typeof obj !== "object" || obj === null) return 0;
+    const keys = Object.keys(obj);
+    return (
+      keys.length +
+      Object.values(obj).reduce<number>((acc, v) => acc + getKeyCount(v), 0)
+    );
   };
 
   const handleValidate = () => {
+    setError("");
     try {
-      JSON.parse(input);
-      setValidation({ valid: true });
+      const parsed = JSON.parse(input);
+      setValidation({
+        valid: true,
+        keys: getKeyCount(parsed),
+        depth: getDepth(parsed),
+      });
     } catch (err) {
       setValidation({ valid: false, error: (err as Error).message });
     }
   };
 
-  const lines = input ? input.split("\n").length : 0;
-  const chars = input.length;
   const isValid =
-    validation !== null && input
-      ? (() => {
-          try {
-            JSON.parse(input);
-            return true;
-          } catch {
-            return false;
-          }
-        })()
+    validation?.valid === true
+      ? true
+      : validation?.valid === false || error
+      ? false
       : null;
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Lines</p>
-        <p className="text-text-primary font-mono">{lines}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Input Size:</span>
+        <span className="text-text-primary">{input.length} chars</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Characters</p>
-        <p className="text-text-primary font-mono">{chars}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Output Size:</span>
+        <span className="text-text-primary">{output ? `${output.length} chars` : "—"}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Valid</p>
-        <p className="font-mono text-success">
-          {isValid === true ? "Yes" : isValid === false ? "No" : "—"}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">JSON Validation:</span>
+        <span className={isValid === true ? "text-success font-bold" : isValid === false ? "text-error font-bold" : "text-text-muted"}>
+          {isValid === true ? "VALID" : isValid === false ? "INVALID" : "—"}
+        </span>
       </div>
+      {validation && "keys" in validation && (
+        <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+          <span className="text-text-muted">Structure:</span>
+          <span className="text-accent font-bold">{validation.keys} keys · depth {validation.depth}</span>
+        </div>
+      )}
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../ 
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">JSON Formatter</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Format, minify, and validate JSON data instantly in your browser.
-            </p>
-          </div>
-
-          {/* Textarea */}
-          <div className="mb-4">
-            <label className="mb-2 block text-sm font-medium text-text-secondary">
-              JSON Input
-            </label>
-            <textarea
-              value={input}
-              onChange={(e) => {
-                setInput(e.target.value);
-                setValidation(null);
-              }}
-              placeholder='{"key": "value"}'
-              className="input-field min-h-[200px] sm:min-h-[320px] resize-y font-mono text-sm"
-              spellCheck={false}
-            />
-          </div>
-
-          {/* Buttons */}
-          <div className="mb-4 flex flex-wrap justify-center gap-2 sm:gap-3">
+    <ToolLayout toolId="json-formatter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Controls Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-2">
             <button
               onClick={handleFormat}
-              disabled={!input}
-              className="btn-primary px-6"
+              disabled={!input.trim()}
+              className="px-3.5 py-1.5 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Format
             </button>
             <button
               onClick={handleMinify}
-              disabled={!input}
-              className="btn-secondary px-6"
+              disabled={!input.trim()}
+              className="px-3.5 py-1.5 rounded-lg border border-border-subtle bg-bg-page text-text-secondary hover:text-text-primary hover:border-text-muted transition-colors text-xs font-mono disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Minify
             </button>
             <button
               onClick={handleValidate}
-              disabled={!input}
-              className="btn-secondary px-6"
+              disabled={!input.trim()}
+              className="px-3.5 py-1.5 rounded-lg border border-border-subtle bg-bg-page text-text-secondary hover:text-text-primary hover:border-text-muted transition-colors text-xs font-mono disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Validate
             </button>
-            {input && <CopyButton text={input} label="Copy" />}
           </div>
 
-          {/* Validation result */}
-          {validation && (
-            <div
-              className={`rounded-xl border px-4 py-3 text-sm text-center ${
-                validation.valid
-                  ? "border-success/30 bg-success/5 text-success"
-                  : "border-error/30 bg-error/5 text-error"
-              }`}
-            >
-              {validation.valid ? (
-                "Valid JSON"
-              ) : (
-                <>
-                  <span className="font-medium">Invalid JSON:</span>{" "}
-                  {validation.error}
-                </>
-              )}
+          <div className="flex items-center gap-2 text-xs">
+            <span className="text-text-muted">Indent:</span>
+            {([2, 4, "tab"] as IndentSize[]).map((size) => (
+              <button
+                key={String(size)}
+                onClick={() => setIndent(size)}
+                className={`px-2 py-0.5 rounded border transition-colors ${
+                  indent === size
+                    ? "border-accent text-accent bg-accent/10"
+                    : "border-border-subtle text-text-muted hover:text-text-secondary"
+                }`}
+              >
+                {size === "tab" ? "Tab" : `${size} spaces`}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Input Header & Textarea */}
+        <div className="space-y-2">
+          <div className="h-8 flex items-center justify-between text-xs">
+            <span className="font-semibold text-text-primary">Input JSON</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setInput("");
+                  setOutput("");
+                  setError("");
+                  setValidation(null);
+                }}
+                className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+              >
+                [Clear]
+              </button>
+              <CopyButton text={input} label="Copy" />
             </div>
-          )}
+          </div>
+          <textarea
+            value={input}
+            onChange={(e) => {
+              setInput(e.target.value);
+              setError("");
+              setValidation(null);
+            }}
+            placeholder='Paste raw JSON here, e.g. {"name":"MegaTools","clientSide":true}'
+            rows={8}
+            className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-y leading-relaxed"
+            spellCheck={false}
+          />
         </div>
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="json-formatter" stats={stats} />
-        </div>
+        {/* Error Notification */}
+        {error && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            <span className="font-bold block mb-0.5">Parse Error:</span>
+            {error}
+          </div>
+        )}
+
+        {/* Validation Notification */}
+        {validation && (
+          <div
+            className={`p-3 rounded-lg border text-xs ${
+              validation.valid
+                ? "border-success/30 bg-success/10 text-success"
+                : "border-error/30 bg-error/10 text-error"
+            }`}
+          >
+            {validation.valid ? (
+              <span>✓ Valid JSON — {validation.keys} total keys, max depth of {validation.depth}.</span>
+            ) : (
+              <span>✗ Invalid JSON — {validation.error}</span>
+            )}
+          </div>
+        )}
+
+        {/* Output Area */}
+        {output && (
+          <div className="pt-3 border-t border-border-subtle space-y-2">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-text-primary">Formatted JSON Result</span>
+              <CopyButton text={output} label="Copy Result" />
+            </div>
+            <pre className="p-3.5 rounded-lg border border-border-subtle bg-bg-page font-mono text-xs text-text-primary whitespace-pre-wrap break-all max-h-80 overflow-y-auto leading-relaxed">
+              {output}
+            </pre>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="json-formatter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

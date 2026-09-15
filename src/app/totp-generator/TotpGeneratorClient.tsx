@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useEffect, useCallback, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 const BASE32_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
@@ -107,8 +106,6 @@ export default function TotpGeneratorClient() {
   const [token, setToken] = useState("------");
   const [remaining, setRemaining] = useState(30);
   const [error, setError] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const updateOtp = useCallback(() => {
     generateTotpToken(secret, algorithm, digits, period).then((res) => {
       setToken(res.token);
@@ -163,29 +160,10 @@ export default function TotpGeneratorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">TOTP 2FA Authenticator Simulator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Generate real-time RFC 6238 2FA security tokens directly from Base32 secret keys or otpauth:// URIs.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+return (
+    <ToolLayout toolId="totp-generator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {/* Left: Token Display Box */}
             <div className="flex flex-col space-y-4">
               <div className="p-6 rounded-xl bg-bg-page border border-border-subtle flex flex-col items-center justify-center space-y-4 min-h-[280px]">
@@ -326,25 +304,7 @@ export default function TotpGeneratorClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="totp-generator" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="totp-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

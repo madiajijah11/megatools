@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 
 export default function ScreenRecorderClient() {
   const [recording, setRecording] = useState(false);
@@ -14,8 +13,6 @@ export default function ScreenRecorderClient() {
   const [recordedBlobSize, setRecordedBlobSize] = useState<number>(0);
   const [supported, setSupported] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const micStreamRef = useRef<MediaStream | null>(null);
@@ -198,29 +195,10 @@ export default function ScreenRecorderClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Screen &amp; Audio Recorder</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Capture your screen, browser tabs, or app windows with mic commentary. 100% private.
-            </p>
-          </div>
-
-          {supported === false && (
+return (
+    <ToolLayout toolId="screen-recorder" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {supported === false && (
             <p className="mb-6 text-center text-xs text-warning border border-border-subtle rounded bg-bg-page p-3 font-mono">
               Your browser does not support the Screen Capture API (getDisplayMedia). Please use Chrome, Edge, or Firefox desktop.
             </p>
@@ -312,26 +290,7 @@ export default function ScreenRecorderClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="screen-recorder" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="screen-recorder" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

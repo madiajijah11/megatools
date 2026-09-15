@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface RGB {
@@ -78,8 +77,6 @@ function getContrastRatio(fg: RGB, bg: RGB): number {
 export default function ColorContrastClient() {
   const [fgHex, setFgHex] = useState("#4ade80");
   const [bgHex, setBgHex] = useState("#0a0f0d");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const fgRgb = useMemo(() => hexToRgb(fgHex) || { r: 74, g: 222, b: 128 }, [fgHex]);
   const bgRgb = useMemo(() => hexToRgb(bgHex) || { r: 10, g: 15, b: 13 }, [bgHex]);
 
@@ -107,29 +104,10 @@ export default function ColorContrastClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Color Contrast &amp; Palette</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Calculate WCAG 2.1 accessibility contrast ratios and convert color spaces.
-            </p>
-          </div>
-
-          {/* Color Pickers & Presets */}
+return (
+    <ToolLayout toolId="color-contrast" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Color Pickers & Presets */}
           <div className="mb-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Foreground */}
             <div className="rounded border border-border-subtle bg-bg-page p-4 space-y-3 font-mono text-xs">
@@ -304,26 +282,7 @@ export default function ColorContrastClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="color-contrast" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="color-contrast" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

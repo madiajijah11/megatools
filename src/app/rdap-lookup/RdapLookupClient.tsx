@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface RdapEvent {
@@ -169,62 +168,10 @@ export default function RdapLookupClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* Top Breadcrumb */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-text-muted hover:text-accent transition-colors"
-        >
-          <span>←</span> [cd .. / home]
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="lg:hidden text-xs font-mono px-2.5 py-1 rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary"
-        >
-          [?] Tool Info
-        </button>
-      </div>
-
-      {/* Hero Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-3">
-          <span className="text-accent">$</span>
-          <span>megatools --rdap-lookup --modern-whois</span>
-          <span className="animate-pulse text-accent">▊</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-          RDAP Domain & <span className="gradient-text">Registration Inspector</span>
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Query domain registration, expiration dates, transfer status locks, and IP network blocks via the official ICANN REST RDAP protocol.
-        </p>
-
-        {/* Presets Bar */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-xs">
-          <span className="text-text-muted">PRESETS:</span>
-          {PRESET_TARGETS.map((p, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setQuery(p);
-                executeLookup(p);
-              }}
-              className="px-2 py-1 rounded border border-border-subtle bg-bg-card hover:border-accent/40 hover:text-accent transition-colors"
-            >
-              [{p}]
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left 2 Cols: Form & Structured Data View */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Query Bar Card */}
+return (
+    <ToolLayout toolId="rdap-lookup" stats={stats}>
+      <div className="space-y-4 font-mono">
+        {/* Query Bar Card */}
           <div className="rounded-lg border border-border-subtle bg-bg-card p-4 space-y-3 font-mono text-xs">
             <div className="h-8 flex items-center justify-between">
               <span className="font-semibold text-text-primary flex items-center gap-1.5">
@@ -402,18 +349,7 @@ export default function RdapLookupClient() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Right 1 Col: Info Panel Desktop */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="rdap-lookup" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="rdap-lookup" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

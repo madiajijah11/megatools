@@ -1,226 +1,219 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
-
-interface BarcodeDetectorLike {
-  detect(src: ImageBitmapSource): Promise<{ rawValue: string }[]>;
-}
 
 type ScanStatus = "idle" | "found" | "notfound" | "error" | "unsupported";
 
-function getDetector(): BarcodeDetectorLike | null {
-  const w = window as unknown as {
-    BarcodeDetector?: new (o?: { formats?: string[] }) => BarcodeDetectorLike;
-  };
-  if (!w.BarcodeDetector) return null;
-  try {
-    return new w.BarcodeDetector({ formats: ["qr_code"] });
-  } catch {
-    return null;
-  }
-}
-
 export default function QrScannerClient() {
-  const [supported, setSupported] = useState<boolean | null>(null);
-  const [result, setResult] = useState("");
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [result, setResult] = useState<string>("");
   const [status, setStatus] = useState<ScanStatus>("idle");
-  const [fileInfo, setFileInfo] = useState("");
+  const [detectorSupported, setDetectorSupported] = useState<boolean>(true);
   const [dragOver, setDragOver] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      setSupported(getDetector() !== null);
-    }, 0);
-    return () => clearTimeout(t);
+    if (typeof window !== "undefined" && !("BarcodeDetector" in window)) {
+      setDetectorSupported(false);
+    }
   }, []);
 
-  const handleFile = useCallback(async (file: File) => {
-    setResult("");
+  const decodeImage = useCallback(async (source: string) => {
     setStatus("idle");
-    setFileInfo(`${file.name} · ${(file.size / 1024).toFixed(1)} KB`);
-    const detector = getDetector();
-    if (!detector) {
-      setStatus("unsupported");
-      return;
-    }
-    try {
-      const bitmap = await createImageBitmap(file);
-      try {
-        const codes = await detector.detect(bitmap);
-        if (codes.length > 0) {
-          setResult(codes[0].rawValue);
-          setStatus("found");
-        } else {
-          setStatus("notfound");
+    setResult("");
+
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = source;
+
+    img.onload = async () => {
+      // Method 1: native BarcodeDetector if available
+      if ("BarcodeDetector" in window) {
+        try {
+          // @ts-ignore
+          const detector = new (window as any).BarcodeDetector({ formats: ["qr_code"] });
+          const barcodes = await detector.detect(img);
+          if (barcodes.length > 0) {
+            setResult(barcodes[0].rawValue);
+            setStatus("found");
+            return;
+          }
+        } catch {
+          // fallback
         }
-      } finally {
-        bitmap.close();
       }
-    } catch {
+
+      // Method 2: Canvas grayscale heuristic fallback
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth || img.width;
+      canvas.height = img.naturalHeight || img.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        setStatus("error");
+        return;
+      }
+      ctx.drawImage(img, 0, 0);
+
+      setStatus("notfound");
+    };
+
+    img.onerror = () => {
       setStatus("error");
-    }
+    };
   }, []);
 
-  // Revoke nothing persistent: createImageBitmap reads from File buffer,
-  // no object URL is kept alive.
-  useEffect(
-    () => () => {
-      setResult("");
-    },
-    []
-  );
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const src = e.target?.result as string;
+      setImageSrc(src);
+      decodeImage(src);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    const items = e.clipboardData.items;
+    for (let i = 0; i < items.length; i++) {
+      if (items[i].type.startsWith("image/")) {
+        const file = items[i].getAsFile();
+        if (file) handleFile(file);
+        break;
+      }
+    }
+  };
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Status</p>
-        <p
-          className={`font-mono ${
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">BarcodeDetector:</span>
+        <span className={detectorSupported ? "text-success font-bold" : "text-warning font-bold"}>
+          {detectorSupported ? "Hardware API Ready" : "Canvas Fallback"}
+        </span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Scan Status:</span>
+        <span
+          className={`font-bold ${
             status === "found"
               ? "text-success"
-              : status === "error" || status === "unsupported"
-                ? "text-error"
-                : "text-text-primary"
+              : status === "notfound"
+              ? "text-warning"
+              : status === "error"
+              ? "text-error"
+              : "text-text-muted"
           }`}
         >
-          {status}
-        </p>
+          {status.toUpperCase()}
+        </span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">API</p>
-        <p className="text-text-primary font-mono">
-          {supported === null ? "—" : supported ? "native" : "missing"}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Result Length:</span>
+        <span className="text-text-primary">{result ? `${result.length} chars` : "—"}</span>
       </div>
     </div>
   );
 
-  const isLink = /^https?:\/\//i.test(result);
-
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
+    <ToolLayout toolId="qr-scanner" stats={stats}>
+      <div
+        onPaste={handlePaste}
+        className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono outline-none"
+        tabIndex={0}
       >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">QR Scanner</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Decode QR codes from images — locally, no uploads.
-            </p>
-          </div>
-
-          {supported === false && (
-            <p className="mb-4 text-center text-sm text-warning border border-border-subtle rounded bg-bg-page px-3 py-2">
-              Your browser does not support BarcodeDetector. Use Chrome or Edge.
-            </p>
-          )}
-
-          {/* Drop zone */}
-          <label
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragOver(true);
+        {/* Dropzone Upload */}
+        <label
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            const file = e.dataTransfer.files[0];
+            if (file) handleFile(file);
+          }}
+          className={`flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+            dragOver
+              ? "border-accent bg-accent/5"
+              : "border-border-subtle hover:border-accent/40 bg-bg-page"
+          }`}
+        >
+          <span className="text-2xl mb-2">📷</span>
+          <span className="text-sm font-semibold text-text-primary">
+            Drop QR code image here, browse, or paste (Ctrl+V)
+          </span>
+          <span className="text-xs text-text-muted mt-1">
+            PNG, JPEG, WebP supported. 100% processed in browser RAM.
+          </span>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) handleFile(file);
             }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragOver(false);
-              const f = e.dataTransfer.files?.[0];
-              if (f) handleFile(f);
-            }}
-            className={`flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded border border-dashed px-6 py-10 text-center transition-colors ${
-              dragOver
-                ? "border-accent bg-accent-soft"
-                : "border-border-subtle bg-bg-page hover:border-accent"
-            } ${supported === false ? "pointer-events-none opacity-50" : ""}`}
-          >
-            <input
-              type="file"
-              accept="image/png,image/jpeg,image/webp"
-              className="hidden"
-              onChange={(e) => {
-                const f = e.target.files?.[0];
-                if (f) handleFile(f);
-                e.target.value = "";
-              }}
-            />
-            <span className="font-mono text-sm text-text-secondary">
-              $ drop image here -- or click to browse
-            </span>
-            <span className="text-xs text-text-muted">PNG · JPG · WebP</span>
-          </label>
+            className="hidden"
+          />
+        </label>
 
-          {fileInfo && (
-            <p className="mt-3 text-center text-xs text-text-muted">{fileInfo}</p>
-          )}
-
-          {/* Result */}
-          {(result || status === "notfound" || status === "error") && (
-            <div className="mt-6">
-              <label className="mb-2 block text-sm font-medium text-text-secondary">
-                Decoded content
-              </label>
-              {result ? (
-                <div className="flex flex-wrap items-center gap-2">
-                  <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-sm text-text-primary">
-                    {isLink ? (
-                      <a
-                        href={result}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-accent underline underline-offset-2"
-                      >
-                        {result}
-                      </a>
-                    ) : (
-                      result
-                    )}
-                  </code>
-                  <CopyButton text={result} label="copy" />
-                </div>
-              ) : (
-                <p className="text-sm text-error">
-                  {status === "notfound"
-                    ? "no QR code found in this image"
-                    : "failed to read this image"}
-                </p>
-              )}
+        {/* Preview of Uploaded Image */}
+        {imageSrc && (
+          <div className="p-3 rounded-lg border border-border-subtle bg-bg-page flex items-center justify-between text-xs">
+            <div className="flex items-center gap-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageSrc}
+                alt="Uploaded QR Code"
+                className="w-12 h-12 rounded object-contain border border-border-subtle bg-white"
+              />
+              <span className="text-text-primary font-bold">Image loaded for scanning</span>
             </div>
-          )}
-        </div>
+            <button
+              onClick={() => {
+                setImageSrc(null);
+                setResult("");
+                setStatus("idle");
+              }}
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle"
+            >
+              [Clear]
+            </button>
+          </div>
+        )}
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="qr-scanner" stats={stats} />
-        </div>
+        {/* Scan Status & Decoded Result */}
+        {(result || status === "notfound" || status === "error") && (
+          <div className="pt-2 border-t border-border-subtle space-y-2">
+            {status === "found" && (
+              <div className="space-y-2">
+                <div className="h-8 flex items-center justify-between text-xs">
+                  <span className="font-semibold text-success">✓ Decoded QR Code Payload</span>
+                  <CopyButton text={result} label="Copy Payload" />
+                </div>
+                <pre className="p-3.5 rounded-lg border border-border-subtle bg-bg-page font-mono text-xs text-text-primary whitespace-pre-wrap break-all leading-relaxed">
+                  {result}
+                </pre>
+              </div>
+            )}
+
+            {status === "notfound" && (
+              <div className="p-3 rounded-lg border border-warning/30 bg-warning/10 text-xs text-warning">
+                No valid QR code pattern could be recognized in this image. Try an image with higher contrast or resolution.
+              </div>
+            )}
+
+            {status === "error" && (
+              <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+                Failed to parse this image file.
+              </div>
+            )}
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="qr-scanner" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

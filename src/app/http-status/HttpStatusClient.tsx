@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface StatusCode {
@@ -84,8 +83,6 @@ export default function HttpStatusClient() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<"all" | "1xx" | "2xx" | "3xx" | "4xx" | "5xx" | "headers">("all");
   const [selectedCode, setSelectedCode] = useState<StatusCode | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const filteredCodes = useMemo(() => {
     const q = search.toLowerCase().trim();
     return STATUS_CODES.filter((s) => {
@@ -148,29 +145,10 @@ export default function HttpStatusClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">HTTP Status Codes & Headers Explorer</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Instant search directory for HTTP status codes (100–599), RFC definitions, causes, and standard headers.
-            </p>
-          </div>
-
-          {/* Search bar */}
+return (
+    <ToolLayout toolId="http-status" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Search bar */}
           <div className="relative mb-6">
             <input
               type="text"
@@ -299,17 +277,7 @@ export default function HttpStatusClient() {
               No status codes matching query &quot;{search}&quot;.
             </p>
           )}
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="http-status" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="http-status" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

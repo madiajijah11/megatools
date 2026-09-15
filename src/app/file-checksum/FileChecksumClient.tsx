@@ -1,267 +1,269 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
-const ALGORITHMS = ["SHA-256", "SHA-512", "SHA-384", "SHA-1"] as const;
+interface ChecksumResult {
+  algo: string;
+  hash: string;
+  bits: number;
+}
 
-async function digestHex(algo: string, buf: ArrayBuffer): Promise<string> {
-  const digest = await crypto.subtle.digest(algo, buf as unknown as BufferSource);
-  return Array.from(new Uint8Array(digest))
-    .map((b) => b.toString(16).padStart(2, "0"))
-    .join("");
+const ALGORITHMS = [
+  { name: "SHA-256", bits: 256 },
+  { name: "SHA-512", bits: 512 },
+  { name: "SHA-384", bits: 384 },
+  { name: "SHA-1", bits: 160 },
+];
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
 export default function FileChecksumClient() {
   const [file, setFile] = useState<File | null>(null);
-  const [hashes, setHashes] = useState<Record<string, string>>({});
-  const [progress, setProgress] = useState<number>(0);
-  const [hashing, setHashing] = useState(false);
-  const [verifyInput, setVerifyInput] = useState("");
+  const [checksums, setChecksums] = useState<ChecksumResult[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const [verifyHash, setVerifyHash] = useState("");
   const [dragOver, setDragOver] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const hashFile = useCallback(async (selectedFile: File) => {
-    setFile(selectedFile);
-    setHashes({});
+  const computeChecksums = useCallback(async (selectedFile: File) => {
+    setIsProcessing(true);
     setError(null);
-    setHashing(true);
+    setChecksums([]);
     setProgress(10);
 
     try {
-      // Read file with progress
-      const reader = new FileReader();
-
-      const bufferPromise = new Promise<ArrayBuffer>((resolve, reject) => {
-        reader.onprogress = (e) => {
-          if (e.lengthComputable) {
-            const pct = Math.round((e.loaded / e.total) * 60) + 10;
-            setProgress(pct);
-          }
-        };
+      const buffer = await new Promise<ArrayBuffer>((resolve, reject) => {
+        const reader = new FileReader();
         reader.onload = () => resolve(reader.result as ArrayBuffer);
         reader.onerror = () => reject(new Error("Failed to read file"));
+        reader.readAsArrayBuffer(selectedFile);
       });
 
-      reader.readAsArrayBuffer(selectedFile);
-      const buffer = await bufferPromise;
+      setProgress(40);
 
-      setProgress(75);
-
-      // Compute all digests
-      const results: Record<string, string> = {};
-      for (const algo of ALGORITHMS) {
-        results[algo] = await digestHex(algo, buffer);
+      const results: ChecksumResult[] = [];
+      for (let i = 0; i < ALGORITHMS.length; i++) {
+        const { name, bits } = ALGORITHMS[i];
+        const hashBuf = await crypto.subtle.digest(name, buffer);
+        const hashHex = Array.from(new Uint8Array(hashBuf))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+        results.push({ algo: name, hash: hashHex, bits });
+        setProgress(40 + Math.round(((i + 1) / ALGORITHMS.length) * 60));
       }
 
-      setHashes(results);
-      setProgress(100);
+      setChecksums(results);
     } catch (err) {
       setError(`Hashing error: ${(err as Error).message}`);
     } finally {
-      setHashing(false);
+      setIsProcessing(false);
     }
   }, []);
 
-  const clean = verifyInput.trim().toLowerCase();
-  let matchStatus: { match: boolean; algo: string | null } | null = null;
-  if (clean) {
-    matchStatus = { match: false, algo: null };
-    for (const [algo, hashVal] of Object.entries(hashes)) {
-      if (hashVal.toLowerCase() === clean) {
-        matchStatus = { match: true, algo };
-        break;
-      }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files?.[0];
+    if (selected) {
+      setFile(selected);
+      computeChecksums(selected);
     }
-  }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setDragOver(false);
+    const dropped = e.dataTransfer.files?.[0];
+    if (dropped) {
+      setFile(dropped);
+      computeChecksums(dropped);
+    }
+  };
+
+  const cleanVerify = verifyHash.trim().toLowerCase();
+  const matchResult = cleanVerify
+    ? checksums.some((c) => c.hash.toLowerCase() === cleanVerify)
+    : null;
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">File Size</p>
-        <p className="text-text-primary font-mono">
-          {file ? `${(file.size / (1024 * 1024)).toFixed(2)} MB` : "—"}
-        </p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Selected File:</span>
+        <span className="text-accent font-bold truncate max-w-[140px]">
+          {file ? file.name : "None"}
+        </span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Digests</p>
-        <p className="text-text-primary font-mono">{Object.keys(hashes).length}/4</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">File Size:</span>
+        <span className="text-text-primary">{file ? formatBytes(file.size) : "—"}</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Verification:</span>
+        <span
+          className={`font-bold ${
+            matchResult === true
+              ? "text-success"
+              : matchResult === false
+              ? "text-error"
+              : "text-text-muted"
+          }`}
+        >
+          {matchResult === true ? "MATCH FOUND" : matchResult === false ? "NO MATCH" : "—"}
+        </span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Privacy:</span>
+        <span className="text-success font-bold">100% Local (0 upload)</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Large File Hasher</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Calculate SHA-256, SHA-512, and SHA-1 checksums directly in your browser.
-            </p>
-          </div>
-
-          {/* Upload Dropzone */}
-          {!file ? (
-            <label
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(true);
-              }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setDragOver(false);
-                const f = e.dataTransfer.files?.[0];
-                if (f) hashFile(f);
-              }}
-              className={`flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded border border-dashed px-6 py-8 text-center transition-colors ${
-                dragOver
-                  ? "border-accent bg-accent-soft"
-                  : "border-border-subtle bg-bg-page hover:border-accent"
-              }`}
-            >
-              <input
-                type="file"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) hashFile(f);
-                }}
-              />
-              <span className="font-mono text-sm text-text-secondary">
-                $ drop any file here to calculate hashes
-              </span>
-              <span className="text-xs text-text-muted">
-                100% in-browser Web Crypto · Zero server uploads
-              </span>
-            </label>
-          ) : (
-            <div className="space-y-6">
-              {/* Selected file */}
-              <div className="flex items-center justify-between rounded border border-border-subtle bg-bg-page p-4">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-mono text-sm font-semibold text-text-primary">
-                    {file.name}
-                  </p>
-                  <p className="text-xs text-text-muted mt-1">
-                    {(file.size / (1024 * 1024)).toFixed(2)} MB ({file.size.toLocaleString()} bytes)
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setFile(null);
-                    setHashes({});
-                    setVerifyInput("");
-                  }}
-                  className="btn-secondary text-xs shrink-0"
-                >
-                  Hash Another File
-                </button>
-              </div>
-
-              {/* Progress Bar */}
-              {hashing && (
-                <div className="space-y-2 font-mono text-xs">
-                  <div className="flex justify-between text-text-secondary">
-                    <span>$ computing cryptographic digests...</span>
-                    <span>{progress}%</span>
-                  </div>
-                  <div className="h-2 w-full overflow-hidden rounded bg-bg-page border border-border-subtle">
-                    <div
-                      className="h-full bg-accent transition-all duration-200"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Checksum List */}
-              {Object.keys(hashes).length > 0 && (
-                <div className="space-y-4">
-                  <div className="space-y-3">
-                    {ALGORITHMS.map((algo) => (
-                      <div key={algo} className="space-y-1">
-                        <span className="text-xs font-semibold text-accent font-mono">
-                          {algo.toLowerCase()}
-                        </span>
-                        <div className="flex items-center gap-2">
-                          <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs font-mono text-text-primary">
-                            {hashes[algo]}
-                          </code>
-                          <CopyButton text={hashes[algo]} label="copy" />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Hash Integrity Verifier */}
-                  <div className="rounded border border-border-subtle bg-bg-page p-4 space-y-3">
-                    <label className="text-xs font-semibold text-text-muted uppercase block">
-                      Verify Checksum Integrity
-                    </label>
-                    <input
-                      type="text"
-                      value={verifyInput}
-                      onChange={(e) => setVerifyInput(e.target.value)}
-                      placeholder="Paste expected SHA-256, SHA-512, or SHA-1 hash to compare..."
-                      className="input-field text-xs font-mono"
-                    />
-
-                    {matchStatus && (
-                      <div
-                        className={`rounded p-2 text-xs font-mono text-center font-semibold ${
-                          matchStatus.match
-                            ? "bg-success/15 text-success border border-success/30"
-                            : "bg-error/15 text-error border border-error/30"
-                        }`}
-                      >
-                        {matchStatus.match
-                          ? `✓ MATCH VERIFIED (${matchStatus.algo})`
-                          : "✕ CHECKSUM MISMATCH (File may be altered or corrupted)"}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+    <ToolLayout toolId="file-checksum" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Upload Dropzone */}
+        {!file ? (
+          <label
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            className={`flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+              dragOver
+                ? "border-accent bg-accent/5"
+                : "border-border-subtle hover:border-accent/40 bg-bg-page"
+            }`}
+          >
+            <span className="text-2xl mb-2">📁</span>
+            <span className="text-sm font-semibold text-text-primary">
+              Drop any file here or click to browse
+            </span>
+            <span className="text-xs text-text-muted mt-1">
+              Supports documents, ISOs, binaries, archives of any size. Never leaves browser.
+            </span>
+            <input type="file" onChange={handleFileChange} className="hidden" />
+          </label>
+        ) : (
+          <div className="p-3 rounded-lg border border-border-subtle bg-bg-page flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2 truncate">
+              <span className="text-base">📄</span>
+              <span className="font-bold text-text-primary truncate">{file.name}</span>
+              <span className="text-text-muted">({formatBytes(file.size)})</span>
             </div>
-          )}
+            <button
+              onClick={() => {
+                setFile(null);
+                setChecksums([]);
+                setVerifyHash("");
+              }}
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle shrink-0"
+            >
+              [Change File]
+            </button>
+          </div>
+        )}
 
-          {error && <p className="mt-4 text-sm text-error text-center">{error}</p>}
-        </div>
+        {/* Processing Progress */}
+        {isProcessing && (
+          <div className="space-y-1 pt-2">
+            <div className="h-1.5 w-full rounded-full bg-border-subtle overflow-hidden">
+              <div
+                className="h-full bg-accent transition-all duration-200"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+            <div className="flex justify-between text-[10px] text-text-muted">
+              <span>Computing hardware-accelerated cryptographic digests...</span>
+              <span>{progress}%</span>
+            </div>
+          </div>
+        )}
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="file-checksum" stats={stats} />
-        </div>
+        {/* Checksum Results Table */}
+        {checksums.length > 0 && (
+          <div className="pt-2 border-t border-border-subtle space-y-3">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-text-primary">Calculated Hashes</span>
+              <CopyButton
+                text={checksums.map((c) => `${c.algo}: ${c.hash}`).join("\n")}
+                label="Copy All"
+              />
+            </div>
+
+            {checksums.map((c) => {
+              const isMatch =
+                cleanVerify && c.hash.toLowerCase() === cleanVerify;
+
+              return (
+                <div
+                  key={c.algo}
+                  className={`p-3 rounded-lg border transition-colors ${
+                    isMatch
+                      ? "border-success bg-success/10"
+                      : "border-border-subtle bg-bg-page"
+                  }`}
+                >
+                  <div className="flex items-center justify-between text-xs mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-accent">{c.algo}</span>
+                      <span className="text-[10px] text-text-muted">({c.bits} bits)</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {isMatch && (
+                        <span className="text-[10px] text-success font-bold">✓ EXACT MATCH</span>
+                      )}
+                      <CopyButton text={c.hash} label="Copy" />
+                    </div>
+                  </div>
+                  <div className="text-xs font-mono text-text-primary break-all">
+                    {c.hash}
+                  </div>
+                </div>
+              );
+            })}
+
+            {/* Checksum Comparator / Verifier Input */}
+            <div className="pt-3 border-t border-border-subtle space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="font-semibold text-text-primary">
+                  Compare with Expected Checksum:
+                </span>
+                {matchResult !== null && (
+                  <span
+                    className={`font-bold ${
+                      matchResult ? "text-success" : "text-error"
+                    }`}
+                  >
+                    {matchResult ? "✓ Checksums Match!" : "✗ Checksum Mismatch"}
+                  </span>
+                )}
+              </div>
+              <input
+                type="text"
+                value={verifyHash}
+                onChange={(e) => setVerifyHash(e.target.value)}
+                placeholder="Paste expected SHA-256, SHA-512, or SHA-1 hash to verify integrity..."
+                className="w-full rounded-lg border border-border-subtle bg-bg-page p-2.5 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none"
+              />
+            </div>
+          </div>
+        )}
+
+        {error && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            {error}
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="file-checksum" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

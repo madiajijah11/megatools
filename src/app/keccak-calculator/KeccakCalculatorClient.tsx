@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 import { keccak256Hex, keccak256 } from "@/lib/keccak";
 
@@ -31,8 +30,6 @@ function hexToBytes(hex: string): Uint8Array {
 export default function KeccakCalculatorClient() {
   const [mode, setMode] = useState<"text" | "hex" | "solidity">("solidity");
   const [inputVal, setInputVal] = useState<string>("transfer(address,uint256)");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const result = useMemo(() => {
     const raw = inputVal.trim();
     if (!raw) {
@@ -80,28 +77,10 @@ export default function KeccakCalculatorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Keccak-256 & 4-Byte Selector Calculator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Calculate Ethereum Keccak-256 hashes, Solidity 4-byte function selectors, and EVM event topics.
-            </p>
-          </div>
-
-          {/* Mode Selector */}
+return (
+    <ToolLayout toolId="keccak-calculator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Mode Selector */}
           <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-border-subtle pb-4">
             <div className="flex items-center gap-1 bg-bg-page p-1 rounded-lg border border-border-subtle font-mono text-xs">
               <button
@@ -258,17 +237,7 @@ export default function KeccakCalculatorClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="keccak-calculator" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="keccak-calculator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

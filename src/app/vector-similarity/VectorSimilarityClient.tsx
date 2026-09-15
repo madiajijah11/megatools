@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 const SAMPLES = {
@@ -39,8 +38,6 @@ function parseVector(input: string): number[] {
 export default function VectorSimilarityClient() {
   const [vectorAStr, setVectorAStr] = useState<string>(SAMPLES.highSim.a);
   const [vectorBStr, setVectorBStr] = useState<string>(SAMPLES.highSim.b);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const calculation = useMemo(() => {
     const vecA = parseVector(vectorAStr);
     const vecB = parseVector(vectorBStr);
@@ -116,28 +113,10 @@ export default function VectorSimilarityClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Vector Cosine Similarity & Distance Engine</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Calculate Cosine Similarity, Dot Product, Euclidean (L2), and Manhattan (L1) metrics for AI embeddings.
-            </p>
-          </div>
-
-          {/* Preset Buttons */}
+return (
+    <ToolLayout toolId="vector-similarity" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Preset Buttons */}
           <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
             <div className="flex flex-wrap items-center gap-1.5 font-mono text-xs">
               <span className="text-text-muted">Presets:</span>
@@ -293,17 +272,7 @@ export default function VectorSimilarityClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="vector-similarity" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="vector-similarity" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

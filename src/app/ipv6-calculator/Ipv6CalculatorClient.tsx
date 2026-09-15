@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 function expandIPv6(ip: string): string[] | null {
@@ -115,8 +114,6 @@ function getReverseDns(expanded: string[], prefix: number): string {
 
 export default function Ipv6CalculatorClient() {
   const [inputIp, setInputIp] = useState("2001:db8:85a3::8a2e:370:7334/64");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const calc = useMemo(() => {
     let raw = inputIp.trim();
     let prefix = 64;
@@ -181,29 +178,10 @@ export default function Ipv6CalculatorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">IPv6 & Subnet Calculator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Expand, compress, calculate CIDR subnet ranges, and inspect address scopes for 128-bit IPv6 networks.
-            </p>
-          </div>
-
-          {/* Quick Presets */}
+return (
+    <ToolLayout toolId="ipv6-calculator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Quick Presets */}
           <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
             <label className="text-xs font-mono uppercase tracking-wider text-text-secondary">
               IPv6 / Prefix Input:
@@ -300,17 +278,7 @@ export default function Ipv6CalculatorClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="ipv6-calculator" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="ipv6-calculator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

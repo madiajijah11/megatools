@@ -1,10 +1,9 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo, useEffect, useCallback } from "react";
-import Link from "next/link";
 import { BIP39_WORDLIST, BIP39_WORD_MAP } from "@/lib/bip39-words";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 type WordCountOption = 12 | 24;
@@ -176,45 +175,10 @@ export default function Bip39GeneratorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* Top Breadcrumb */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-text-muted hover:text-accent transition-colors"
-        >
-          <span>←</span> [cd .. / home]
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="lg:hidden text-xs font-mono px-2.5 py-1 rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary"
-        >
-          [?] Tool Info
-        </button>
-      </div>
-
-      {/* Hero Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-3">
-          <span className="text-accent">$</span>
-          <span>megatools --bip39-generator --airgapped</span>
-          <span className="animate-pulse text-accent">▊</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-          BIP-39 Mnemonic <span className="gradient-text">Seed Phrase Studio</span>
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Generate cryptographically secure 12 & 24-word recovery seeds, verify checksums, and compute 512-bit binary master seeds.
-        </p>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left 2 Cols: Generator & Validator Workspace */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Main Card with Tabs */}
+return (
+    <ToolLayout toolId="bip39-generator" stats={stats}>
+      <div className="space-y-4 font-mono">
+        {/* Main Card with Tabs */}
           <div className="rounded-lg border border-border-subtle bg-bg-card p-5 space-y-5 font-mono">
             {/* Header standard: h-8 flex items-center justify-between */}
             <div className="h-8 flex items-center justify-between">
@@ -407,18 +371,7 @@ export default function Bip39GeneratorClient() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Right 1 Col: Info Panel Desktop */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="bip39-generator" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="bip39-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

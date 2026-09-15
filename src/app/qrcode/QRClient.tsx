@@ -1,139 +1,188 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
 import QRCode from "qrcode";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 
 export default function QRClient() {
-  const [text, setText] = useState("https://example.com");
-  const [dataUrl, setDataUrl] = useState("");
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [text, setText] = useState("https://megatools.dev");
+  const [dataUrl, setDataUrl] = useState<string>("");
+  const [size, setSize] = useState(300);
+  const [errorCorrection, setErrorCorrection] = useState<"L" | "M" | "Q" | "H">("M");
 
   const generateQR = useCallback(async () => {
-    if (!text) {
+    if (!text.trim()) {
       setDataUrl("");
       return;
     }
     try {
-      const url = await QRCode.toDataURL(text, { width: 300, margin: 2 });
+      const url = await QRCode.toDataURL(text, {
+        width: size,
+        margin: 2,
+        errorCorrectionLevel: errorCorrection,
+        color: {
+          dark: "#000000",
+          light: "#ffffff",
+        },
+      });
       setDataUrl(url);
     } catch {
       setDataUrl("");
     }
-  }, [text]);
+  }, [text, size, errorCorrection]);
 
   useEffect(() => {
-    const t = setTimeout(() => {
-      generateQR();
-    }, 0);
-    return () => clearTimeout(t);
+    generateQR();
   }, [generateQR]);
 
-  const handleDownload = () => {
+  const handleDownload = (format: "png" | "svg") => {
     if (!dataUrl) return;
-    const link = document.createElement("a");
-    link.download = "qrcode.png";
-    link.href = dataUrl;
-    link.click();
+    if (format === "png") {
+      const link = document.createElement("a");
+      link.download = "qrcode.png";
+      link.href = dataUrl;
+      link.click();
+    } else {
+      QRCode.toString(
+        text,
+        {
+          type: "svg",
+          width: size,
+          margin: 2,
+          errorCorrectionLevel: errorCorrection,
+        },
+        (err, svgString) => {
+          if (err) return;
+          const blob = new Blob([svgString], { type: "image/svg+xml" });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.download = "qrcode.svg";
+          link.href = url;
+          link.click();
+          URL.revokeObjectURL(url);
+        }
+      );
+    }
   };
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Width</p>
-        <p className="text-text-primary font-mono">300 px</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Payload Length:</span>
+        <span className="text-accent font-bold">{text.length} chars</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Chars</p>
-        <p className="text-text-primary font-mono">{text.length}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Resolution:</span>
+        <span className="text-text-primary">{size} × {size} px</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">ECC Level:</span>
+        <span className="text-success font-bold">{errorCorrection} (Standard)</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../ 
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">QR Code Generator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Generate QR codes from any text or URL. Runs entirely in your browser.
-            </p>
+    <ToolLayout toolId="qrcode" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-5 font-mono">
+        {/* Input Textarea */}
+        <div className="space-y-2">
+          <div className="h-8 flex items-center justify-between text-xs">
+            <span className="font-semibold text-text-primary">QR Code Content (URL / Text)</span>
+            <button
+              type="button"
+              onClick={() => setText("")}
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+            >
+              [Clear]
+            </button>
           </div>
+          <textarea
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Enter URL, Wi-Fi credentials, vCard, or plaintext..."
+            rows={4}
+            className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-y leading-relaxed"
+            spellCheck={false}
+          />
+        </div>
 
-          {/* Input */}
-          <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-text-secondary">
-              Text or URL
-            </label>
+        {/* Configuration Sliders & Toggles */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-border-subtle text-xs">
+          <div className="space-y-1.5">
+            <div className="flex justify-between items-center">
+              <span className="text-text-secondary">Image Dimension</span>
+              <span className="font-bold text-accent">{size}px</span>
+            </div>
             <input
-              type="text"
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Enter text or URL..."
-              className="input-field h-12"
+              type="range"
+              min={128}
+              max={600}
+              step={32}
+              value={size}
+              onChange={(e) => setSize(Number(e.target.value))}
+              className="w-full accent-accent cursor-pointer h-1.5 bg-border-subtle rounded-lg"
             />
           </div>
 
-          {/* QR Preview */}
-          <div className="flex justify-center mb-6">
-            {dataUrl ? (
-              <div className="rounded-xl border border-border-subtle bg-white p-4">
-                <img
-                  src={dataUrl}
-                  alt="QR Code"
-                  className="block max-w-full h-auto w-[300px]"
-                />
-              </div>
-            ) : (
-              <div className="flex h-[332px] w-[332px] items-center justify-center rounded-xl border border-border-subtle bg-bg-page">
-                <span className="text-sm text-text-muted">Enter text to generate</span>
-              </div>
-            )}
+          <div className="space-y-1.5">
+            <span className="text-text-secondary block">Error Correction Level</span>
+            <div className="flex items-center gap-1.5">
+              {(["L", "M", "Q", "H"] as const).map((lvl) => (
+                <button
+                  key={lvl}
+                  type="button"
+                  onClick={() => setErrorCorrection(lvl)}
+                  className={`flex-1 py-1 rounded border text-xs font-mono transition-colors ${
+                    errorCorrection === lvl
+                      ? "border-accent text-accent bg-accent/10 font-bold"
+                      : "border-border-subtle text-text-muted hover:text-text-secondary"
+                  }`}
+                >
+                  {lvl}
+                </button>
+              ))}
+            </div>
           </div>
+        </div>
 
-          {/* Download button */}
-          <div className="flex justify-center">
+        {/* QR Code Canvas & Download Buttons */}
+        <div className="pt-3 border-t border-border-subtle flex flex-col items-center justify-center space-y-4">
+          {dataUrl ? (
+            <div className="p-3 bg-white rounded-xl shadow-lg border border-border-subtle inline-block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={dataUrl}
+                alt="Generated QR Code"
+                className="w-56 h-56 object-contain"
+              />
+            </div>
+          ) : (
+            <div className="w-56 h-56 rounded-xl border border-border-subtle bg-bg-page flex items-center justify-center text-xs text-text-muted">
+              Enter content to generate
+            </div>
+          )}
+
+          <div className="flex items-center gap-3">
             <button
-              onClick={handleDownload}
+              type="button"
+              onClick={() => handleDownload("png")}
               disabled={!dataUrl}
-              className="btn-primary w-full sm:w-auto px-8"
+              className="px-4 py-2 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
               Download PNG
             </button>
+            <button
+              type="button"
+              onClick={() => handleDownload("svg")}
+              disabled={!dataUrl}
+              className="px-4 py-2 rounded-lg border border-border-subtle bg-bg-page text-text-secondary hover:text-text-primary hover:border-text-muted transition-colors text-xs font-mono disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Download SVG
+            </button>
           </div>
         </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="qrcode" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="qrcode" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

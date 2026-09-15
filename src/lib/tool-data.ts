@@ -1175,6 +1175,78 @@ export const TOOLS: ToolInfo[] = [
       output: "All pages stamped with vector text overlay and saved as contract-watermarked.pdf"
     },
   },
+  {
+    id: "token-counter",
+    title: "LLM Token Counter & API Cost Estimator",
+    shortTitle: "Token Counter",
+    description: "Analyze token density, preview subword BPE boundaries, and calculate real-time API inference costs across OpenAI, Claude, Gemini, and DeepSeek.",
+    emoji: "🪙",
+    href: "/token-counter",
+    tech: "BPE Tokenizer & Pricing AST",
+    steps: [
+      "Paste or type your prompt, code, JSON, or essay into the editor",
+      "Inspect instant token, character, word count, and reading duration metrics",
+      "Switch to Cost Matrix tab to view real-time API cost across 9 flagship and budget models",
+      "Toggle Token Visualizer to see color-coded subword segments"
+    ],
+    tips: [
+      "Average English prose ranges between 3.7 to 4.0 characters per token",
+      "DeepSeek V3 and GPT-4o-mini offer up to 95% cost reductions compared to legacy models",
+      "100% client-side computation — your proprietary prompts are never sent to external servers"
+    ],
+    example: {
+      input: "350-word system prompt (1,840 characters)",
+      output: "472 tokens · GPT-4o cost: $0.00118 · Claude 3.5 Sonnet cost: $0.00142"
+    },
+  },
+  {
+    id: "few-shot-formatter",
+    title: "Few-Shot Prompt & Fine-Tuning Dataset Formatter",
+    shortTitle: "Few-Shot Formatter",
+    description: "Construct, validate, and convert few-shot prompt examples into OpenAI JSONL, Anthropic XML, ChatML, and Llama 3 templates.",
+    emoji: "🧩",
+    href: "/few-shot-formatter",
+    tech: "Dataset Serialization AST",
+    steps: [
+      "Define global system role/persona instructions",
+      "Add user input and expected assistant response pairs",
+      "Select desired export format (OpenAI JSONL, Anthropic XML, ChatML, Llama 3, TS Array, CSV)",
+      "Copy formatted output or download file directly"
+    ],
+    tips: [
+      "Providing 3 to 5 diverse few-shot examples drastically reduces LLM hallucination rates",
+      "OpenAI fine-tuning requires at least 10 high-quality JSONL conversation examples",
+      "Anthropic models perform optimally when few-shot examples are wrapped in structured <example> tags"
+    ],
+    example: {
+      input: "3 input/output sentiment classification pairs with system prompt",
+      output: "Standardized OpenAI JSONL dataset ready for fine-tuning or few-shot injection"
+    },
+  },
+  {
+    id: "llm-diff-comparator",
+    title: "LLM Output Diff & Hallucination Spotter",
+    shortTitle: "LLM Diff",
+    description: "Compare AI model outputs side-by-side with word-level diff, numerical discrepancy analysis, and hallucination detection.",
+    emoji: "🔬",
+    href: "/llm-diff-comparator",
+    tech: "Jaccard Metric & Diff AST",
+    steps: [
+      "Paste model output A and model output B into side-by-side editors",
+      "Review semantic Jaccard overlap percentage and numerical consistency score",
+      "Switch to Hallucination Inspector to review conflicting numbers, percentages, and metrics",
+      "Use Line Diff view to inspect modified lines"
+    ],
+    tips: [
+      "Hallucination Spotter extracts and cross-checks all quantitative values between model outputs",
+      "Ideal for benchmarking prompt variations, temperature changes, and cross-model reasoning",
+      "100% private in-browser analysis without external API dependencies"
+    ],
+    example: {
+      input: "Model A ($48.2B revenue, 14.5% YoY) vs Model B ($48.2B revenue, 12.8% YoY)",
+      output: "Flagged YoY growth discrepancy (14.5% vs 12.8%) with 92% semantic overlap"
+    },
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
@@ -1319,6 +1391,9 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "vector-similarity",
       "rag-chunker",
       "prompt-architect",
+      "token-counter",
+      "few-shot-formatter",
+      "llm-diff-comparator",
     ],
   },
 ];

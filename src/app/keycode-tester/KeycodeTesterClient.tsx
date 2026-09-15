@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useEffect, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface KeyRecord {
@@ -45,8 +44,6 @@ export default function KeycodeTesterClient() {
   });
   const [history, setHistory] = useState<KeyRecord[]>([]);
   const [preventDefault, setPreventDefault] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (preventDefault) {
@@ -103,29 +100,10 @@ export default function KeycodeTesterClient() {
   const codeSnippet = currentKey
     ? `// React / JS Event Listener Check\nif (event.key === "${currentKey.key}" || event.code === "${currentKey.code}") {\n  // Handle ${currentKey.key} press\n}`
     : "// Press any key on your keyboard";
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Keyboard Event & KeyCode Tester</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Press any key or key combination to inspect event values in real time.
-            </p>
-          </div>
-
-          {/* Controls Bar */}
+return (
+    <ToolLayout toolId="keycode-tester" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Controls Bar */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 bg-bg-page rounded-lg border border-border-subtle">
             <label className="flex items-center gap-2 text-xs font-mono text-text-secondary cursor-pointer select-none">
               <input
@@ -276,17 +254,7 @@ export default function KeycodeTesterClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="keycode-tester" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="keycode-tester" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

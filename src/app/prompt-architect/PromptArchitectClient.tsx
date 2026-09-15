@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface FewShotExample {
@@ -199,68 +198,10 @@ export default function PromptArchitectClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* Top Breadcrumb */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-text-muted hover:text-accent transition-colors"
-        >
-          <span>←</span> [cd .. / home]
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="lg:hidden text-xs font-mono px-2.5 py-1 rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary"
-        >
-          [?] Tool Info
-        </button>
-      </div>
-
-      {/* Hero Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-3">
-          <span className="text-accent">$</span>
-          <span>megatools --prompt-architect --anti-hallucination</span>
-          <span className="animate-pulse text-accent">▊</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-          Structured System <span className="gradient-text">Prompt Architect</span>
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Design hardened, anti-hallucination XML and Markdown system prompts with role isolation, guardrails, and few-shot examples.
-        </p>
-
-        {/* Archetype Selector */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-xs">
-          <span className="text-text-muted">ARCHETYPES:</span>
-          <button
-            onClick={() => setConfig(ARCHETYPES.codeReviewer)}
-            className="px-2 py-1 rounded border border-border-subtle bg-bg-card hover:border-accent/40 hover:text-accent transition-colors"
-          >
-            [Code Reviewer]
-          </button>
-          <button
-            onClick={() => setConfig(ARCHETYPES.ragAgent)}
-            className="px-2 py-1 rounded border border-border-subtle bg-bg-card hover:border-accent/40 hover:text-accent transition-colors"
-          >
-            [Strict RAG Agent]
-          </button>
-          <button
-            onClick={() => setConfig(ARCHETYPES.jsonExtractor)}
-            className="px-2 py-1 rounded border border-border-subtle bg-bg-card hover:border-accent/40 hover:text-accent transition-colors"
-          >
-            [JSON Entity Extractor]
-          </button>
-        </div>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left 2 Cols: Form Editor & Live Prompt Output */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+return (
+    <ToolLayout toolId="prompt-architect" stats={stats}>
+      <div className="space-y-4 font-mono">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Input Builder Column */}
             <div className="rounded-lg border border-border-subtle bg-bg-card p-4 flex flex-col font-mono space-y-3">
               <div className="h-8 flex items-center justify-between">
@@ -402,18 +343,7 @@ export default function PromptArchitectClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right 1 Col: Info Panel Desktop */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="prompt-architect" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="prompt-architect" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

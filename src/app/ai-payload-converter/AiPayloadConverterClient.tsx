@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 type TargetProvider = "openai" | "anthropic" | "gemini" | "ollama" | "vercel-ai" | "python";
@@ -20,9 +19,6 @@ export default function AiPayloadConverterClient() {
   const [maxTokens, setMaxTokens] = useState<number>(4096);
   const [jsonMode, setJsonMode] = useState<boolean>(false);
   const [target, setTarget] = useState<TargetProvider>("openai");
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const outputCode = useMemo(() => {
     switch (target) {
       case "openai": {
@@ -146,28 +142,10 @@ print(response.json()["choices"][0]["message"]["content"])`;
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Universal AI Payload & SDK Exporter</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Convert system prompts, messages, and parameters into official JSON payloads for OpenAI, Claude, Gemini, and Ollama.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+return (
+    <ToolLayout toolId="ai-payload-converter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {/* Left: Inputs & Parameters */}
             <div className="space-y-4">
               <div>
@@ -292,17 +270,7 @@ print(response.json()["choices"][0]["message"]["content"])`;
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="ai-payload-converter" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="ai-payload-converter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

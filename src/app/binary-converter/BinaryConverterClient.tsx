@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import CopyButton from "@/components/CopyButton";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 
 const B58_ALPHABET = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 const B32_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
@@ -299,7 +298,6 @@ export default function BinaryConverterClient() {
   const [error, setError] = useState<{ field: FormatId; message: string } | null>(null);
   const [lastEditedField, setLastEditedField] = useState<FormatId>("text");
   const [byteLength, setByteLength] = useState<number>(DEFAULT_BYTES.length);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleChange = (field: FormatId, newText: string) => {
     setLastEditedField(field);
@@ -384,38 +382,30 @@ export default function BinaryConverterClient() {
   );
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 p-4 sm:p-6 max-w-7xl mx-auto">
-      {/* Main Tool Content */}
-      <div className="flex-1 min-w-0">
-        <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Binary &amp; Base Converter</span>
-            </h1>
-            <p className="mt-1 text-sm text-text-secondary">
-              Real-time multi-base converter. Edit any field below to update all representations simultaneously.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+    <ToolLayout toolId="binary-converter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        <div className="flex items-center justify-between pb-3 border-b border-border-subtle text-xs">
+          <span className="text-text-muted">Edit any format below to live-sync all representations</span>
+          <div className="flex items-center gap-2">
             <button
               onClick={handleResetSample}
-              className="px-3 py-1.5 text-xs font-mono bg-bg-card border border-border-subtle rounded-lg text-text-secondary hover:text-text-primary hover:border-accent/40 transition-colors cursor-pointer"
+              className="px-2.5 py-1 text-xs font-mono bg-bg-page border border-border-subtle rounded text-text-secondary hover:text-accent hover:border-accent transition-colors"
             >
-              Reset Sample
+              [Reset Sample]
             </button>
             <button
               onClick={handleClearAll}
-              className="px-3 py-1.5 text-xs font-mono bg-bg-card border border-border-subtle rounded-lg text-text-muted hover:text-error hover:border-error/40 transition-colors cursor-pointer"
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
             >
-              Clear All
+              [Clear All]
             </button>
           </div>
         </div>
 
-        <div className="bg-bg-card border border-border-subtle rounded-xl p-5 shadow-lg space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
           {FORMAT_CONFIGS.map((config) => {
-            const hasError = error?.field === config.id;
             const value = values[config.id];
+            const hasError = error?.field === config.id;
 
             return (
               <div key={config.id}>
@@ -428,9 +418,7 @@ export default function BinaryConverterClient() {
                       {config.badge}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    {value ? <CopyButton text={value} /> : null}
-                  </div>
+                  <CopyButton text={value} label="Copy" />
                 </div>
 
                 <textarea
@@ -456,25 +444,6 @@ export default function BinaryConverterClient() {
           })}
         </div>
       </div>
-
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-80 shrink-0">
-        <InfoPanel toolId="binary-converter" stats={stats} />
-      </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors cursor-pointer"
-        aria-label="View Info"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="binary-converter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

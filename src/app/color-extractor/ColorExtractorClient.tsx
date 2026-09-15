@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useRef, useEffect, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface ColorSwatch {
@@ -91,8 +90,6 @@ export default function ColorExtractorClient() {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [palette, setPalette] = useState<ColorSwatch[]>([]);
   const [paletteCount, setPaletteCount] = useState(6);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   // Generate demo gradient image on initial mount
@@ -166,29 +163,10 @@ export default function ColorExtractorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Image Color Palette Extractor</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Extract harmonious color palettes, HEX/RGB/HSL values, and CSS theme variables from any image.
-            </p>
-          </div>
-
-          {/* Upload Area */}
+return (
+    <ToolLayout toolId="color-extractor" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Upload Area */}
           <div className="mb-6 p-6 rounded-xl border border-dashed border-border-subtle bg-bg-page text-center">
             <input
               type="file"
@@ -288,17 +266,7 @@ export default function ColorExtractorClient() {
               <pre className="whitespace-pre">{cssVariablesCode}</pre>
             </div>
           </div>
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="color-extractor" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="color-extractor" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

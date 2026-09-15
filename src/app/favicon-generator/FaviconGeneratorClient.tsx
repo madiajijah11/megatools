@@ -1,284 +1,249 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
-interface IconSize {
-  name: string;
+interface FaviconSize {
   size: number;
-  filename: string;
-  url: string | null;
-  blob: Blob | null;
+  label: string;
+  dataUrl: string | null;
+  purpose: string;
 }
 
-const ICON_SIZES: Omit<IconSize, "url" | "blob">[] = [
-  { name: "Standard Favicon (Small)", size: 16, filename: "favicon-16x16.png" },
-  { name: "Standard Favicon (Medium)", size: 32, filename: "favicon-32x32.png" },
-  { name: "Desktop Favicon (Large)", size: 48, filename: "favicon-48x48.png" },
-  { name: "Apple Touch Icon", size: 180, filename: "apple-touch-icon.png" },
-  { name: "Android PWA Icon", size: 192, filename: "android-chrome-192x192.png" },
-  { name: "High-Res PWA / Splash", size: 512, filename: "android-chrome-512x512.png" },
+const FAVICON_SIZES = [
+  { size: 16, label: "favicon-16x16.png", purpose: "Standard Browser Tab" },
+  { size: 32, label: "favicon-32x32.png", purpose: "Retina / Desktop Taskbar" },
+  { size: 48, label: "favicon-48x48.png", purpose: "Windows Site Icon" },
+  { size: 180, label: "apple-touch-icon.png", purpose: "iOS / iPad Home Screen" },
+  { size: 192, label: "android-chrome-192x192.png", purpose: "Android PWA Launcher" },
+  { size: 512, label: "android-chrome-512x512.png", purpose: "PWA Splash Screen" },
 ];
 
 export default function FaviconGeneratorClient() {
   const [file, setFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [generatedIcons, setGeneratedIcons] = useState<IconSize[]>([]);
-  const [generating, setGenerating] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [icons, setIcons] = useState<FaviconSize[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
 
   const generateIcons = useCallback(async (selectedFile: File) => {
+    setIsGenerating(true);
     setError(null);
-    setFile(selectedFile);
-    setGenerating(true);
+    setIcons([]);
 
-    const masterUrl = URL.createObjectURL(selectedFile);
-    setPreviewUrl(masterUrl);
+    const objUrl = URL.createObjectURL(selectedFile);
+    setPreviewUrl(objUrl);
 
     try {
       const img = new Image();
       await new Promise<void>((resolve, reject) => {
         img.onload = () => resolve();
         img.onerror = () => reject(new Error("Failed to load source image"));
-        img.src = masterUrl;
+        img.src = objUrl;
       });
 
-      const icons: IconSize[] = [];
-
-      for (const item of ICON_SIZES) {
+      const generated: FaviconSize[] = [];
+      for (const item of FAVICON_SIZES) {
         const canvas = document.createElement("canvas");
         canvas.width = item.size;
         canvas.height = item.size;
         const ctx = canvas.getContext("2d");
         if (!ctx) continue;
 
-        // High quality scaling
-        ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(img, 0, 0, item.size, item.size);
 
-        // Center and crop to square
-        const minDim = Math.min(img.naturalWidth, img.naturalHeight);
-        const sx = (img.naturalWidth - minDim) / 2;
-        const sy = (img.naturalHeight - minDim) / 2;
-
-        ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, item.size, item.size);
-
-        const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
-        if (blob) {
-          icons.push({
-            ...item,
-            blob,
-            url: URL.createObjectURL(blob),
-          });
-        }
+        const dataUrl = canvas.toDataURL("image/png");
+        generated.push({ ...item, dataUrl });
       }
 
-      setGeneratedIcons(icons);
+      setIcons(generated);
     } catch (err) {
       setError(`Icon generation failed: ${(err as Error).message}`);
     } finally {
-      setGenerating(false);
+      setIsGenerating(false);
     }
   }, []);
 
-  // Cleanup object URLs on unmount
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0];
+    if (f) {
+      setFile(f);
+      generateIcons(f);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    setDragOver(false);
+    const f = e.dataTransfer.files?.[0];
+    if (f && f.type.startsWith("image/")) {
+      setFile(f);
+      generateIcons(f);
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (previewUrl) URL.revokeObjectURL(previewUrl);
-      generatedIcons.forEach((i) => {
-        if (i.url) URL.revokeObjectURL(i.url);
-      });
     };
-  }, [previewUrl, generatedIcons]);
+  }, [previewUrl]);
 
-  const htmlSnippet = `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  const htmlTags = `<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">`;
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Generated</p>
-        <p className="text-text-primary font-mono">{generatedIcons.length ? `${generatedIcons.length} sizes` : "—"}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Target Sizes:</span>
+        <span className="text-accent font-bold">6 Dimensions (16px to 512px)</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Format</p>
-        <p className="text-text-primary font-mono">PNG / Icons</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Platform Support:</span>
+        <span className="text-text-primary">iOS, Android PWA, Windows, Web</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Rendering:</span>
+        <span className="text-success font-bold">100% Canvas Resampling</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Favicon & App Icon Generator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Generate standard website favicons and PWA icons with ready-to-use HTML code.
-            </p>
-          </div>
-
-          {/* Upload Dropzone */}
-          {!file ? (
-            <label
-              onDragOver={(e) => {
-                e.preventDefault();
-                setDragOver(true);
-              }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setDragOver(false);
-                const f = e.dataTransfer.files?.[0];
-                if (f) generateIcons(f);
-              }}
-              className={`flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded border border-dashed px-6 py-8 text-center transition-colors ${
-                dragOver
-                  ? "border-accent bg-accent-soft"
-                  : "border-border-subtle bg-bg-page hover:border-accent"
-              }`}
-            >
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) generateIcons(f);
-                }}
-              />
-              <span className="font-mono text-sm text-text-secondary">
-                $ drop master logo or image here (at least 512x512 recommended)
-              </span>
-              <span className="text-xs text-text-muted">PNG · JPG · WebP · SVG</span>
-            </label>
-          ) : (
-            <div className="space-y-6">
-              {/* Selected master file */}
-              <div className="flex items-center justify-between rounded border border-border-subtle bg-bg-page p-4">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-mono text-sm font-semibold text-text-primary">
-                    {file.name}
-                  </p>
-                  <p className="text-xs text-text-muted mt-1">
-                    {(file.size / 1024).toFixed(1)} KB · Master image
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setFile(null);
-                    setPreviewUrl(null);
-                    setGeneratedIcons([]);
-                  }}
-                  className="btn-secondary text-xs shrink-0"
-                >
-                  Change Image
-                </button>
+    <ToolLayout toolId="favicon-generator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-5 font-mono">
+        {/* Upload Dropzone */}
+        {!file ? (
+          <label
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+            className={`flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+              dragOver
+                ? "border-accent bg-accent/5"
+                : "border-border-subtle hover:border-accent/40 bg-bg-page"
+            }`}
+          >
+            <span className="text-2xl mb-2">✨</span>
+            <span className="text-sm font-semibold text-text-primary">
+              Upload high-resolution logo or icon (PNG / SVG / WebP)
+            </span>
+            <span className="text-xs text-text-muted mt-1">
+              For best results, use a square logo with transparent background (512x512px or higher).
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </label>
+        ) : (
+          <div className="p-3 rounded-lg border border-border-subtle bg-bg-page flex items-center justify-between text-xs">
+            <div className="flex items-center gap-3 truncate">
+              {previewUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={previewUrl}
+                  alt="Source icon"
+                  className="w-10 h-10 rounded object-contain border border-border-subtle bg-white/5"
+                />
+              )}
+              <div className="truncate">
+                <span className="font-bold text-text-primary block truncate">{file.name}</span>
+                <span className="text-text-muted text-[10px]">Source logo loaded</span>
               </div>
-
-              {generating && (
-                <p className="text-center text-xs font-mono text-accent animate-pulse">
-                  $ generating pixel-perfect icons...
-                </p>
-              )}
-
-              {/* Icon Grid */}
-              {generatedIcons.length > 0 && (
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                    {generatedIcons.map((item) => (
-                      <div
-                        key={item.size}
-                        className="rounded border border-border-subtle bg-bg-page p-3 flex flex-col items-center text-center"
-                      >
-                        <div className="w-16 h-16 rounded bg-bg-card border border-border-subtle flex items-center justify-center p-1 mb-2">
-                          {item.url && (
-                            <img
-                              src={item.url}
-                              alt={item.name}
-                              className="max-w-full max-h-full object-contain"
-                              style={{
-                                width: Math.min(item.size, 48),
-                                height: Math.min(item.size, 48),
-                              }}
-                            />
-                          )}
-                        </div>
-                        <p className="font-mono text-xs font-semibold text-text-primary">
-                          {item.size}x{item.size} px
-                        </p>
-                        <p className="text-[11px] text-text-muted font-mono truncate max-w-full">
-                          {item.filename}
-                        </p>
-
-                        {item.url && (
-                          <a
-                            href={item.url}
-                            download={item.filename}
-                            className="mt-2 btn-secondary text-[11px] py-1 px-3 w-full"
-                          >
-                            Download
-                          </a>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* HTML Snippet */}
-                  <div>
-                    <div className="flex justify-between items-center mb-2">
-                      <label className="text-xs font-semibold text-text-muted uppercase">
-                        HTML Header Tags (Paste into your &lt;head&gt;)
-                      </label>
-                      <CopyButton text={htmlSnippet} label="copy html" />
-                    </div>
-                    <pre className="output-field min-h-[100px] text-xs font-mono text-text-secondary overflow-x-auto">
-                      <code>{htmlSnippet}</code>
-                    </pre>
-                  </div>
-                </div>
-              )}
             </div>
-          )}
+            <button
+              onClick={() => {
+                setFile(null);
+                setPreviewUrl(null);
+                setIcons([]);
+              }}
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle shrink-0"
+            >
+              [Change Image]
+            </button>
+          </div>
+        )}
 
-          {error && <p className="mt-4 text-sm text-error text-center">{error}</p>}
-        </div>
+        {/* Processing Indicator */}
+        {isGenerating && (
+          <div className="p-4 rounded-lg border border-accent/30 bg-accent/10 text-xs text-accent text-center">
+            Rendering multi-resolution rasterized favicons in browser memory...
+          </div>
+        )}
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="favicon-generator" stats={stats} />
-        </div>
+        {/* Error */}
+        {error && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            {error}
+          </div>
+        )}
+
+        {/* Generated Favicons Grid */}
+        {icons.length > 0 && (
+          <div className="pt-2 border-t border-border-subtle space-y-4">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-text-primary">Generated Multi-Size Favicon Package</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {icons.map((item) => (
+                <div
+                  key={item.size}
+                  className="p-3 rounded-lg border border-border-subtle bg-bg-page flex flex-col justify-between space-y-2"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded border border-border-subtle bg-white/5 flex items-center justify-center shrink-0">
+                      {item.dataUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={item.dataUrl}
+                          alt={item.label}
+                          className="max-w-[36px] max-h-[36px] object-contain"
+                        />
+                      )}
+                    </div>
+                    <div className="truncate">
+                      <span className="font-bold text-accent text-xs block truncate">{item.label}</span>
+                      <span className="text-[10px] text-text-muted block">{item.purpose}</span>
+                    </div>
+                  </div>
+
+                  {item.dataUrl && (
+                    <a
+                      href={item.dataUrl}
+                      download={item.label}
+                      className="w-full py-1 text-center rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-accent hover:border-accent transition-colors text-[11px]"
+                    >
+                      Download ({item.size}x{item.size})
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* HTML Head snippet */}
+            <div className="pt-3 border-t border-border-subtle space-y-2">
+              <div className="h-8 flex items-center justify-between text-xs">
+                <span className="font-semibold text-text-primary">HTML &lt;head&gt; Integration Snippet</span>
+                <CopyButton text={htmlTags} label="Copy HTML Tags" />
+              </div>
+              <pre className="p-3 rounded-lg border border-border-subtle bg-bg-page font-mono text-xs text-text-primary whitespace-pre-wrap break-all leading-relaxed">
+                {htmlTags}
+              </pre>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="favicon-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

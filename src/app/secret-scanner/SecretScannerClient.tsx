@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo, useRef } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface SecretFinding {
@@ -285,9 +284,7 @@ function scanTextForSecrets(text: string): SecretFinding[] {
 }
 export default function SecretScannerClient() {
   const [input, setInput] = useState<string>(PRESET_ENV);
-  const [activeTab, setActiveTab] = useState<"findings" | "masked">("findings");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [activeTab, setActiveTab] = useState<"findings" | "masked">("findings");  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const findings = useMemo<SecretFinding[]>(() => {
     return scanTextForSecrets(input);
@@ -351,84 +348,10 @@ export default function SecretScannerClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* Breadcrumb */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-text-muted hover:text-accent transition-colors"
-        >
-          <span>←</span> [cd .. / home]
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="lg:hidden text-xs font-mono px-2.5 py-1 rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary"
-        >
-          [?] Tool Info
-        </button>
-      </div>
-
-      {/* Hero Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-3">
-          <span className="text-accent">$</span>
-          <span>megatools --scan-secrets --zero-leak</span>
-          <span className="animate-pulse text-accent">▊</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-          Secret & API Key <span className="gradient-text">Leak Scanner</span>
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Airgapped regex and Shannon entropy scanner. Detect leaked cloud keys, tokens, and database passwords with 1-click auto-masking.
-        </p>
-
-        {/* Presets and Upload Bar */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 font-mono text-xs">
-          <span className="text-text-muted">PRESETS:</span>
-          <button
-            onClick={() => setInput(PRESET_ENV)}
-            className="px-2 py-1 rounded border border-border-subtle bg-bg-card hover:border-accent/40 hover:text-accent transition-colors"
-          >
-            [.env config]
-          </button>
-          <button
-            onClick={() => setInput(PRESET_DIFF)}
-            className="px-2 py-1 rounded border border-border-subtle bg-bg-card hover:border-accent/40 hover:text-accent transition-colors"
-          >
-            [git diff]
-          </button>
-          <button
-            onClick={() => setInput(PRESET_CLEAN)}
-            className="px-2 py-1 rounded border border-border-subtle bg-bg-card hover:border-accent/40 hover:text-accent transition-colors"
-          >
-            [clean sample]
-          </button>
-
-          <span className="text-border-subtle">|</span>
-
-          <input
-            ref={fileInputRef}
-            type="file"
-            onChange={handleFileUpload}
-            className="hidden"
-            accept=".env,.json,.txt,.yaml,.yml,.js,.ts,.py,.sh,.diff"
-          />
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="px-2.5 py-1 rounded border border-border-subtle bg-bg-card hover:border-accent/40 text-text-secondary hover:text-accent transition-colors"
-          >
-            Load File...
-          </button>
-        </div>
-      </div>
-
-      {/* Main Workspace Layout */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left 2 Cols: Scanner Workspace */}
-        <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+return (
+    <ToolLayout toolId="secret-scanner" stats={stats}>
+      <div className="space-y-4 font-mono">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Input Column */}
             <div className="rounded-lg border border-border-subtle bg-bg-card p-4 flex flex-col">
               {/* Header Standard: h-8 flex items-center justify-between */}
@@ -605,18 +528,7 @@ export default function SecretScannerClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right 1 Col: InfoPanel (Desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="secret-scanner" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="secret-scanner" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

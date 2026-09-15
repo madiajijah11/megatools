@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 type Platform = "twitter" | "google" | "discord" | "facebook";
@@ -19,8 +18,6 @@ export default function OgPreviewerClient() {
   const [twitterHandle, setTwitterHandle] = useState("@megatools");
   const [platform, setPlatform] = useState<Platform>("twitter");
   const [outputTab, setOutputTab] = useState<"html" | "nextjs">("html");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const domain = useMemo(() => {
     try {
       return new URL(url).hostname;
@@ -99,29 +96,10 @@ export const metadata: Metadata = {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">OpenGraph & Social Meta Tag Previewer</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Live preview how your website looks when shared on Google, Twitter/X, Discord, and Facebook.
-            </p>
-          </div>
-
-          {/* 2-Column Responsive Workspace */}
+return (
+    <ToolLayout toolId="og-previewer" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* 2-Column Responsive Workspace */}
           <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
             {/* Left: Form Configuration */}
             <div className="space-y-4">
@@ -349,28 +327,7 @@ export const metadata: Metadata = {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="og-previewer" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      <MobileInfoDrawer
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-      >
-        <InfoPanel toolId="og-previewer" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

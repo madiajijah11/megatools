@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useRef, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 interface FileAssetInfo {
@@ -135,45 +134,10 @@ export default function DataUrlClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* Top Breadcrumb */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-text-muted hover:text-accent transition-colors"
-        >
-          <span>←</span> [cd .. / home]
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="lg:hidden text-xs font-mono px-2.5 py-1 rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary"
-        >
-          [?] Tool Info
-        </button>
-      </div>
-
-      {/* Hero Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-3">
-          <span className="text-accent">$</span>
-          <span>megatools --data-url-studio --asset-inline</span>
-          <span className="animate-pulse text-accent">▊</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-          Base64 Data URL & <span className="gradient-text">Asset Embedder</span>
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Transform images, fonts, SVGs, and files into RFC 2397 Data URLs, CSS background-image rules, and HTML elements.
-        </p>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left 2 Cols: Input & Snippets */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Top Tabs */}
+return (
+    <ToolLayout toolId="data-url" stats={stats}>
+      <div className="space-y-4 font-mono">
+        {/* Top Tabs */}
           <div className="rounded-lg border border-border-subtle bg-bg-card p-4 space-y-4 font-mono text-xs">
             <div className="h-8 flex items-center justify-between">
               <div className="flex items-center gap-1 bg-bg-page border border-border-subtle rounded p-0.5">
@@ -330,18 +294,7 @@ export default function DataUrlClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right 1 Col: Info Panel Desktop */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="data-url" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="data-url" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

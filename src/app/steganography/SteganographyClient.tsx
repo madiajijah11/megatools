@@ -1,273 +1,221 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
+type Mode = "encode" | "decode";
+
 export default function SteganographyClient() {
-  const [mode, setMode] = useState<"encode" | "decode">("encode");
-  const [file, setFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [mode, setMode] = useState<Mode>("encode");
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [imageSize, setImageSize] = useState<{ width: number; height: number } | null>(null);
   const [secretText, setSecretText] = useState("");
   const [encodedUrl, setEncodedUrl] = useState<string | null>(null);
   const [decodedMessage, setDecodedMessage] = useState<string | null>(null);
-  const [capacity, setCapacity] = useState<number>(0);
-  const [processing, setProcessing] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
 
-  const decodeFromImage = useCallback((img: HTMLImageElement) => {
-    setProcessing(true);
-    setError(null);
+  // Maximum characters that can fit (each char is 8 bits -> 8 bytes/pixels)
+  const maxCapacity = imageSize ? Math.floor((imageSize.width * imageSize.height * 3) / 8) - 4 : 0;
 
-    try {
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) throw new Error("Canvas context unavailable");
-
-      ctx.drawImage(img, 0, 0);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-
-      // Extract first 32 bits for length header
-      let headerBits = 0;
-      let bitsRead = 0;
-      let dataIdx = 0;
-
-      while (bitsRead < 32 && dataIdx < data.length) {
-        if (dataIdx % 4 !== 3) {
-          headerBits = (headerBits << 1) | (data[dataIdx] & 1);
-          bitsRead++;
-        }
-        dataIdx++;
-      }
-
-      const msgLen = headerBits >>> 0;
-      const maxPossible = Math.floor((canvas.width * canvas.height * 3) / 8) - 4;
-
-      if (msgLen === 0 || msgLen > maxPossible) {
-        setDecodedMessage(null);
-        setError("No hidden message found in this image or format corrupted.");
-        return;
-      }
-
-      const messageBytes = new Uint8Array(msgLen);
-      let byteIdx = 0;
-      let curByte = 0;
-      let bitIdx = 0;
-
-      while (byteIdx < msgLen && dataIdx < data.length) {
-        if (dataIdx % 4 !== 3) {
-          curByte = (curByte << 1) | (data[dataIdx] & 1);
-          bitIdx++;
-          if (bitIdx === 8) {
-            messageBytes[byteIdx] = curByte;
-            byteIdx++;
-            curByte = 0;
-            bitIdx = 0;
-          }
-        }
-        dataIdx++;
-      }
-
-      const text = new TextDecoder("utf-8", { fatal: true }).decode(messageBytes);
-      setDecodedMessage(text);
-    } catch {
-      setError("Failed to decode text. The image might not contain a steganographic message.");
-      setDecodedMessage(null);
-    } finally {
-      setProcessing(false);
+  const handleImageUpload = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image file (PNG recommended).");
+      return;
     }
-  }, []);
+    setError(null);
+    setEncodedUrl(null);
+    setDecodedMessage(null);
 
-  const handleFile = useCallback(
-    (selectedFile: File) => {
-      setError(null);
-      setEncodedUrl(null);
-      setDecodedMessage(null);
-
-      if (!selectedFile.type.startsWith("image/")) {
-        setError("Please upload a valid image file.");
-        return;
-      }
-
-      setFile(selectedFile);
-      const url = URL.createObjectURL(selectedFile);
-      setPreviewUrl(url);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const src = e.target?.result as string;
+      setImageSrc(src);
 
       const img = new Image();
       img.onload = () => {
-        // 3 bits per pixel (R, G, B channels, excluding Alpha) minus 4 bytes header
-        const maxBytes = Math.floor((img.naturalWidth * img.naturalHeight * 3) / 8) - 4;
-        setCapacity(Math.max(0, maxBytes));
-
-        if (mode === "decode") {
-          decodeFromImage(img);
-        }
+        setImageSize({ width: img.width, height: img.height });
       };
-      img.src = url;
-    },
-    [mode, decodeFromImage]
-  );
-
-  // Cleanup object URLs on unmount
-  useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      if (encodedUrl) URL.revokeObjectURL(encodedUrl);
+      img.src = src;
     };
-  }, [previewUrl, encodedUrl]);
+    reader.readAsDataURL(file);
+  };
 
-  const encodeIntoImage = async () => {
-    if (!file || !previewUrl || !secretText.trim()) return;
-    setProcessing(true);
+  const handleEncode = useCallback(() => {
+    if (!imageSrc || !imageSize || !secretText) return;
     setError(null);
 
     try {
       const img = new Image();
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve();
-        img.onerror = () => reject(new Error("Failed to load image"));
-        img.src = previewUrl;
-      });
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
 
-      const canvas = document.createElement("canvas");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) throw new Error("Canvas context unavailable");
+        ctx.drawImage(img, 0, 0);
+        const imgData = ctx.getImageData(0, 0, img.width, img.height);
+        const data = imgData.data;
 
-      ctx.drawImage(img, 0, 0);
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
+        const textBytes = new TextEncoder().encode(secretText);
+        const length = textBytes.length;
 
-      const textBytes = new TextEncoder().encode(secretText);
-      const msgLen = textBytes.length;
-
-      if (msgLen > capacity) {
-        throw new Error(
-          `Message too large (${msgLen} bytes). Image capacity is ${capacity} bytes.`
-        );
-      }
-
-      // 4 bytes length header + payload
-      const payload = new Uint8Array(4 + msgLen);
-      payload[0] = (msgLen >> 24) & 0xff;
-      payload[1] = (msgLen >> 16) & 0xff;
-      payload[2] = (msgLen >> 8) & 0xff;
-      payload[3] = msgLen & 0xff;
-      payload.set(textBytes, 4);
-
-      let byteIdx = 0;
-      let bitIdx = 0;
-
-      for (let i = 0; i < data.length && byteIdx < payload.length; i++) {
-        // Skip alpha channel (i % 4 === 3)
-        if (i % 4 === 3) continue;
-
-        const bit = (payload[byteIdx] >> (7 - bitIdx)) & 1;
-        data[i] = (data[i] & ~1) | bit;
-
-        bitIdx++;
-        if (bitIdx === 8) {
-          bitIdx = 0;
-          byteIdx++;
+        if (length > maxCapacity) {
+          setError(`Message is too long for this image capacity (Max: ${maxCapacity} chars).`);
+          return;
         }
-      }
 
-      ctx.putImageData(imgData, 0, 0);
+        // Store length in first 32 bits (4 bytes)
+        for (let i = 0; i < 32; i++) {
+          const bit = (length >> (31 - i)) & 1;
+          data[i] = (data[i] & ~1) | bit;
+        }
 
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/png")
-      );
-      if (!blob) throw new Error("Encoding failed");
+        // Store message bits in RGB channels
+        let bitIndex = 32;
+        for (let i = 0; i < textBytes.length; i++) {
+          const byte = textBytes[i];
+          for (let b = 7; b >= 0; b--) {
+            const bit = (byte >> b) & 1;
+            data[bitIndex] = (data[bitIndex] & ~1) | bit;
+            bitIndex++;
+          }
+        }
 
-      const url = URL.createObjectURL(blob);
-      setEncodedUrl(url);
-    } catch (err) {
-      setError(`Encode failed: ${(err as Error).message}`);
-    } finally {
-      setProcessing(false);
+        ctx.putImageData(imgData, 0, 0);
+        canvas.toBlob((blob) => {
+          if (blob) {
+            setEncodedUrl(URL.createObjectURL(blob));
+          }
+        }, "image/png");
+      };
+      img.src = imageSrc;
+    } catch {
+      setError("Failed to encode secret text into image.");
     }
-  };
+  }, [imageSrc, imageSize, secretText, maxCapacity]);
 
-  const textBytesCount = new TextEncoder().encode(secretText).length;
+  const handleDecode = useCallback(() => {
+    if (!imageSrc || !imageSize) return;
+    setError(null);
+    setDecodedMessage(null);
+
+    try {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        ctx.drawImage(img, 0, 0);
+        const data = ctx.getImageData(0, 0, img.width, img.height).data;
+
+        // Read length (first 32 bits)
+        let length = 0;
+        for (let i = 0; i < 32; i++) {
+          length = (length << 1) | (data[i] & 1);
+        }
+
+        if (length <= 0 || length > (data.length / 8)) {
+          setError("No hidden message found in this image or format corrupted.");
+          return;
+        }
+
+        const bytes = new Uint8Array(length);
+        let bitIndex = 32;
+        for (let i = 0; i < length; i++) {
+          let byte = 0;
+          for (let b = 0; b < 8; b++) {
+            byte = (byte << 1) | (data[bitIndex] & 1);
+            bitIndex++;
+          }
+          bytes[i] = byte;
+        }
+
+        const decoded = new TextDecoder().decode(bytes);
+        setDecodedMessage(decoded);
+      };
+      img.src = imageSrc;
+    } catch {
+      setError("Failed to decode secret message from image.");
+    }
+  }, [imageSrc, imageSize]);
+
+  useEffect(() => {
+    return () => {
+      if (encodedUrl) URL.revokeObjectURL(encodedUrl);
+    };
+  }, [encodedUrl]);
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Max Capacity</p>
-        <p className="text-text-primary font-mono">
-          {capacity ? `${(capacity / 1024).toFixed(1)} KB` : "—"}
-        </p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Mode:</span>
+        <span className="text-accent font-bold uppercase">{mode}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Message Size</p>
-        <p className="text-text-primary font-mono">{textBytesCount ? `${textBytesCount} B` : "—"}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Dimensions:</span>
+        <span className="text-text-primary">
+          {imageSize ? `${imageSize.width} × ${imageSize.height} px` : "—"}
+        </span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Max Capacity:</span>
+        <span className="text-success font-bold">
+          {maxCapacity > 0 ? `${maxCapacity.toLocaleString()} chars` : "—"}
+        </span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Payload:</span>
+        <span className="text-text-primary">{secretText.length} chars</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Image Steganography</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Hide secret messages in image pixels (LSB) or reveal embedded text.
-            </p>
-          </div>
-
-          {/* Mode Tabs */}
-          <div className="mb-6 flex rounded border border-border-subtle bg-bg-page p-1">
+    <ToolLayout toolId="steganography" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Mode Selector */}
+        <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-1.5 p-1 bg-bg-page rounded-lg border border-border-subtle text-xs">
             <button
               onClick={() => {
                 setMode("encode");
                 setError(null);
                 setDecodedMessage(null);
               }}
-              className={`flex-1 py-1.5 text-xs font-mono rounded transition-colors ${
-                mode === "encode"
-                  ? "bg-accent text-bg-page font-bold"
-                  : "text-text-secondary hover:text-text-primary"
+              className={`px-3 py-1 rounded font-bold transition-colors ${
+                mode === "encode" ? "bg-accent text-bg-page" : "text-text-secondary hover:text-text-primary"
               }`}
             >
-              $ mode --encode (Hide Text)
+              Hide Secret Message (Encode)
             </button>
             <button
               onClick={() => {
                 setMode("decode");
                 setError(null);
-                setEncodedUrl(null);
+                setDecodedMessage(null);
               }}
-              className={`flex-1 py-1.5 text-xs font-mono rounded transition-colors ${
-                mode === "decode"
-                  ? "bg-accent text-bg-page font-bold"
-                  : "text-text-secondary hover:text-text-primary"
+              className={`px-3 py-1 rounded font-bold transition-colors ${
+                mode === "decode" ? "bg-accent text-bg-page" : "text-text-secondary hover:text-text-primary"
               }`}
             >
-              $ mode --decode (Extract Text)
+              Reveal Secret Message (Decode)
             </button>
           </div>
+        </div>
 
-          {/* Upload Dropzone */}
-          {!file ? (
+        {/* Carrier Image Upload */}
+        <div className="space-y-2">
+          <span className="text-xs font-semibold text-text-primary block">
+            {mode === "encode" ? "Carrier Image (PNG)" : "Steganographic Image to Read"}
+          </span>
+
+          {!imageSrc ? (
             <label
               onDragOver={(e) => {
                 e.preventDefault();
@@ -277,165 +225,135 @@ export default function SteganographyClient() {
               onDrop={(e) => {
                 e.preventDefault();
                 setDragOver(false);
-                const f = e.dataTransfer.files?.[0];
-                if (f) handleFile(f);
+                const file = e.dataTransfer.files?.[0];
+                if (file) handleImageUpload(file);
               }}
-              className={`flex min-h-[160px] cursor-pointer flex-col items-center justify-center gap-2 rounded border border-dashed px-6 py-8 text-center transition-colors ${
+              className={`flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
                 dragOver
-                  ? "border-accent bg-accent-soft"
-                  : "border-border-subtle bg-bg-page hover:border-accent"
+                  ? "border-accent bg-accent/5"
+                  : "border-border-subtle hover:border-accent/40 bg-bg-page"
               }`}
             >
+              <span className="text-2xl mb-2">🖼️</span>
+              <span className="text-sm font-semibold text-text-primary">
+                Upload carrier image (PNG / WebP / JPEG)
+              </span>
+              <span className="text-xs text-text-muted mt-1">
+                Zero server upload — 100% Canvas LSB encoding in browser RAM
+              </span>
               <input
                 type="file"
                 accept="image/*"
-                className="hidden"
                 onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleFile(f);
+                  const file = e.target.files?.[0];
+                  if (file) handleImageUpload(file);
                 }}
+                className="hidden"
               />
-              <span className="font-mono text-sm text-text-secondary">
-                {mode === "encode"
-                  ? "$ drop cover image (PNG/JPG)"
-                  : "$ drop steganographic PNG image"}
-              </span>
-              <span className="text-xs text-text-muted">
-                {mode === "encode"
-                  ? "Lossless PNG output prevents compression artifacts"
-                  : "Automatic LSB bit reader"}
-              </span>
             </label>
           ) : (
-            <div className="space-y-6">
-              {/* Selected File Card */}
-              <div className="flex items-center justify-between rounded border border-border-subtle bg-bg-page p-4">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-mono text-sm font-semibold text-text-primary">
-                    {file.name}
-                  </p>
-                  <p className="text-xs text-text-muted mt-1">
-                    {(file.size / 1024).toFixed(1)} KB · Max capacity:{" "}
-                    <span className="text-accent font-mono">{(capacity / 1024).toFixed(1)} KB</span>
-                  </p>
-                </div>
-                <button
-                  onClick={() => {
-                    setFile(null);
-                    setPreviewUrl(null);
-                    setEncodedUrl(null);
-                    setDecodedMessage(null);
-                  }}
-                  className="btn-secondary text-xs shrink-0"
-                >
-                  Change Image
-                </button>
+            <div className="p-3 rounded-lg border border-border-subtle bg-bg-page flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-base">🖼️</span>
+                <span className="font-bold text-text-primary">Image loaded:</span>
+                <span className="text-text-muted">
+                  {imageSize?.width} × {imageSize?.height} px (Max: {maxCapacity.toLocaleString()} chars)
+                </span>
               </div>
-
-              {/* Encode Mode: Message input */}
-              {mode === "encode" && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-text-secondary">
-                      Secret message to hide
-                    </label>
-                    <textarea
-                      value={secretText}
-                      onChange={(e) => {
-                        setSecretText(e.target.value);
-                        setEncodedUrl(null);
-                      }}
-                      placeholder="Type your secret payload here..."
-                      className="input-field min-h-[120px] resize-y font-mono text-sm"
-                    />
-                    <div className="flex justify-between text-xs text-text-muted mt-1 font-mono">
-                      <span>
-                        Size: {textBytesCount} / {capacity} bytes
-                      </span>
-                      {textBytesCount > capacity && (
-                        <span className="text-error">Exceeds capacity!</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={encodeIntoImage}
-                    disabled={processing || !secretText.trim() || textBytesCount > capacity}
-                    className="btn-primary w-full"
-                  >
-                    {processing ? "Encoding LSB..." : "$ embed message in pixels"}
-                  </button>
-
-                  {/* Encoded output download */}
-                  {encodedUrl && (
-                    <div className="rounded border border-accent/40 bg-accent-soft p-4 text-center space-y-3">
-                      <p className="text-sm font-semibold text-accent">
-                        ✓ Message successfully embedded in PNG pixels!
-                      </p>
-                      <a
-                        href={encodedUrl}
-                        download={`stego-${file.name.replace(/\.[^/.]+$/, "")}.png`}
-                        className="btn-primary inline-block py-1.5 px-6 text-xs"
-                      >
-                        Download stego.png
-                      </a>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Decode Mode: Extracted Output */}
-              {mode === "decode" && (
-                <div className="space-y-4">
-                  {decodedMessage !== null ? (
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-text-secondary">
-                        Extracted secret message:
-                      </label>
-                      <div className="relative">
-                        <textarea
-                          readOnly
-                          value={decodedMessage}
-                          className="output-field min-h-[140px] text-accent font-mono"
-                        />
-                        <div className="absolute top-2 right-2">
-                          <CopyButton text={decodedMessage} label="copy" />
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    !error && (
-                      <p className="text-center text-xs font-mono text-text-muted">
-                        Scanning pixel channels for LSB signature...
-                      </p>
-                    )
-                  )}
-                </div>
-              )}
+              <button
+                onClick={() => {
+                  setImageSrc(null);
+                  setImageSize(null);
+                  setEncodedUrl(null);
+                  setDecodedMessage(null);
+                }}
+                className="text-xs text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle"
+              >
+                [Change Image]
+              </button>
             </div>
           )}
-
-          {error && <p className="mt-4 text-sm text-error text-center font-mono">{error}</p>}
         </div>
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="steganography" stats={stats} />
-        </div>
+        {/* Encode Inputs */}
+        {mode === "encode" && imageSrc && (
+          <div className="space-y-3 pt-2 border-t border-border-subtle">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-text-primary">Secret Message to Embed</span>
+              <span className="text-text-muted">
+                {secretText.length} / {maxCapacity} chars
+              </span>
+            </div>
+            <textarea
+              value={secretText}
+              onChange={(e) => setSecretText(e.target.value)}
+              placeholder="Type your confidential message, private key, or password to hide inside pixels..."
+              rows={4}
+              className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-y leading-relaxed"
+            />
+            <button
+              type="button"
+              onClick={handleEncode}
+              disabled={!secretText.trim() || secretText.length > maxCapacity}
+              className="px-4 py-2 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Encode & Hide Message
+            </button>
+          </div>
+        )}
+
+        {/* Decode Action */}
+        {mode === "decode" && imageSrc && (
+          <div className="pt-2 border-t border-border-subtle">
+            <button
+              type="button"
+              onClick={handleDecode}
+              className="px-4 py-2 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors"
+            >
+              Extract & Reveal Hidden Message
+            </button>
+          </div>
+        )}
+
+        {/* Error */}
+        {error && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            {error}
+          </div>
+        )}
+
+        {/* Encoded Download Area */}
+        {encodedUrl && (
+          <div className="pt-3 border-t border-border-subtle space-y-2">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-success">✓ Secret Embedded Successfully</span>
+              <a
+                href={encodedUrl}
+                download="stego-image.png"
+                className="px-3 py-1 rounded bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors"
+              >
+                Download Stego PNG
+              </a>
+            </div>
+            <p className="text-xs text-text-muted">
+              Always save and share as a lossless **PNG** file. JPEG compression will destroy the LSB payload.
+            </p>
+          </div>
+        )}
+
+        {/* Decoded Message Result */}
+        {decodedMessage !== null && (
+          <div className="pt-3 border-t border-border-subtle space-y-2">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-text-primary">Extracted Hidden Message</span>
+              <CopyButton text={decodedMessage} label="Copy Message" />
+            </div>
+            <pre className="p-3.5 rounded-lg border border-border-subtle bg-bg-page font-mono text-xs text-text-primary whitespace-pre-wrap break-all max-h-72 overflow-y-auto leading-relaxed">
+              {decodedMessage}
+            </pre>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="steganography" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

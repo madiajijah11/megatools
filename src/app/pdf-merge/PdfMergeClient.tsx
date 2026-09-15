@@ -1,42 +1,46 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
 import { PDFDocument } from "pdf-lib";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 
 interface PdfItem {
   id: string;
   file: File;
   pageCount: number;
-  buffer: ArrayBuffer;
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
 }
 
 export default function PdfMergeClient() {
   const [items, setItems] = useState<PdfItem[]>([]);
-  const [merging, setMerging] = useState(false);
-  const [dragOver, setDragOver] = useState(false);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isMerging, setIsMerging] = useState(false);
+  const [mergedBlobUrl, setMergedBlobUrl] = useState<string | null>(null);
+  const [mergedSize, setMergedSize] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
 
-  const handleFiles = useCallback(async (files: FileList | File[]) => {
+  const addFiles = useCallback(async (files: FileList | File[]) => {
     setError(null);
     const newItems: PdfItem[] = [];
 
     for (const file of Array.from(files)) {
-      if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      if (file.type !== "application/pdf" && !file.name.endsWith(".pdf")) {
         continue;
       }
       try {
         const buffer = await file.arrayBuffer();
         const doc = await PDFDocument.load(buffer, { ignoreEncryption: true });
         newItems.push({
-          id: `${file.name}-${Date.now()}-${Math.random()}`,
+          id: Math.random().toString(36).slice(2),
           file,
           pageCount: doc.getPageCount(),
-          buffer,
         });
       } catch (err) {
         setError(`Failed to read "${file.name}": ${(err as Error).message}`);
@@ -45,237 +49,228 @@ export default function PdfMergeClient() {
 
     if (newItems.length > 0) {
       setItems((prev) => [...prev, ...newItems]);
-      setDownloadUrl(null);
+      setMergedBlobUrl(null);
     }
   }, []);
 
-  const moveItem = (index: number, direction: -1 | 1) => {
+  const removeItem = (id: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== id));
+    setMergedBlobUrl(null);
+  };
+
+  const moveItem = (index: number, direction: "up" | "down") => {
     setItems((prev) => {
-      const target = index + direction;
-      if (target < 0 || target >= prev.length) return prev;
       const next = [...prev];
+      const target = direction === "up" ? index - 1 : index + 1;
+      if (target < 0 || target >= next.length) return prev;
       const temp = next[index];
       next[index] = next[target];
       next[target] = temp;
       return next;
     });
-    setDownloadUrl(null);
-  };
-
-  const removeItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
-    setDownloadUrl(null);
+    setMergedBlobUrl(null);
   };
 
   const handleMerge = async () => {
     if (items.length < 2) {
-      setError("Please add at least 2 PDF files to merge.");
+      setError("Please add at least 2 PDF documents to merge.");
       return;
     }
-    setMerging(true);
+
+    setIsMerging(true);
     setError(null);
 
     try {
-      const mergedPdf = await PDFDocument.create();
+      const mergedDoc = await PDFDocument.create();
 
       for (const item of items) {
-        const pdf = await PDFDocument.load(item.buffer, { ignoreEncryption: true });
-        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
-        copiedPages.forEach((page) => mergedPdf.addPage(page));
+        const buffer = await item.file.arrayBuffer();
+        const srcDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
+        const indices = srcDoc.getPageIndices();
+        const copiedPages = await mergedDoc.copyPages(srcDoc, indices);
+        copiedPages.forEach((page) => mergedDoc.addPage(page));
       }
 
-      const mergedBytes = await mergedPdf.save();
-      const blob = new Blob([mergedBytes.buffer as ArrayBuffer], { type: "application/pdf" });
+      const pdfBytes = await mergedDoc.save();
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
       const url = URL.createObjectURL(blob);
-      setDownloadUrl(url);
+      setMergedBlobUrl(url);
+      setMergedSize(blob.size);
     } catch (err) {
       setError(`Merge failed: ${(err as Error).message}`);
     } finally {
-      setMerging(false);
+      setIsMerging(false);
     }
   };
 
-  const totalPages = items.reduce((acc, curr) => acc + curr.pageCount, 0);
+  const totalPages = items.reduce((acc, item) => acc + item.pageCount, 0);
+  const totalInputSize = items.reduce((acc, item) => acc + item.file.size, 0);
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Files</p>
-        <p className="text-text-primary font-mono">{items.length}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Total Files:</span>
+        <span className="text-accent font-bold">{items.length} PDFs</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Total Pages</p>
-        <p className="text-text-primary font-mono">{totalPages || "—"}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Total Pages:</span>
+        <span className="text-text-primary">{totalPages} pages</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Combined Input:</span>
+        <span className="text-text-primary">{formatBytes(totalInputSize)}</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Privacy:</span>
+        <span className="text-success font-bold">100% Client-Side</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
+    <ToolLayout toolId="pdf-merge" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-5 font-mono">
+        {/* Upload Dropzone */}
+        <label
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            if (e.dataTransfer.files) addFiles(e.dataTransfer.files);
+          }}
+          className={`flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+            dragOver
+              ? "border-accent bg-accent/5"
+              : "border-border-subtle hover:border-accent/40 bg-bg-page"
+          }`}
+        >
+          <span className="text-2xl mb-2">📑</span>
+          <span className="text-sm font-semibold text-text-primary">
+            Drop PDF documents here or click to browse
+          </span>
+          <span className="text-xs text-text-muted mt-1">
+            Zero server uploads — documents are combined directly in your browser with pdf-lib.
+          </span>
+          <input
+            type="file"
+            accept="application/pdf"
+            multiple
+            onChange={(e) => e.target.files && addFiles(e.target.files)}
+            className="hidden"
+          />
+        </label>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Merge PDF</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Combine multiple PDF files into one. Fast & 100% in-browser.
-            </p>
+        {/* Error Notification */}
+        {error && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            {error}
           </div>
+        )}
 
-          {/* Dropzone */}
-          <label
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragOver(true);
-            }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragOver(false);
-              if (e.dataTransfer.files?.length) {
-                handleFiles(e.dataTransfer.files);
-              }
-            }}
-            className={`flex min-h-[140px] cursor-pointer flex-col items-center justify-center gap-2 rounded border border-dashed px-6 py-8 text-center transition-colors ${
-              dragOver
-                ? "border-accent bg-accent-soft"
-                : "border-border-subtle bg-bg-page hover:border-accent"
-            }`}
-          >
-            <input
-              type="file"
-              multiple
-              accept="application/pdf"
-              className="hidden"
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  handleFiles(e.target.files);
-                  e.target.value = "";
-                }
-              }}
-            />
-            <span className="font-mono text-sm text-text-secondary">
-              $ drop multiple .pdf files here -- or click to select
-            </span>
-            <span className="text-xs text-text-muted">Client-side only · No size limit</span>
-          </label>
+        {/* PDF Queue List */}
+        {items.length > 0 && (
+          <div className="pt-2 border-t border-border-subtle space-y-3">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-text-primary">
+                PDF Merge Queue ({items.length} Files · {totalPages} Pages)
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setItems([]);
+                  setMergedBlobUrl(null);
+                }}
+                className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+              >
+                [Clear All]
+              </button>
+            </div>
 
-          {error && <p className="mt-4 text-sm text-error text-center">{error}</p>}
-
-          {/* File list */}
-          {items.length > 0 && (
-            <div className="mt-6 space-y-2">
-              <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">
-                PDF Files to Merge ({items.length}) — Top to Bottom Order
-              </p>
+            <div className="space-y-2">
               {items.map((item, index) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between gap-3 rounded border border-border-subtle bg-bg-page p-3 text-sm"
+                  className="p-3 rounded-lg border border-border-subtle bg-bg-page flex items-center justify-between gap-3 text-xs"
                 >
-                  <div className="flex items-center gap-2 min-w-0 flex-1">
-                    <span className="text-accent font-mono text-xs">[{index + 1}]</span>
-                    <span className="truncate text-text-primary font-mono">{item.file.name}</span>
-                    <span className="text-xs text-text-muted shrink-0">
-                      ({item.pageCount} {item.pageCount === 1 ? "page" : "pages"} ·{" "}
-                      {(item.file.size / 1024).toFixed(1)} KB)
+                  <div className="flex items-center gap-3 truncate">
+                    <span className="w-6 h-6 rounded bg-bg-card border border-border-subtle text-accent font-bold flex items-center justify-center shrink-0">
+                      {index + 1}
                     </span>
+                    <div className="truncate">
+                      <span className="font-bold text-text-primary block truncate">{item.file.name}</span>
+                      <span className="text-text-muted text-[10px]">
+                        {item.pageCount} pages · {formatBytes(item.file.size)}
+                      </span>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-1 shrink-0">
+                  <div className="flex items-center gap-1.5 shrink-0">
                     <button
-                      onClick={() => moveItem(index, -1)}
+                      type="button"
                       disabled={index === 0}
-                      className="px-2 py-1 text-xs btn-secondary disabled:opacity-30"
+                      onClick={() => moveItem(index, "up")}
+                      className="px-2 py-0.5 rounded border border-border-subtle text-text-secondary hover:text-text-primary disabled:opacity-30"
                       title="Move up"
                     >
-                      ▲
+                      ↑
                     </button>
                     <button
-                      onClick={() => moveItem(index, 1)}
+                      type="button"
                       disabled={index === items.length - 1}
-                      className="px-2 py-1 text-xs btn-secondary disabled:opacity-30"
+                      onClick={() => moveItem(index, "down")}
+                      className="px-2 py-0.5 rounded border border-border-subtle text-text-secondary hover:text-text-primary disabled:opacity-30"
                       title="Move down"
                     >
-                      ▼
+                      ↓
                     </button>
                     <button
+                      type="button"
                       onClick={() => removeItem(item.id)}
-                      className="px-2 py-1 text-xs text-error hover:bg-error/10 rounded transition-colors"
-                      title="Remove"
+                      className="px-2 py-0.5 rounded border border-border-subtle text-text-muted hover:text-error hover:border-error/40 transition-colors"
+                      title="Remove document"
                     >
-                      ✕
+                      ×
                     </button>
                   </div>
                 </div>
               ))}
-
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border-subtle">
-                <button
-                  onClick={() => {
-                    setItems([]);
-                    setDownloadUrl(null);
-                  }}
-                  className="btn-secondary text-xs"
-                >
-                  Clear All
-                </button>
-
-                <button
-                  onClick={handleMerge}
-                  disabled={merging || items.length < 2}
-                  className="btn-primary"
-                >
-                  {merging ? "Merging..." : `$ merge ${items.length} pdfs`}
-                </button>
-              </div>
             </div>
-          )}
 
-          {/* Download ready */}
-          {downloadUrl && (
-            <div className="mt-6 rounded border border-accent/40 bg-accent-soft p-4 text-center">
-              <p className="text-sm font-semibold text-accent mb-2">
-                ✓ PDF merge complete ({totalPages} pages)
-              </p>
-              <a
-                href={downloadUrl}
-                download="merged.pdf"
-                className="btn-primary inline-flex items-center gap-2"
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={handleMerge}
+                disabled={isMerging || items.length < 2}
+                className="w-full py-2.5 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                Download merged.pdf
+                {isMerging ? "Merging Documents..." : `Merge ${items.length} PDF Documents`}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Download Action */}
+        {mergedBlobUrl && (
+          <div className="pt-3 border-t border-border-subtle space-y-2">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-success">
+                ✓ PDF Documents Successfully Merged ({formatBytes(mergedSize)})
+              </span>
+              <a
+                href={mergedBlobUrl}
+                download="merged-document.pdf"
+                className="px-4 py-1.5 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors"
+              >
+                Download Merged PDF
               </a>
             </div>
-          )}
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="pdf-merge" stats={stats} />
-        </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="pdf-merge" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

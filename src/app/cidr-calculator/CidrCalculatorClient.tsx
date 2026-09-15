@@ -1,220 +1,233 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
-interface CidrInfo {
-  network: string;
-  broadcast: string;
+interface CidrResult {
+  ip: string;
+  prefix: number;
   netmask: string;
   wildcard: string;
+  network: string;
+  broadcast: string;
   firstHost: string;
   lastHost: string;
-  totalAddresses: number;
-  usableHosts: string;
-  ipClass: string;
-  scope: "Private" | "Public";
+  totalHosts: number;
+  usableHosts: number;
+  ipClass: "A" | "B" | "C" | "D" | "E";
+  scope: "Private" | "Public" | "Loopback" | "Link-Local" | "Multicast" | "Reserved";
 }
 
-function intToIp(n: number): string {
-  return [(n >>> 24) & 255, (n >>> 16) & 255, (n >>> 8) & 255, n & 255].join(".");
-}
-
-function parseCidr(input: string): CidrInfo | null {
-  const m = input.trim().match(
-    /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\/(\d{1,2})$/
+function parseCidr(raw: string): CidrResult | null {
+  const trimmed = raw.trim();
+  const match = trimmed.match(
+    /^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})(?:\/(\d{1,2}))?$/
   );
-  if (!m) return null;
-  const octets = [m[1], m[2], m[3], m[4]].map(Number);
-  const prefix = Number(m[5]);
+  if (!match) return null;
+
+  const octets = [
+    Number(match[1]),
+    Number(match[2]),
+    Number(match[3]),
+    Number(match[4]),
+  ];
   if (octets.some((o) => o < 0 || o > 255)) return null;
-  if (prefix > 32) return null;
 
-  const ip =
-    (((octets[0] << 24) | (octets[1] << 16) | (octets[2] << 8) | octets[3]) >>> 0);
-  const mask = prefix === 0 ? 0 : (0xffffffff << (32 - prefix)) >>> 0;
-  const network = (ip & mask) >>> 0;
-  const hostBits = 32 - prefix;
-  const total = Math.pow(2, hostBits);
-  const broadcast = (network + total - 1) >>> 0;
-  const usable = total - 2;
+  const prefix = match[5] === undefined ? 32 : Number(match[5]);
+  if (prefix < 0 || prefix > 32) return null;
 
-  // RFC1918
-  const isPrivate =
-    (octets[0] === 10 ||
-      (octets[0] === 172 && octets[1] >= 16 && octets[1] <= 31) ||
-      (octets[0] === 192 && octets[1] === 168));
+  const ipInt =
+    ((octets[0] << 24) >>> 0) +
+    ((octets[1] << 16) >>> 0) +
+    ((octets[2] << 8) >>> 0) +
+    (octets[3] >>> 0);
 
-  let cls: string;
-  if (octets[0] < 128) cls = "A";
-  else if (octets[0] < 192) cls = "B";
-  else if (octets[0] < 224) cls = "C";
-  else if (octets[0] < 240) cls = "D";
-  else cls = "E";
+  const maskInt =
+    prefix === 0 ? 0 : ((0xffffffff << (32 - prefix)) >>> 0);
+  const wildcardInt = (~maskInt) >>> 0;
+
+  const networkInt = (ipInt & maskInt) >>> 0;
+  const broadcastInt = (networkInt | wildcardInt) >>> 0;
+
+  const toIpStr = (int: number): string =>
+    [
+      (int >>> 24) & 255,
+      (int >>> 16) & 255,
+      (int >>> 8) & 255,
+      int & 255,
+    ].join(".");
+
+  const totalHosts = prefix === 32 ? 1 : Math.pow(2, 32 - prefix);
+  const usableHosts = prefix >= 31 ? (prefix === 31 ? 2 : 1) : Math.max(0, totalHosts - 2);
+
+  const firstHost =
+    prefix === 32
+      ? toIpStr(networkInt)
+      : prefix === 31
+      ? toIpStr(networkInt)
+      : toIpStr((networkInt + 1) >>> 0);
+
+  const lastHost =
+    prefix === 32
+      ? toIpStr(networkInt)
+      : prefix === 31
+      ? toIpStr(broadcastInt)
+      : toIpStr((broadcastInt - 1) >>> 0);
+
+  const firstOctet = octets[0];
+  let ipClass: CidrResult["ipClass"] = "C";
+  if (firstOctet < 128) ipClass = "A";
+  else if (firstOctet < 192) ipClass = "B";
+  else if (firstOctet < 224) ipClass = "C";
+  else if (firstOctet < 240) ipClass = "D";
+  else ipClass = "E";
+
+  let scope: CidrResult["scope"] = "Public";
+  if (firstOctet === 10) scope = "Private";
+  else if (firstOctet === 172 && octets[1] >= 16 && octets[1] <= 31) scope = "Private";
+  else if (firstOctet === 192 && octets[1] === 168) scope = "Private";
+  else if (firstOctet === 127) scope = "Loopback";
+  else if (firstOctet === 169 && octets[1] === 254) scope = "Link-Local";
+  else if (firstOctet >= 224 && firstOctet < 240) scope = "Multicast";
+  else if (firstOctet >= 240) scope = "Reserved";
 
   return {
-    network: intToIp(network),
-    broadcast: intToIp(broadcast),
-    netmask: intToIp(mask),
-    wildcard: intToIp(~mask >>> 0),
-    firstHost:
-      prefix >= 31 ? intToIp(network) : intToIp((network + 1) >>> 0),
-    lastHost:
-      prefix >= 31 ? intToIp(broadcast) : intToIp((broadcast - 1) >>> 0),
-    totalAddresses: total,
-    usableHosts:
-      prefix === 32 ? "1" : prefix === 31 ? "2" : usable.toLocaleString(),
-    ipClass: cls,
-    scope: isPrivate ? "Private" : "Public",
+    ip: toIpStr(ipInt),
+    prefix,
+    netmask: toIpStr(maskInt),
+    wildcard: toIpStr(wildcardInt),
+    network: toIpStr(networkInt),
+    broadcast: toIpStr(broadcastInt),
+    firstHost,
+    lastHost,
+    totalHosts,
+    usableHosts,
+    ipClass,
+    scope,
   };
 }
 
+const PRESETS = [
+  "192.168.1.0/24",
+  "10.0.0.0/8",
+  "172.16.0.0/16",
+  "192.168.0.1/30",
+];
+
 export default function CidrCalculatorClient() {
-  const [input, setInput] = useState("");
-  const [debounced, setDebounced] = useState("");
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [input, setInput] = useState("192.168.1.0/24");
+  const [debounced, setDebounced] = useState(input);
 
   useEffect(() => {
-    const t = setTimeout(() => setDebounced(input), 150);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setDebounced(input), 150);
+    return () => clearTimeout(timer);
   }, [input]);
 
   const result = useMemo(() => parseCidr(debounced), [debounced]);
   const error = debounced.trim() !== "" && !result;
 
-  const rows: [string, string][] = result
-    ? [
-        ["Network address", result.network],
-        ["Broadcast address", result.broadcast],
-        ["Netmask", result.netmask],
-        ["Wildcard mask", result.wildcard],
-        ["First usable host", result.firstHost],
-        ["Last usable host", result.lastHost],
-        ["Total addresses", result.totalAddresses.toLocaleString()],
-        ["Usable hosts", result.usableHosts],
-        ["IP class", `Class ${result.ipClass}`],
-      ]
-    : [];
-
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Total addresses</p>
-        <p className="text-text-primary font-mono">
-          {result ? result.totalAddresses.toLocaleString() : "—"}
-        </p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Total IPs:</span>
+        <span className="text-accent font-bold">
+          {result ? result.totalHosts.toLocaleString() : "—"}
+        </span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Usable hosts</p>
-        <p className="text-text-primary font-mono">
-          {result ? result.usableHosts : "—"}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Usable Hosts:</span>
+        <span className="text-success font-bold">
+          {result ? result.usableHosts.toLocaleString() : "—"}
+        </span>
       </div>
-      <div className="col-span-2">
-        <p className="text-text-muted text-xs">Type</p>
-        <p className="text-text-primary font-mono">
-          {result ? `${result.scope} · Class ${result.ipClass}` : "—"}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Classification:</span>
+        <span className="text-text-primary">
+          {result ? `Class ${result.ipClass} (${result.scope})` : "—"}
+        </span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">CIDR Calculator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              IPv4 subnet calculator. Everything stays in your browser.
-            </p>
+    <ToolLayout toolId="cidr-calculator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Presets Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-border-subtle">
+          <span className="text-xs text-text-muted">Common Subnet Presets:</span>
+          <div className="flex flex-wrap gap-1.5">
+            {PRESETS.map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setInput(p)}
+                className="px-2.5 py-1 rounded border border-border-subtle bg-bg-page text-xs font-mono text-text-secondary hover:border-accent hover:text-accent transition-colors"
+              >
+                [{p}]
+              </button>
+            ))}
           </div>
+        </div>
 
-          <label
-            htmlFor="cidr-input"
-            className="mb-2 block text-sm font-medium text-text-secondary"
-          >
-            CIDR notation
-          </label>
+        {/* Input Field */}
+        <div className="space-y-1.5">
+          <div className="h-8 flex items-center justify-between text-xs">
+            <span className="font-semibold text-text-primary">IPv4 CIDR Block / IP Address</span>
+            <button
+              type="button"
+              onClick={() => setInput("")}
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+            >
+              [Clear]
+            </button>
+          </div>
           <input
-            id="cidr-input"
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="192.168.1.0/24"
-            spellCheck={false}
-            className="input-field font-mono text-sm"
+            placeholder="e.g. 192.168.1.0/24 or 10.0.0.1/16..."
+            className={`w-full rounded-lg border bg-bg-page p-3 font-mono text-sm text-text-primary focus:outline-none ${
+              error ? "border-error" : "border-border-subtle focus:border-accent"
+            }`}
           />
           {error && (
-            <p className="mt-2 text-sm text-error">
-              Invalid CIDR — use the form x.x.x.x/p with octets 0–255 and
-              prefix 0–32.
-            </p>
+            <p className="text-xs text-error">Invalid IPv4 CIDR notation. Use standard A.B.C.D/N format.</p>
           )}
+        </div>
 
-          {rows.length > 0 && (
-            <div className="mt-6 space-y-3">
-              {rows.map(([label, value]) => (
-                <div key={label} className="flex flex-wrap items-center gap-2">
-                  <span className="w-40 shrink-0 text-sm font-semibold text-accent">
-                    {label}
-                  </span>
-                  <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs sm:text-sm text-text-primary">
-                    {value}
-                  </code>
-                  <CopyButton text={value.replace(/\s*\(.*\)$/, "")} label="copy" />
+        {/* Subnet Calculation Breakdown */}
+        {result && (
+          <div className="pt-2 border-t border-border-subtle space-y-2">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-text-primary">Subnet Allocation Details</span>
+              <CopyButton
+                text={`Network: ${result.network}/${result.prefix}\nNetmask: ${result.netmask}\nHost Range: ${result.firstHost} - ${result.lastHost}\nBroadcast: ${result.broadcast}\nUsable Hosts: ${result.usableHosts}`}
+                label="Copy Summary"
+              />
+            </div>
+
+            <div className="p-3.5 rounded-lg border border-border-subtle bg-bg-page space-y-2 text-xs">
+              {[
+                { label: "Network Address", value: `${result.network}/${result.prefix}` },
+                { label: "Subnet Mask", value: result.netmask },
+                { label: "Wildcard Mask", value: result.wildcard },
+                { label: "Usable Host Range", value: `${result.firstHost} — ${result.lastHost}` },
+                { label: "Broadcast Address", value: result.broadcast },
+                { label: "Usable Hosts", value: result.usableHosts.toLocaleString() },
+                { label: "Total IP Addresses", value: result.totalHosts.toLocaleString() },
+                { label: "IP Type & Scope", value: `Class ${result.ipClass} · ${result.scope}` },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex flex-wrap items-center justify-between gap-2 py-1 border-b border-border-subtle/40 last:border-0">
+                  <span className="text-text-muted w-36 shrink-0">{label}:</span>
+                  <span className="text-text-primary font-bold break-all flex-1">{value}</span>
+                  <CopyButton text={value} label="Copy" />
                 </div>
               ))}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="w-40 shrink-0 text-sm font-semibold text-accent">
-                  Scope
-                </span>
-                <code
-                  className={`min-w-0 flex-1 break-all rounded border bg-bg-page px-3 py-2 text-xs sm:text-sm ${
-                    result!.scope === "Private"
-                      ? "border-warning/40 text-warning"
-                      : "border-success/40 text-success"
-                  }`}
-                >
-                  {result!.scope}
-                </code>
-                <CopyButton text={result!.scope} label="copy" />
-              </div>
             </div>
-          )}
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="cidr-calculator" stats={stats} />
-        </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="cidr-calculator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

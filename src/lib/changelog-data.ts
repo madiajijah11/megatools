@@ -13,6 +13,51 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-09-05-llm-diff-comparator",
+    date: "2026-09-05",
+    title: "LLM Output Diff & Hallucination Spotter: Side-by-Side Comparator",
+    type: "added",
+    toolHref: "/llm-diff-comparator",
+    toolName: "LLM Output Diff & Hallucination Spotter",
+    description: "Compare AI model outputs side-by-side with word-level diff, numerical discrepancy analysis, and hallucination detection.",
+    highlights: [
+      "Word-level and line-level diff highlighting with Jaccard semantic similarity metric",
+      "Automatic quantitative and percentage discrepancy extraction to spot hallucinations",
+      "Multi-mode view: Side-by-side editor, Unified line diff, and Discrepancy inspector",
+      "100% client-side computation with zero external API dependencies"
+    ],
+  },
+  {
+    id: "2026-09-05-few-shot-formatter",
+    date: "2026-09-05",
+    title: "Few-Shot Prompt & Fine-Tuning Dataset Formatter: OpenAI JSONL & ChatML",
+    type: "added",
+    toolHref: "/few-shot-formatter",
+    toolName: "Few-Shot Prompt & Fine-Tuning Formatter",
+    description: "Construct, validate, and convert few-shot prompt examples into OpenAI JSONL, Anthropic XML, ChatML, and Llama 3 templates.",
+    highlights: [
+      "Interactive few-shot pair builder with system persona and ground-truth responses",
+      "Export to OpenAI JSONL, Anthropic XML tags, ChatML, Llama 3 header syntax, TS Array, and CSV",
+      "Built-in presets for classification, SQL generation, and named entity extraction",
+      "Zero server leakage with direct in-browser dataset file download"
+    ],
+  },
+  {
+    id: "2026-09-05-token-counter",
+    date: "2026-09-05",
+    title: "LLM Token Counter & API Cost Estimator: Real-Time Pricing Matrix",
+    type: "added",
+    toolHref: "/token-counter",
+    toolName: "LLM Token Counter & API Cost Estimator",
+    description: "Count BPE tokens, preview subword segments, and calculate real-time API inference costs across OpenAI, Claude, Gemini, and DeepSeek.",
+    highlights: [
+      "Instant token, character, word count, and reading duration calculations",
+      "Real-time cost matrix covering 9 flagship & budget models (GPT-4o, Claude 3.5 Sonnet, Gemini 1.5, DeepSeek V3/R1)",
+      "Visual Tokenizer rendering color-coded BPE subword segments",
+      "Projected generation output sliders and batch request multiplier"
+    ],
+  },
+  {
     id: "2026-09-04-pdf-watermark",
     date: "2026-09-04",
     title: "PDF Watermark & Stamp Studio: Vector Overlay Engine",

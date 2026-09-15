@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo, useEffect, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import RAW_MODELS_DEV_DATA from "@/lib/models-dev-data.json";
 
 export interface ModelsDevCost {
@@ -132,9 +131,7 @@ export default function AiModelComparatorClient() {
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [displayCount, setDisplayCount] = useState<number>(50);
   const [syncStatus, setSyncStatus] = useState<string | null>(null);
-  const [isSyncing, setIsSyncing] = useState<boolean>(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [isSyncing, setIsSyncing] = useState<boolean>(false);  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   // Sync with live models.dev open API directly
   const handleSyncModelsDev = useCallback(async () => {
@@ -342,28 +339,10 @@ export default function AiModelComparatorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
-        <div className="card p-4 sm:p-6 min-w-0">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">models.dev AI Model Matrix</span>
-            </h1>
-            <p className="mt-2 text-xs sm:text-sm text-text-secondary">
-              Full specification matrix, context limits, cache pricing, modalities, and token cost simulator across all models.dev models.
-            </p>
-          </div>
-
-          {/* Token Simulator Controls */}
+return (
+    <ToolLayout toolId="ai-model-comparator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Token Simulator Controls */}
           <div className="mb-6 p-4 rounded-xl bg-bg-page border border-border-subtle space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle/70 pb-3">
               <span className="text-xs font-mono font-bold text-text-secondary uppercase">
@@ -864,17 +843,7 @@ export default function AiModelComparatorClient() {
               </div>
             )}
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="ai-model-comparator" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="ai-model-comparator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 // Base58 Bitcoin alphabet
@@ -163,8 +162,6 @@ export default function Base58ConverterClient() {
   const [mode, setMode] = useState<"encode" | "decode">("encode");
   const [encoding, setEncoding] = useState<"base58" | "base32" | "z85">("base58");
   const [inputText, setInputText] = useState("MegaTools 100% In-Browser Privacy Tools");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const { outputText, error, byteLength } = useMemo(() => {
     if (!inputText) return { outputText: "", error: null, byteLength: 0 };
     try {
@@ -201,29 +198,10 @@ export default function Base58ConverterClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Base58, Base32 & Base85 Multi-Converter</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Encode and decode Bitcoin Base58, IPFS multihashes, Base32 RFC 4648, and Z85 binary strings.
-            </p>
-          </div>
-
-          {/* Mode & Encoding Toolbars */}
+return (
+    <ToolLayout toolId="base58-converter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Mode & Encoding Toolbars */}
           <div className="mb-6 p-3 rounded-xl bg-bg-page border border-border-subtle flex flex-wrap items-center justify-between gap-3">
             {/* Direction */}
             <div className="flex items-center gap-1 bg-bg-card p-1 rounded-lg border border-border-subtle">
@@ -323,25 +301,7 @@ export default function Base58ConverterClient() {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="base58-converter" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="base58-converter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

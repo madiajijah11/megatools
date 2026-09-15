@@ -1,10 +1,9 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useRef, useMemo } from "react";
-import Link from "next/link";
 import { PDFDocument, degrees } from "pdf-lib";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 
 interface PageMeta {
   originalIndex: number; // 0-based
@@ -178,45 +177,10 @@ export default function PdfOrganizerClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* Top Breadcrumb */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-text-muted hover:text-accent transition-colors"
-        >
-          <span>←</span> [cd .. / home]
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="lg:hidden text-xs font-mono px-2.5 py-1 rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary"
-        >
-          [?] Tool Info
-        </button>
-      </div>
-
-      {/* Hero Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-3">
-          <span className="text-accent">$</span>
-          <span>megatools --pdf-organizer --airgapped</span>
-          <span className="animate-pulse text-accent">▊</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-          PDF Page Rotator & <span className="gradient-text">Reorder Grid</span>
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Reorder page sequence, rotate orientations (90°/180°/270°), and delete unwanted pages with 100% in-browser compilation.
-        </p>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left 2 Cols: PDF Organizer Workspace */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Upload Dropzone if no file loaded */}
+return (
+    <ToolLayout toolId="pdf-organizer" stats={stats}>
+      <div className="space-y-4 font-mono">
+        {/* Upload Dropzone if no file loaded */}
           {!pdfBytes ? (
             <div
               onDragOver={(e) => {
@@ -377,18 +341,7 @@ export default function PdfOrganizerClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right 1 Col: Info Panel Desktop */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="pdf-organizer" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="pdf-organizer" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

@@ -1,354 +1,325 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
+
+interface ImageInfo {
+  file: File;
+  preview: string;
+  width: number;
+  height: number;
+}
+
+type OutputFormat = "image/jpeg" | "image/webp" | "image/png";
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+}
 
 export default function ImageClient() {
-  const [original, setOriginal] = useState<{ src: string; file: File } | null>(null);
+  const [original, setOriginal] = useState<ImageInfo | null>(null);
   const [compressed, setCompressed] = useState<string | null>(null);
   const [compressedSize, setCompressedSize] = useState<number>(0);
-  const [quality, setQuality] = useState(80);
+  const [quality, setQuality] = useState<number>(80);
+  const [format, setFormat] = useState<OutputFormat>("image/jpeg");
+  const [maxWidth, setMaxWidth] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [dragOver, setDragOver] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  // Cleanup object URLs to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (original?.src) URL.revokeObjectURL(original.src);
-      if (compressed) URL.revokeObjectURL(compressed);
-    };
-  }, [original?.src, compressed]);
-
-  const formatBytes = (bytes: number) => {
-    if (bytes < 1024) return `${bytes} B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-  };
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const compressImage = useCallback(
-    (file: File) => {
+    (info: ImageInfo, q: number, fmt: OutputFormat, maxW: number) => {
       setIsProcessing(true);
-      setCompressed(null);
-
       const img = new Image();
-      const objectUrl = URL.createObjectURL(file);
-
       img.onload = () => {
-        const canvas = document.createElement("canvas");
-
-        // Resize large images to max 1920px maintaining aspect ratio
-        const MAX_DIM = 1920;
-        let { naturalWidth: w, naturalHeight: h } = img;
-        if (w > MAX_DIM || h > MAX_DIM) {
-          const ratio = Math.min(MAX_DIM / w, MAX_DIM / h);
-          w = Math.round(w * ratio);
-          h = Math.round(h * ratio);
+        let { width, height } = img;
+        if (maxW > 0 && width > maxW) {
+          height = Math.round((height * maxW) / width);
+          width = maxW;
         }
 
-        canvas.width = w;
-        canvas.height = h;
+        const canvas = canvasRef.current || document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          setIsProcessing(false);
+          return;
+        }
 
-        const ctx = canvas.getContext("2d")!;
-        ctx.drawImage(img, 0, 0, w, h);
+        if (fmt === "image/jpeg") {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, width, height);
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
 
         canvas.toBlob(
           (blob) => {
             if (blob) {
-              setCompressed((prev) => {
-                if (prev) URL.revokeObjectURL(prev);
-                return URL.createObjectURL(blob);
-              });
+              if (compressed) URL.revokeObjectURL(compressed);
+              const url = URL.createObjectURL(blob);
+              setCompressed(url);
               setCompressedSize(blob.size);
             }
             setIsProcessing(false);
           },
-          "image/jpeg",
-          quality / 100
+          fmt,
+          q / 100
         );
       };
-
-      img.src = objectUrl;
+      img.src = info.preview;
     },
-    [quality]
+    [compressed]
   );
 
-  const handleFile = (file: File) => {
+  const handleFileSelect = (file: File) => {
     if (!file.type.startsWith("image/")) return;
-    setOriginal({ src: URL.createObjectURL(file), file });
-    compressImage(file);
+    const preview = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const info: ImageInfo = {
+        file,
+        preview,
+        width: img.width,
+        height: img.height,
+      };
+      setOriginal(info);
+      compressImage(info, quality, format, maxWidth);
+    };
+    img.src = preview;
   };
 
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
+  const handleQualityChange = (newQ: number) => {
+    setQuality(newQ);
+    if (original) compressImage(original, newQ, format, maxWidth);
   };
 
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(true);
+  const handleFormatChange = (newFmt: OutputFormat) => {
+    setFormat(newFmt);
+    if (original) compressImage(original, quality, newFmt, maxWidth);
   };
 
-  const handleDragLeave = () => setDragOver(false);
-
-  const handleCompressRelease = useCallback(() => {
-    if (original) compressImage(original.file);
-  }, [original, compressImage]);
+  const handleMaxWidthChange = (newMaxW: number) => {
+    setMaxWidth(newMaxW);
+    if (original) compressImage(original, quality, format, newMaxW);
+  };
 
   const handleDownload = () => {
-    if (!compressed) return;
-    const a = document.createElement("a");
-    a.href = compressed;
-    a.download = `compressed-${original?.file.name.replace(/\.[^.]+$/, "")}.jpg`;
-    a.click();
+    if (!compressed || !original) return;
+    const ext = format === "image/webp" ? "webp" : format === "image/png" ? "png" : "jpg";
+    const name = original.file.name.replace(/\.[^.]+$/, "");
+    const link = document.createElement("a");
+    link.href = compressed;
+    link.download = `${name}-compressed.${ext}`;
+    link.click();
   };
 
-  const reductionPercent = original && compressedSize
-    ? Math.round(((original.file.size - compressedSize) / original.file.size) * 100)
-    : 0;
+  useEffect(() => {
+    return () => {
+      if (original) URL.revokeObjectURL(original.preview);
+      if (compressed) URL.revokeObjectURL(compressed);
+    };
+  }, [original, compressed]);
+
+  const reductionPercent =
+    original && compressedSize
+      ? Math.round(((original.file.size - compressedSize) / original.file.size) * 100)
+      : 0;
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Original</p>
-        <p className="text-text-primary font-mono">
-          {original ? formatBytes(original.file.size) : "—"}
-        </p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Original Size:</span>
+        <span className="text-text-primary">{original ? formatBytes(original.file.size) : "—"}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Compressed</p>
-        <p className="text-text-primary font-mono">
-          {compressedSize ? formatBytes(compressedSize) : "—"}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Compressed Size:</span>
+        <span className="text-accent font-bold">{compressedSize ? formatBytes(compressedSize) : "—"}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Reduction</p>
-        <p className={`font-mono ${reductionPercent > 0 ? "text-success" : reductionPercent < 0 ? "text-error" : "text-text-primary"}`}>
-          {original && compressedSize ? `${reductionPercent}%` : "—"}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Savings:</span>
+        <span className={`font-bold ${reductionPercent > 0 ? "text-success" : "text-text-muted"}`}>
+          {reductionPercent > 0 ? `-${reductionPercent}%` : "—"}
+        </span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../ 
-      </Link>
+    <ToolLayout toolId="image-compressor" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-5 font-mono">
+        <canvas ref={canvasRef} className="hidden" />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Image Compressor</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Compress images in your browser. Nothing is uploaded.
-            </p>
-          </div>
-
-          {/* Upload zone */}
-          {!original && (
-            <div
-              onDrop={handleDrop}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onClick={() => inputRef.current?.click()}
-              className={`cursor-pointer rounded-xl border-2 border-dashed p-12 text-center transition-all ${
-                dragOver
-                  ? "border-accent bg-accent-soft"
-                  : "border-border-subtle hover:border-accent/50"
-              }`}
-            >
-              <div className="mb-3 text-4xl">📁</div>
-              <p className="text-text-secondary">
-                {dragOver
-                  ? "Drop your image here"
-                  : "Drag & drop an image here, or click to browse"}
-              </p>
-              <p className="mt-1 text-xs text-text-muted">
-                Supports JPG, PNG, WebP, BMP, GIF
-              </p>
-              <input
-                ref={inputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handleFile(file);
-                }}
+        {/* Upload Dropzone */}
+        {!original ? (
+          <label
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDragOver(false);
+              const file = e.dataTransfer.files[0];
+              if (file) handleFileSelect(file);
+            }}
+            className={`flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+              dragOver
+                ? "border-accent bg-accent/5"
+                : "border-border-subtle hover:border-accent/40 bg-bg-page"
+            }`}
+          >
+            <span className="text-2xl mb-2">🖼️</span>
+            <span className="text-sm font-semibold text-text-primary">
+              Drop image here or click to browse
+            </span>
+            <span className="text-xs text-text-muted mt-1">
+              Supports JPEG, PNG, WebP. 100% Canvas compression in browser RAM.
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleFileSelect(file);
+              }}
+              className="hidden"
+            />
+          </label>
+        ) : (
+          <div className="p-3 rounded-lg border border-border-subtle bg-bg-page flex items-center justify-between text-xs">
+            <div className="flex items-center gap-3 truncate">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={original.preview}
+                alt="Source"
+                className="w-10 h-10 rounded object-cover border border-border-subtle"
               />
-            </div>
-          )}
-
-          {/* Preview area */}
-          {original && (
-            <>
-              <div className="grid gap-6 sm:grid-cols-2">
-                {/* Original */}
-                <div>
-                  <h3 className="mb-2 text-sm font-medium text-text-secondary">
-                    Original — {formatBytes(original.file.size)}
-                  </h3>
-                  <div className="overflow-hidden rounded-xl border border-border-subtle">
-                    <img
-                      src={original.src}
-                      alt="Original"
-                      className="h-48 sm:h-64 w-full object-contain"
-                    />
-                  </div>
-                </div>
-
-                {/* Compressed */}
-                <div>
-                  <h3 className="mb-2 text-sm font-medium text-text-secondary">
-                    Compressed{" "}
-                    {compressed && (
-                      <span className="text-accent">
-                        — {formatBytes(compressedSize)}
-                      </span>
-                    )}
-                  </h3>
-                  {compressed && compressedSize > original.file.size && (
-                    <p className="mb-2 text-xs text-warning">
-                      ⚠ Compressed file is larger than the original. Try lowering the quality.
-                    </p>
-                  )}
-                  <div className="overflow-hidden rounded-xl border border-border-subtle">
-                    {isProcessing ? (
-                      <div className="flex h-48 sm:h-64 items-center justify-center text-text-muted">
-                        Compressing…
-                      </div>
-                    ) : compressed ? (
-                      <img
-                        src={compressed}
-                        alt="Compressed"
-                        className="h-48 sm:h-64 w-full object-contain"
-                      />
-                    ) : (
-                      <div className="flex h-48 sm:h-64 items-center justify-center text-text-muted">
-                        Processing…
-                      </div>
-                    )}
-                  </div>
-                </div>
+              <div className="truncate">
+                <span className="font-bold text-text-primary block truncate">{original.file.name}</span>
+                <span className="text-text-muted text-[10px]">
+                  {original.width} × {original.height} px · {formatBytes(original.file.size)}
+                </span>
               </div>
+            </div>
+            <button
+              onClick={() => {
+                setOriginal(null);
+                setCompressed(null);
+                setCompressedSize(0);
+              }}
+              className="text-xs text-text-muted hover:text-error transition-colors px-2 py-1 rounded border border-border-subtle shrink-0"
+            >
+              [Change Image]
+            </button>
+          </div>
+        )}
 
-              {/* Quality slider */}
-              <div className="mt-6">
-                <label className="mb-2 flex items-center justify-between text-sm">
-                  <span className="text-text-secondary">Quality</span>
-                  <span className="font-mono text-accent">{quality}%</span>
-                </label>
+        {/* Compression Controls */}
+        {original && (
+          <div className="space-y-4 pt-2 border-t border-border-subtle text-xs">
+            {/* Format Selector */}
+            <div className="space-y-1.5">
+              <span className="text-text-secondary block">Target Output Format</span>
+              <div className="flex flex-wrap gap-2">
+                {(
+                  [
+                    { label: "JPEG (Lossy)", fmt: "image/jpeg" },
+                    { label: "WebP (Modern)", fmt: "image/webp" },
+                    { label: "PNG (Lossless)", fmt: "image/png" },
+                  ] as const
+                ).map(({ label, fmt }) => (
+                  <button
+                    key={fmt}
+                    type="button"
+                    onClick={() => handleFormatChange(fmt)}
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-mono transition-colors ${
+                      format === fmt
+                        ? "border-accent text-accent bg-accent/10 font-bold"
+                        : "border-border-subtle text-text-secondary hover:text-text-primary"
+                    }`}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Quality Slider */}
+            {format !== "image/png" && (
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-text-secondary">Compression Quality</span>
+                  <span className="font-bold text-accent">{quality}%</span>
+                </div>
                 <input
                   type="range"
-                  min={1}
+                  min={5}
                   max={100}
                   value={quality}
-                  onChange={(e) => setQuality(Number(e.target.value))}
-                  onMouseUp={handleCompressRelease}
-                  onKeyUp={handleCompressRelease}
-                  className="w-full accent-accent cursor-pointer"
+                  onChange={(e) => handleQualityChange(Number(e.target.value))}
+                  className="w-full accent-accent cursor-pointer h-1.5 bg-border-subtle rounded-lg"
                 />
-                <div className="mt-1 flex justify-between text-xs text-text-muted">
-                  <span>Smaller file</span>
-                  <span>Better quality</span>
-                </div>
               </div>
+            )}
 
-              {/* Size comparison */}
-              {compressed && (
-                <div className="mt-6 rounded-xl border border-border-subtle bg-bg-page p-4">
-                  <div className="grid grid-cols-3 gap-4 text-center text-sm">
-                    <div>
-                      <p className="text-text-muted">Original</p>
-                      <p className="font-medium text-text-primary">
-                        {formatBytes(original.file.size)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-text-muted">Compressed</p>
-                      <p className="font-medium text-text-primary">
-                        {formatBytes(compressedSize)}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-text-muted">Reduction</p>
-                      <p
-                        className={`font-medium ${
-                          compressedSize < original.file.size
-                            ? "text-success"
-                            : compressedSize > original.file.size
-                              ? "text-warning"
-                              : "text-text-primary"
-                        }`}
-                      >
-                        {compressedSize < original.file.size
-                          ? `${Math.round(((original.file.size - compressedSize) / original.file.size) * 100)}%`
-                          : compressedSize > original.file.size
-                            ? `+${Math.round(((compressedSize - original.file.size) / original.file.size) * 100)}%`
-                            : "0%"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="mt-6 flex flex-wrap gap-3">
-                <button
-                  onClick={handleDownload}
-                  disabled={!compressed}
-                  className="btn-primary px-6"
-                >
-                  ⬇ Download Compressed
-                </button>
-                <button
-                  onClick={() => {
-                    if (original?.src) URL.revokeObjectURL(original.src);
-                    if (compressed) URL.revokeObjectURL(compressed);
-                    setOriginal(null);
-                    setCompressed(null);
-                    setCompressedSize(0);
-                    setQuality(80);
-                  }}
-                  className="btn-secondary px-6"
-                >
-                  ↻ Compress Another
-                </button>
+            {/* Resize Slider */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center">
+                <span className="text-text-secondary">Max Width Resize (0 = original)</span>
+                <span className="font-bold text-text-primary">{maxWidth > 0 ? `${maxWidth}px` : "Original"}</span>
               </div>
-            </>
-          )}
-        </div>
+              <input
+                type="range"
+                min={0}
+                max={original.width}
+                step={50}
+                value={maxWidth}
+                onChange={(e) => handleMaxWidthChange(Number(e.target.value))}
+                className="w-full accent-accent cursor-pointer h-1.5 bg-border-subtle rounded-lg"
+              />
+            </div>
+          </div>
+        )}
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="image-compressor" stats={stats} />
-        </div>
+        {/* Output Comparison & Download */}
+        {compressed && original && (
+          <div className="pt-3 border-t border-border-subtle space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-xs text-text-primary">
+                Compressed Result ({formatBytes(compressedSize)} ·{" "}
+                <span className={reductionPercent > 0 ? "text-success" : "text-text-muted"}>
+                  {reductionPercent > 0 ? `${reductionPercent}% smaller` : "ready"}
+                </span>
+                )
+              </span>
+              <button
+                type="button"
+                onClick={handleDownload}
+                disabled={isProcessing}
+                className="px-4 py-2 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors"
+              >
+                Download Compressed Image
+              </button>
+            </div>
+
+            <div className="rounded-lg border border-border-subtle bg-bg-page p-3 flex items-center justify-center max-h-72 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={compressed}
+                alt="Compressed"
+                className="max-h-64 object-contain rounded"
+              />
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="image-compressor" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

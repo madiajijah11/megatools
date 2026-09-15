@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 import { keccak256Hex } from "@/lib/keccak";
 
@@ -38,8 +37,6 @@ interface MerkleProofItem {
 export default function MerkleTreeGeneratorClient() {
   const [whitelistInput, setWhitelistInput] = useState<string>(SAMPLE_WHITELIST);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState<number>(0);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const tree = useMemo(() => {
     const lines = whitelistInput
       .split("\n")
@@ -144,28 +141,10 @@ export default function MerkleTreeGeneratorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Merkle Tree Root & Proof Builder</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Generate cryptographic Merkle roots and OpenZeppelin-compatible verification proofs for airdrops and NFT whitelists.
-            </p>
-          </div>
-
-          {/* Whitelist Input */}
+return (
+    <ToolLayout toolId="merkle-tree-generator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Whitelist Input */}
           <div className="mb-6 space-y-2">
             <div className="h-8 flex items-center justify-between">
               <label className="text-xs font-mono text-text-secondary font-bold uppercase">
@@ -286,17 +265,7 @@ export default function MerkleTreeGeneratorClient() {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="merkle-tree-generator" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="merkle-tree-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

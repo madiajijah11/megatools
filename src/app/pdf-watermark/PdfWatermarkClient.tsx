@@ -1,10 +1,9 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useRef, useMemo, useEffect } from "react";
-import Link from "next/link";
 import { PDFDocument, rgb, degrees, StandardFonts } from "pdf-lib";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 
 const PRESET_TEXTS = ["CONFIDENTIAL", "DRAFT", "DO NOT COPY", "INTERNAL USE", "SAMPLE"];
 
@@ -171,45 +170,10 @@ export default function PdfWatermarkClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      {/* Top Breadcrumb */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-text-muted hover:text-accent transition-colors"
-        >
-          <span>←</span> [cd .. / home]
-        </Link>
-        <button
-          onClick={() => setDrawerOpen(true)}
-          className="lg:hidden text-xs font-mono px-2.5 py-1 rounded border border-border-subtle bg-bg-card text-text-secondary hover:text-text-primary"
-        >
-          [?] Tool Info
-        </button>
-      </div>
-
-      {/* Hero Header */}
-      <div className="mb-8">
-        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded border border-border-subtle bg-bg-card font-mono text-xs text-text-secondary mb-3">
-          <span className="text-accent">$</span>
-          <span>megatools --pdf-watermark --vector-overlay</span>
-          <span className="animate-pulse text-accent">▊</span>
-        </div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-          PDF Watermark & <span className="gradient-text">Stamp Studio</span>
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Stamp diagonal or centered text watermarks across all pages of your PDF with live visual preview and instant in-browser compilation.
-        </p>
-      </div>
-
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left 2 Cols: Form & Visual Simulator */}
-        <div className="lg:col-span-2 space-y-6 font-mono text-xs">
-          {/* File Upload Bar */}
+return (
+    <ToolLayout toolId="pdf-watermark" stats={stats}>
+      <div className="space-y-4 font-mono">
+        {/* File Upload Bar */}
           <div className="rounded-lg border border-border-subtle bg-bg-card p-4 space-y-3">
             <div className="h-8 flex items-center justify-between">
               <span className="font-semibold text-text-primary flex items-center gap-1.5">
@@ -423,18 +387,7 @@ export default function PdfWatermarkClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right 1 Col: Info Panel Desktop */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="pdf-watermark" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="pdf-watermark" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

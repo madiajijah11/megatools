@@ -1,244 +1,221 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
-const MS_THRESHOLD = 1e11;
+function pad(n: number): string {
+  return n.toString().padStart(2, "0");
+}
 
-function relativeTime(date: Date, now: number): string {
-  const diff = date.getTime() - now;
-  const abs = Math.abs(diff);
-  const units: [number, string][] = [
-    [31_536_000_000, "year"],
-    [2_592_000_000, "month"],
-    [604_800_000, "week"],
-    [86_400_000, "day"],
-    [3_600_000, "hour"],
-    [60_000, "minute"],
-    [1000, "second"],
-  ];
-  for (const [ms, name] of units) {
-    if (abs >= ms) {
-      const n = Math.round(abs / ms);
-      return `${n} ${name}${n === 1 ? "" : "s"} ${diff < 0 ? "ago" : "from now"}`;
-    }
+function formatDate(d: Date): {
+  iso: string;
+  utc: string;
+  local: string;
+  relative: string;
+} {
+  const iso = d.toISOString();
+  const utc = d.toUTCString();
+  const local =
+    d.getFullYear() +
+    "-" +
+    pad(d.getMonth() + 1) +
+    "-" +
+    pad(d.getDate()) +
+    " " +
+    pad(d.getHours()) +
+    ":" +
+    pad(d.getMinutes()) +
+    ":" +
+    pad(d.getSeconds());
+
+  const diffSec = Math.round((Date.now() - d.getTime()) / 1000);
+  let relative: string;
+  const abs = Math.abs(diffSec);
+  if (abs < 60) {
+    relative = `${abs}s ${diffSec >= 0 ? "ago" : "from now"}`;
+  } else if (abs < 3600) {
+    relative = `${Math.round(abs / 60)}m ${diffSec >= 0 ? "ago" : "from now"}`;
+  } else if (abs < 86400) {
+    relative = `${Math.round(abs / 3600)}h ${diffSec >= 0 ? "ago" : "from now"}`;
+  } else {
+    relative = `${Math.round(abs / 86400)}d ${diffSec >= 0 ? "ago" : "from now"}`;
   }
-  return "just now";
+
+  return { iso, utc, local, relative };
 }
 
 export default function TimestampConverterClient() {
-  const [input, setInput] = useState("");
-  const [dateInput, setDateInput] = useState("");
-  const [now, setNow] = useState<number | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [now, setNow] = useState<number>(0);
+  const [input, setInput] = useState<string>("");
+  const [dateInput, setDateInput] = useState<string>("");
 
   useEffect(() => {
-    const raf = requestAnimationFrame(() => setNow(Date.now()));
-    const t = setInterval(() => setNow(Date.now()), 1000);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearInterval(t);
-    };
+    setNow(Math.floor(Date.now() / 1000));
+    const timer = setInterval(() => {
+      setNow(Math.floor(Date.now() / 1000));
+    }, 1000);
+    return () => clearInterval(timer);
   }, []);
 
-  // Section A: unix → date
   const parsed = useMemo(() => {
-    if (!input.trim()) return null;
-    if (!/^-?\d+$/.test(input.trim()))
-      return { error: "Not a number. Enter seconds or milliseconds." };
-    let ts = Number(input.trim());
-    const unit = Math.abs(ts) > MS_THRESHOLD ? "milliseconds" : "seconds";
-    if (unit === "milliseconds") ts = Math.round(ts);
-    else ts *= 1000;
-    const d = new Date(ts);
-    if (isNaN(d.getTime())) return { error: "Timestamp out of Date range." };
-    return { date: d, unit };
+    const trimmed = input.trim();
+    if (!trimmed) return null;
+    const num = Number(trimmed);
+    if (isNaN(num)) {
+      return { error: "Not a valid numeric timestamp (seconds or ms)." };
+    }
+    const ms = trimmed.length <= 11 ? num * 1000 : num;
+    const d = new Date(ms);
+    if (isNaN(d.getTime())) return { error: "Timestamp out of range." };
+
+    return {
+      d,
+      seconds: Math.floor(ms / 1000),
+      millis: ms,
+      unit: trimmed.length <= 11 ? "seconds" : "milliseconds",
+      ...formatDate(d),
+    };
   }, [input]);
 
-  // Section B: date → unix
-  const reverse = useMemo(() => {
+  const fromDateResult = useMemo(() => {
     if (!dateInput) return null;
     const d = new Date(dateInput);
-    if (isNaN(d.getTime())) return null;
-    return { sec: Math.floor(d.getTime() / 1000), ms: d.getTime() };
+    if (isNaN(d.getTime())) return { error: "Invalid date format." };
+    const sec = Math.floor(d.getTime() / 1000);
+    const ms = d.getTime();
+    return { d, sec, ms, ...formatDate(d) };
   }, [dateInput]);
 
-  const timezone = useMemo(
-    () => Intl.DateTimeFormat().resolvedOptions().timeZone,
-    []
-  );
-
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Detected unit</p>
-        <p className="text-text-primary font-mono">
-          {parsed && !parsed.error ? parsed.unit : "—"}
-        </p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Current Unix Sec:</span>
+        <span className="text-accent font-bold">{now}</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Timezone</p>
-        <p className="text-text-primary font-mono break-all">{timezone}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Input Unit:</span>
+        <span className="text-text-primary">{parsed && !("error" in parsed) ? parsed.unit : "—"}</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Time Delta:</span>
+        <span className="text-success font-bold">{parsed && !("error" in parsed) ? parsed.relative : "—"}</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Precision:</span>
+        <span className="text-text-primary">Millisecond accurate</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8 space-y-8">
-          <div className="mb-2 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Timestamp Converter</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Convert Unix timestamps and dates. Everything stays in your browser.
-            </p>
+    <ToolLayout toolId="timestamp-converter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-5 font-mono">
+        {/* Live Unix Epoch Ticker */}
+        <div className="p-3.5 rounded-lg border border-border-subtle bg-bg-page flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div>
+            <span className="text-text-muted block text-[11px]">Current Epoch Unix Timestamp:</span>
+            <span className="text-lg font-bold text-accent">{now}</span>
           </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setInput(String(now))}
+              className="px-3 py-1 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors"
+            >
+              Use Current Time
+            </button>
+            <CopyButton text={String(now)} label="Copy Epoch" />
+          </div>
+        </div>
 
-          {/* Section A: unix → date */}
-          <section>
-            <label className="mb-2 block text-sm font-medium text-text-secondary">
-              Unix timestamp (seconds or milliseconds — auto-detected)
-            </label>
-            <input
-              type="text"
-              inputMode="numeric"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="e.g. 1735689600"
-              className="input-field font-mono text-sm"
-            />
-            {input.trim() === "" ? null : parsed?.error ? (
-              <p className="mt-2 text-sm text-error">{parsed.error}</p>
-            ) : parsed?.date ? (
-              <div className="mt-3 space-y-2">
-                {(
-                  [
-                    ["ISO 8601 UTC", parsed.date.toISOString()],
-                    [
-                      "Local",
-                      parsed.date.toLocaleString("en-US", {
-                        timeZoneName: "long",
-                      }),
-                    ],
-                    ["Relative", relativeTime(parsed.date, now ?? 0)],
-                    [
-                      "Day of week",
-                      parsed.date.toLocaleDateString("en-US", {
-                        weekday: "long",
-                      }),
-                    ],
-                  ] as const
-                ).map(([label, value]) => (
-                  <div key={label} className="flex flex-wrap items-center gap-2">
-                    <span className="w-28 shrink-0 text-xs sm:text-sm font-semibold text-accent">
-                      {label}
-                    </span>
-                    <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs sm:text-sm text-text-primary">
-                      {value}
-                    </code>
-                  </div>
-                ))}
-              </div>
-            ) : null}
-          </section>
+        {/* Timestamp to Date Converter */}
+        <div className="space-y-3 pt-2 border-t border-border-subtle">
+          <div className="h-8 flex items-center justify-between text-xs">
+            <span className="font-semibold text-text-primary">Unix Timestamp → Human Date</span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setInput("")}
+                className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+              >
+                [Clear]
+              </button>
+            </div>
+          </div>
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Enter seconds (e.g. 1700000000) or milliseconds (e.g. 1700000000000)..."
+            className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none"
+          />
 
-          {/* Section B: date → unix */}
-          <section>
-            <label className="mb-2 block text-sm font-medium text-text-secondary">
-              Date &amp; time (local)
-            </label>
-            <input
-              type="datetime-local"
-              value={dateInput}
-              onChange={(e) => setDateInput(e.target.value)}
-              className="input-field font-mono text-sm"
-            />
-            {reverse ? (
-              <div className="mt-3 space-y-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="w-28 shrink-0 text-xs sm:text-sm font-semibold text-accent">
-                    Seconds
-                  </span>
-                  <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs sm:text-sm text-text-primary">
-                    {reverse.sec}
-                  </code>
-                  <CopyButton text={String(reverse.sec)} label="copy" />
+          {parsed && "error" in parsed && (
+            <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+              {parsed.error}
+            </div>
+          )}
+
+          {parsed && !("error" in parsed) && (
+            <div className="p-3 rounded-lg border border-border-subtle bg-bg-page space-y-2 text-xs">
+              {[
+                { label: "ISO 8601", value: parsed.iso },
+                { label: "UTC Date", value: parsed.utc },
+                { label: "Local Time", value: parsed.local },
+                { label: "Relative", value: parsed.relative },
+                { label: "Seconds", value: String(parsed.seconds) },
+                { label: "Milliseconds", value: String(parsed.millis) },
+              ].map(({ label, value }) => (
+                <div key={label} className="flex flex-wrap items-center justify-between gap-2 py-1 border-b border-border-subtle/40 last:border-0">
+                  <span className="text-text-muted w-24 shrink-0">{label}:</span>
+                  <span className="text-text-primary font-bold break-all flex-1">{value}</span>
+                  <CopyButton text={value} label="Copy" />
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="w-28 shrink-0 text-xs sm:text-sm font-semibold text-accent">
-                    Milliseconds
-                  </span>
-                  <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs sm:text-sm text-text-primary">
-                    {reverse.ms}
-                  </code>
-                  <CopyButton text={String(reverse.ms)} label="copy" />
-                </div>
-              </div>
-            ) : dateInput ? (
-              <p className="mt-2 text-sm text-error">Invalid date.</p>
-            ) : null}
-          </section>
+              ))}
+            </div>
+          )}
+        </div>
 
-          {/* Section C: now */}
-          <section>
-            <p className="mb-2 text-sm font-medium text-text-secondary">Now</p>
-            <div className="space-y-2">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="w-28 shrink-0 text-xs sm:text-sm font-semibold text-accent">
-                  Seconds
-                </span>
-                <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs sm:text-sm text-text-primary font-mono">
-                  {now !== null ? Math.floor(now / 1000) : "…"}
-                </code>
-                <CopyButton
-                  text={now !== null ? String(Math.floor(now / 1000)) : ""}
-                  label="copy"
-                />
+        {/* Date to Timestamp Converter */}
+        <div className="space-y-3 pt-3 border-t border-border-subtle">
+          <span className="font-semibold text-text-primary text-xs block">
+            Human Date / String → Unix Timestamp
+          </span>
+          <input
+            type="text"
+            value={dateInput}
+            onChange={(e) => setDateInput(e.target.value)}
+            placeholder="e.g. 2026-09-04T12:00:00Z or September 4, 2026..."
+            className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none"
+          />
+
+          {fromDateResult && "error" in fromDateResult && (
+            <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+              {fromDateResult.error}
+            </div>
+          )}
+
+          {fromDateResult && !("error" in fromDateResult) && (
+            <div className="p-3 rounded-lg border border-border-subtle bg-bg-page space-y-2 text-xs">
+              <div className="flex items-center justify-between py-1 border-b border-border-subtle/40">
+                <span className="text-text-muted w-24">Seconds:</span>
+                <span className="text-accent font-bold flex-1">{fromDateResult.sec}</span>
+                <CopyButton text={String(fromDateResult.sec)} label="Copy" />
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="w-28 shrink-0 text-xs sm:text-sm font-semibold text-accent">
-                  Milliseconds
-                </span>
-                <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs sm:text-sm text-text-primary font-mono">
-                  {now !== null ? now : "…"}
-                </code>
-                <CopyButton text={now !== null ? String(now) : ""} label="copy" />
+              <div className="flex items-center justify-between py-1 border-b border-border-subtle/40">
+                <span className="text-text-muted w-24">Milliseconds:</span>
+                <span className="text-text-primary font-bold flex-1">{fromDateResult.ms}</span>
+                <CopyButton text={String(fromDateResult.ms)} label="Copy" />
+              </div>
+              <div className="flex items-center justify-between py-1">
+                <span className="text-text-muted w-24">UTC Date:</span>
+                <span className="text-text-primary flex-1">{fromDateResult.utc}</span>
               </div>
             </div>
-          </section>
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="timestamp-converter" stats={stats} />
+          )}
         </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="timestamp-converter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

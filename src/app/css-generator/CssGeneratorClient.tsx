@@ -1,17 +1,14 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 type Mode = "glass" | "shadow" | "gradient";
 
 export default function CssGeneratorClient() {
   const [activeMode, setActiveMode] = useState<Mode>("glass");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   // Glassmorphism state
   const [glassBlur, setGlassBlur] = useState(16);
   const [glassOpacity, setGlassOpacity] = useState(0.15);
@@ -126,29 +123,10 @@ border-radius: 12px;`;
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">CSS Glassmorphism & Shadow Generator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Interactive visual designer for modern Glassmorphism, Glow / Box Shadows, and Linear Gradients.
-            </p>
-          </div>
-
-          {/* Mode Tabs */}
+return (
+    <ToolLayout toolId="css-generator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Mode Tabs */}
           <div className="flex items-center gap-1.5 mb-6 bg-bg-page p-1 rounded-lg border border-border-subtle">
             {(
               [
@@ -404,17 +382,7 @@ border-radius: 12px;`;
               <pre className="whitespace-pre">{cssCode}</pre>
             </div>
           </div>
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="css-generator" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="css-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

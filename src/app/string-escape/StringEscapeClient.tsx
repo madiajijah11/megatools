@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 type SyntaxType = "json" | "js" | "sql" | "regex" | "shell" | "html";
@@ -72,8 +71,6 @@ export default function StringEscapeClient() {
   const [input, setInput] = useState(`Hello "World"!\nSpecial characters: $VAR, [0-9]+, 'O'Connor' & <tag>`);
   const [syntax, setSyntax] = useState<SyntaxType>("json");
   const [mode, setMode] = useState<"escape" | "unescape">("escape");
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const output = useMemo(() => {
     if (!input) return "";
     return mode === "escape" ? escapeString(input, syntax) : unescapeString(input, syntax);
@@ -91,29 +88,10 @@ export default function StringEscapeClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">String & Regex Escaper / Unescaper</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Escape special characters or unescape raw strings for JSON, JavaScript, SQL, Regex, Shell, and HTML.
-            </p>
-          </div>
-
-          {/* Mode & Syntax Selector */}
+return (
+    <ToolLayout toolId="string-escape" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Mode & Syntax Selector */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 bg-bg-page rounded-lg border border-border-subtle">
             {/* Mode Switcher */}
             <div className="flex items-center gap-1 bg-bg-card p-1 rounded-lg border border-border-subtle">
@@ -205,17 +183,7 @@ export default function StringEscapeClient() {
               <pre className="whitespace-pre-wrap">{output || "// Output will appear here"}</pre>
             </div>
           </div>
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="string-escape" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="string-escape" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

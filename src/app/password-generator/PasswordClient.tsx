@@ -1,264 +1,215 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
+import CopyButton from "@/components/CopyButton";
 
-const CHAR_SETS = {
-  uppercase: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-  lowercase: "abcdefghijklmnopqrstuvwxyz",
-  numbers: "0123456789",
-  symbols: "!@#$%^&*()_+-=[]{}|;:,.<>?",
-};
-
-type CharType = keyof typeof CHAR_SETS;
-
-function generatePassword(
-  length: number,
-  options: Record<CharType, boolean>
-): string {
-  let pool = "";
-  const required: string[] = [];
-
-  for (const [key, enabled] of Object.entries(options)) {
-    if (enabled) {
-      const chars = CHAR_SETS[key as CharType];
-      pool += chars;
-      required.push(chars[Math.floor(Math.random() * chars.length)]);
-    }
-  }
-
-  if (pool.length === 0) return "";
-
-  const password: string[] = [...required];
-  for (let i = password.length; i < length; i++) {
-    password.push(pool[Math.floor(Math.random() * pool.length)]);
-  }
-
-  for (let i = password.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [password[i], password[j]] = [password[j], password[i]];
-  }
-
-  return password.join("");
-}
-
-function getStrength(
-  length: number,
-  options: Record<CharType, boolean>
-): { label: string; color: string; width: string } {
-  const enabled = Object.values(options).filter(Boolean).length;
-
-  if (enabled === 0 || length < 6) {
-    return { label: "Weak", color: "bg-error", width: "w-1/4" };
-  }
-
-  const score = enabled + Math.floor(length / 12);
-
-  if (score <= 2) {
-    return { label: "Weak", color: "bg-error", width: "w-1/4" };
-  }
-  if (score <= 3) {
-    return { label: "Medium", color: "bg-warning", width: "w-2/4" };
-  }
-  if (score <= 4) {
-    return { label: "Strong", color: "bg-success", width: "w-3/4" };
-  }
-  return { label: "Very Strong", color: "bg-success", width: "w-full" };
-}
+const UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+const NUMBERS = "0123456789";
+const SYMBOLS = "!@#$%^&*()_+-=[]{}|;:,.<>?";
+const SIMILAR = "il1Lo0O";
 
 export default function PasswordClient() {
-  const [length, setLength] = useState(16);
-  const [options, setOptions] = useState<Record<CharType, boolean>>({
-    uppercase: true,
-    lowercase: true,
-    numbers: true,
-    symbols: false,
-  });
   const [password, setPassword] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [length, setLength] = useState(16);
+  const [useUpper, setUseUpper] = useState(true);
+  const [useLower, setUseLower] = useState(true);
+  const [useNumbers, setUseNumbers] = useState(true);
+  const [useSymbols, setUseSymbols] = useState(true);
+  const [excludeSimilar, setExcludeSimilar] = useState(false);
 
-  const handleGenerate = useCallback(() => {
-    setPassword(generatePassword(length, options));
-    setCopied(false);
-  }, [length, options]);
+  const generate = useCallback(() => {
+    let chars = "";
+    if (useUpper) chars += UPPERCASE;
+    if (useLower) chars += LOWERCASE;
+    if (useNumbers) chars += NUMBERS;
+    if (useSymbols) chars += SYMBOLS;
 
-  const handleCopy = async () => {
-    if (!password) return;
-    await navigator.clipboard.writeText(password);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (excludeSimilar) {
+      chars = chars
+        .split("")
+        .filter((c) => !SIMILAR.includes(c))
+        .join("");
+    }
+
+    if (!chars) {
+      setPassword("");
+      return;
+    }
+
+    const array = new Uint32Array(length);
+    crypto.getRandomValues(array);
+    const result = Array.from(array)
+      .map((x) => chars[x % chars.length])
+      .join("");
+
+    setPassword(result);
+  }, [length, useUpper, useLower, useNumbers, useSymbols, excludeSimilar]);
+
+  const calculateEntropy = () => {
+    let poolSize = 0;
+    if (useUpper) poolSize += 26;
+    if (useLower) poolSize += 26;
+    if (useNumbers) poolSize += 10;
+    if (useSymbols) poolSize += SYMBOLS.length;
+    if (excludeSimilar) poolSize -= 7;
+    if (poolSize <= 0) return 0;
+    return Math.round(length * Math.log2(poolSize));
   };
 
-  const toggleOption = (key: CharType) => {
-    const enabled = Object.values(options).filter(Boolean).length;
-    if (options[key] && enabled <= 1) return;
-    setOptions((prev) => ({ ...prev, [key]: !prev[key] }));
+  const getStrength = () => {
+    const entropy = calculateEntropy();
+    if (entropy >= 80)
+      return { label: "Very Strong", color: "bg-success", text: "text-success", width: "w-full" };
+    if (entropy >= 60)
+      return { label: "Strong", color: "bg-accent", text: "text-accent", width: "w-3/4" };
+    if (entropy >= 40)
+      return { label: "Moderate", color: "bg-warning", text: "text-warning", width: "w-1/2" };
+    return { label: "Weak", color: "bg-error", text: "text-error", width: "w-1/4" };
   };
 
-  const strength = getStrength(length, options);
+  const strength = getStrength();
+  const entropy = calculateEntropy();
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Length</p>
-        <p className="text-text-primary font-mono">{length}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Length:</span>
+        <span className="text-text-primary">{length} characters</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Strength</p>
-        <p className="text-text-primary font-mono">{strength.label}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Entropy:</span>
+        <span className="text-accent font-bold">~{entropy} bits</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Char Sets</p>
-        <p className="text-text-primary font-mono">
-          {Object.values(options).filter(Boolean).length}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Strength:</span>
+        <span className={`font-bold ${strength.text}`}>{strength.label}</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">CSPRNG:</span>
+        <span className="text-success font-bold">Web Crypto API</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../ 
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Password Generator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Create strong, random passwords with custom options. Everything stays
-              in your browser.
-            </p>
+    <ToolLayout toolId="password-generator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Password Display Field */}
+        <div className="space-y-2">
+          <div className="h-8 flex items-center justify-between text-xs">
+            <span className="font-semibold text-text-primary">Generated Password</span>
+            <CopyButton text={password} label="Copy Password" />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              readOnly
+              value={password || "Click Generate to create secure password..."}
+              placeholder="Click Generate to create password"
+              className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-sm text-text-primary focus:border-accent focus:outline-none"
+            />
           </div>
 
-          {/* Password output */}
-          <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-text-secondary">
-              Generated Password
-            </label>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={password}
-                readOnly
-                placeholder="Click Generate..."
-                className="input-field flex-1 min-w-0 font-mono"
-              />
-              <button
-                onClick={handleCopy}
-                disabled={!password}
-                className="btn-secondary shrink-0 px-5"
-              >
-                {copied ? "Copied!" : "Copy"}
-              </button>
-            </div>
-          </div>
-
-          {/* Strength indicator */}
+          {/* Strength meter bar */}
           {password && (
-            <div className="mb-6">
-              <div className="mb-2 flex items-center justify-between text-sm">
-                <span className="text-text-secondary">Strength</span>
-                <span className="font-medium text-text-primary">{strength.label}</span>
-              </div>
-              <div className="h-2 w-full rounded-full bg-bg-page border border-border-subtle overflow-hidden">
+            <div className="space-y-1 pt-1">
+              <div className="h-1.5 w-full rounded-full bg-border-subtle overflow-hidden">
                 <div
                   className={`h-full rounded-full transition-all duration-300 ${strength.color} ${strength.width}`}
                 />
               </div>
+              <div className="flex justify-between text-[10px] text-text-muted">
+                <span>Strength: <strong className={strength.text}>{strength.label}</strong></span>
+                <span>{entropy} bits of entropy</span>
+              </div>
             </div>
           )}
+        </div>
 
-          {/* Length slider */}
-          <div className="mb-6">
-            <div className="mb-2 flex items-center justify-between text-sm">
-              <span className="text-text-secondary">Length</span>
-              <span className="font-medium text-text-primary">{length}</span>
-            </div>
-            <input
-              type="range"
-              min={4}
-              max={64}
-              value={length}
-              onChange={(e) => setLength(Number(e.target.value))}
-              className="w-full h-3 accent-accent touch-none"
-            />
-            <div className="mt-1 flex justify-between text-xs text-text-muted">
-              <span>4</span>
-              <span>64</span>
-            </div>
+        {/* Password Length Slider */}
+        <div className="space-y-2 pt-2 border-t border-border-subtle">
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-text-secondary">Password Length</span>
+            <span className="font-bold text-accent">{length} chars</span>
           </div>
-
-          {/* Character options */}
-          <div className="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            {(Object.keys(CHAR_SETS) as CharType[]).map((key) => (
-              <label
-                key={key}
-                className={`flex cursor-pointer items-center gap-2 rounded-xl border px-4 py-3 text-sm transition-colors ${
-                  options[key]
-                    ? "border-accent/60 bg-accent-soft text-text-primary"
-                    : "border-border-subtle text-text-secondary hover:border-accent/30"
-                }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={options[key]}
-                  onChange={() => toggleOption(key)}
-                  className="sr-only"
-                />
-                <span
-                  className={`flex h-4 w-4 items-center justify-center rounded border text-xs ${
-                    options[key]
-                      ? "border-accent bg-accent text-white"
-                      : "border-border-subtle bg-bg-page"
-                  }`}
-                >
-                  {options[key] && "✓"}
-                </span>
-                <span className="capitalize">{key}</span>
-              </label>
-            ))}
-          </div>
-
-          {/* Generate button */}
-          <div className="flex justify-center">
-            <button
-              onClick={handleGenerate}
-              className="btn-primary w-full sm:w-auto px-8"
-            >
-              Generate Password
-            </button>
+          <input
+            type="range"
+            min={8}
+            max={64}
+            value={length}
+            onChange={(e) => setLength(Number(e.target.value))}
+            className="w-full accent-accent cursor-pointer h-1.5 bg-border-subtle rounded-lg"
+          />
+          <div className="flex justify-between text-[10px] text-text-muted">
+            <span>8 (Min)</span>
+            <span>16 (Standard)</span>
+            <span>32 (High)</span>
+            <span>64 (Paranoid)</span>
           </div>
         </div>
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="password-generator" stats={stats} />
+        {/* Character Set Checkboxes */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-border-subtle text-xs">
+          <label className="flex items-center gap-2 text-text-secondary cursor-pointer">
+            <input
+              type="checkbox"
+              checked={useUpper}
+              onChange={(e) => setUseUpper(e.target.checked)}
+              className="accent-accent cursor-pointer"
+            />
+            <span>Uppercase Letters (A-Z)</span>
+          </label>
+          <label className="flex items-center gap-2 text-text-secondary cursor-pointer">
+            <input
+              type="checkbox"
+              checked={useLower}
+              onChange={(e) => setUseLower(e.target.checked)}
+              className="accent-accent cursor-pointer"
+            />
+            <span>Lowercase Letters (a-z)</span>
+          </label>
+          <label className="flex items-center gap-2 text-text-secondary cursor-pointer">
+            <input
+              type="checkbox"
+              checked={useNumbers}
+              onChange={(e) => setUseNumbers(e.target.checked)}
+              className="accent-accent cursor-pointer"
+            />
+            <span>Numbers (0-9)</span>
+          </label>
+          <label className="flex items-center gap-2 text-text-secondary cursor-pointer">
+            <input
+              type="checkbox"
+              checked={useSymbols}
+              onChange={(e) => setUseSymbols(e.target.checked)}
+              className="accent-accent cursor-pointer"
+            />
+            <span>Special Symbols (!@#$%)</span>
+          </label>
+          <label className="flex items-center gap-2 text-text-secondary cursor-pointer sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={excludeSimilar}
+              onChange={(e) => setExcludeSimilar(e.target.checked)}
+              className="accent-accent cursor-pointer"
+            />
+            <span>Exclude Ambiguous Characters (i, l, 1, L, o, 0, O)</span>
+          </label>
+        </div>
+
+        {/* Generate Action Button */}
+        <div className="pt-2">
+          <button
+            type="button"
+            onClick={generate}
+            className="w-full py-2.5 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors"
+          >
+            Generate Secure Password
+          </button>
         </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl hover:bg-accent/90 transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="password-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

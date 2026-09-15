@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useMemo } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 const SAMPLE_JSON = `{
@@ -100,8 +99,6 @@ export default function JsonSchemaGeneratorClient() {
   const [includeRequired, setIncludeRequired] = useState(true);
   const [schemaDraft, setSchemaDraft] = useState<"draft-07" | "2020-12">("draft-07");
   const [indentSize, setIndentSize] = useState<number>(2);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const { outputSchema, error, propertiesCount } = useMemo(() => {
     if (!inputJson.trim()) {
       return { outputSchema: "", error: null, propertiesCount: 0 };
@@ -138,29 +135,10 @@ export default function JsonSchemaGeneratorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">JSON to JSON Schema Generator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Infer clean JSON Schema Draft-07 / 2020-12 validation structures from JSON payload objects.
-            </p>
-          </div>
-
-          {/* Options Bar */}
+return (
+    <ToolLayout toolId="json-schema-generator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Options Bar */}
           <div className="mb-4 p-3 rounded-xl bg-bg-page border border-border-subtle flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-4 flex-wrap">
               <div className="flex items-center gap-2">
@@ -251,25 +229,7 @@ export default function JsonSchemaGeneratorClient() {
               )}
             </div>
           </div>
-        </div>
-
-        {/* Right: InfoPanel */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="json-schema-generator" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="json-schema-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

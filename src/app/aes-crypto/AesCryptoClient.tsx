@@ -1,20 +1,19 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
-const PBKDF2_ITERATIONS = 150000;
+type Mode = "encrypt" | "decrypt";
 
 async function deriveKey(
   passphrase: string,
   salt: Uint8Array
 ): Promise<CryptoKey> {
+  const enc = new TextEncoder();
   const keyMaterial = await crypto.subtle.importKey(
     "raw",
-    new TextEncoder().encode(passphrase) as unknown as BufferSource,
+    enc.encode(passphrase),
     "PBKDF2",
     false,
     ["deriveKey"]
@@ -22,8 +21,8 @@ async function deriveKey(
   return crypto.subtle.deriveKey(
     {
       name: "PBKDF2",
-      salt: salt as unknown as BufferSource,
-      iterations: PBKDF2_ITERATIONS,
+      salt: salt.buffer as ArrayBuffer,
+      iterations: 100_000,
       hash: "SHA-256",
     },
     keyMaterial,
@@ -33,59 +32,81 @@ async function deriveKey(
   );
 }
 
-function toBase64(bytes: Uint8Array): string {
-  let s = "";
-  for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-  return btoa(s);
+function toBase64(buf: Uint8Array): string {
+  let str = "";
+  for (let i = 0; i < buf.length; i++) str += String.fromCharCode(buf[i]);
+  return btoa(str);
 }
 
 function fromBase64(b64: string): Uint8Array {
-  return Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  const str = atob(b64);
+  const buf = new Uint8Array(str.length);
+  for (let i = 0; i < str.length; i++) buf[i] = str.charCodeAt(i);
+  return buf;
 }
-
-type Mode = "encrypt" | "decrypt";
 
 export default function AesCryptoClient() {
   const [mode, setMode] = useState<Mode>("encrypt");
   const [passphrase, setPassphrase] = useState("");
-  const [showPass, setShowPass] = useState(false);
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleRun = useCallback(async () => {
-    if (!passphrase || !input || busy) return;
+  const handleProcess = useCallback(async () => {
+    if (busy) return;
+    if (!passphrase) {
+      setError("Please provide a passphrase.");
+      return;
+    }
+    if (!input) {
+      setError("Please provide input text.");
+      return;
+    }
+
     setBusy(true);
     setError("");
     setOutput("");
     try {
       if (mode === "encrypt") {
+        const salt = crypto.getRandomValues(new Uint8Array(16));
         const iv = crypto.getRandomValues(new Uint8Array(12));
-        const key = await deriveKey(passphrase, iv);
-        const buf = await crypto.subtle.encrypt(
-          { name: "AES-GCM", iv: iv as unknown as BufferSource },
+        const key = await deriveKey(passphrase, salt);
+        const enc = new TextEncoder();
+        const encrypted = await crypto.subtle.encrypt(
+          { name: "AES-GCM", iv },
           key,
-          new TextEncoder().encode(input) as unknown as BufferSource
+          enc.encode(input)
         );
-        setOutput(`${toBase64(iv)}:${toBase64(new Uint8Array(buf))}`);
+
+        const full = new Uint8Array(
+          salt.length + iv.length + encrypted.byteLength
+        );
+        full.set(salt, 0);
+        full.set(iv, salt.length);
+        full.set(new Uint8Array(encrypted), salt.length + iv.length);
+
+        setOutput(toBase64(full));
       } else {
-        const parts = input.split(":");
-        if (parts.length !== 2) throw new Error("bad format");
-        const iv = fromBase64(parts[0].trim());
-        if (iv.length !== 12) throw new Error("bad IV");
-        const ciphertext = fromBase64(parts[1].trim());
-        const key = await deriveKey(passphrase, iv);
-        const buf = await crypto.subtle.decrypt(
-          { name: "AES-GCM", iv: iv as unknown as BufferSource },
+        const full = fromBase64(input.trim());
+        if (full.length < 16 + 12 + 16) {
+          throw new Error("Ciphertext too short or invalid.");
+        }
+        const salt = full.slice(0, 16);
+        const iv = full.slice(16, 28);
+        const data = full.slice(28);
+
+        const key = await deriveKey(passphrase, salt);
+        const decrypted = await crypto.subtle.decrypt(
+          { name: "AES-GCM", iv },
           key,
-          ciphertext as unknown as BufferSource
+          data
         );
-        setOutput(new TextDecoder().decode(buf));
+        const dec = new TextDecoder();
+        setOutput(dec.decode(decrypted));
       }
     } catch {
-      setError("wrong passphrase or corrupted data");
+      setError("Decryption failed — incorrect passphrase or corrupted ciphertext.");
     } finally {
       setBusy(false);
     }
@@ -94,151 +115,142 @@ export default function AesCryptoClient() {
   const outputBytes = output ? new TextEncoder().encode(output).length : 0;
 
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Mode</p>
-        <p className="text-text-primary font-mono capitalize">{mode}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Algorithm:</span>
+        <span className="text-accent font-bold">AES-256-GCM</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Output Size</p>
-        <p className="text-text-primary font-mono">
-          {output ? `${outputBytes} B` : "—"}
-        </p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">KDF:</span>
+        <span className="text-text-primary">PBKDF2 (100k rounds)</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Input Size:</span>
+        <span className="text-text-primary">{input.length} chars</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Output Bytes:</span>
+        <span className="text-success font-bold">{outputBytes} B</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">AES Encrypt / Decrypt</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              AES-256-GCM with PBKDF2. Everything stays in your browser.
-            </p>
+    <ToolLayout toolId="aes-crypto" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Mode Selector */}
+        <div className="flex items-center justify-between pb-3 border-b border-border-subtle">
+          <div className="flex items-center gap-1.5 p-1 bg-bg-page rounded-lg border border-border-subtle text-xs">
+            {(["encrypt", "decrypt"] as Mode[]).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => {
+                  setMode(m);
+                  setOutput("");
+                  setError("");
+                }}
+                className={`px-3 py-1 rounded font-bold transition-colors capitalize ${
+                  mode === m ? "bg-accent text-bg-page" : "text-text-secondary hover:text-text-primary"
+                }`}
+              >
+                {m}
+              </button>
+            ))}
           </div>
 
-          {/* Mode toggle */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex rounded-lg border border-border-subtle bg-bg-page p-1">
-              {(["encrypt", "decrypt"] as Mode[]).map((m) => (
-                <button
-                  key={m}
-                  onClick={() => {
-                    setMode(m);
-                    setOutput("");
-                    setError("");
-                  }}
-                  className={`px-4 py-1.5 text-sm rounded-md transition-colors ${
-                    mode === m
-                      ? "bg-accent text-white font-semibold"
-                      : "text-text-secondary hover:text-accent"
-                  }`}
-                >
-                  {m === "encrypt" ? "Encrypt" : "Decrypt"}
-                </button>
-              ))}
+          <span className="text-[11px] text-text-muted">AES-GCM (256-bit)</span>
+        </div>
+
+        {/* Passphrase Input */}
+        <div className="space-y-1.5">
+          <label className="text-xs font-semibold text-text-primary block">
+            Encryption Secret Passphrase
+          </label>
+          <input
+            type="password"
+            value={passphrase}
+            onChange={(e) => {
+              setPassphrase(e.target.value);
+              setError("");
+            }}
+            placeholder="Enter a strong passphrase for key derivation..."
+            className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none"
+          />
+        </div>
+
+        {/* Input Textarea */}
+        <div className="space-y-2 pt-2 border-t border-border-subtle">
+          <div className="h-8 flex items-center justify-between text-xs">
+            <span className="font-semibold text-text-primary">
+              {mode === "encrypt" ? "Plaintext to Encrypt" : "Base64 Ciphertext to Decrypt"}
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setInput("");
+                  setOutput("");
+                  setError("");
+                }}
+                className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+              >
+                [Clear]
+              </button>
+              <CopyButton text={input} label="Copy" />
             </div>
           </div>
-
-          {/* Passphrase */}
-          <label className="mb-2 block text-sm font-medium text-text-secondary">
-            Passphrase
-          </label>
-          <div className="flex gap-2">
-            <input
-              type={showPass ? "text" : "password"}
-              value={passphrase}
-              onChange={(e) => setPassphrase(e.target.value)}
-              placeholder="Enter passphrase..."
-              autoComplete="off"
-              className="input-field flex-1 min-w-0 font-mono"
-            />
-            <button
-              onClick={() => setShowPass((s) => !s)}
-              className="btn-secondary px-3 text-sm shrink-0"
-              aria-label={showPass ? "Hide passphrase" : "Show passphrase"}
-            >
-              {showPass ? "🙈" : "👁"}
-            </button>
-          </div>
-
-          {/* Input */}
-          <label className="mt-6 mb-2 block text-sm font-medium text-text-secondary">
-            {mode === "encrypt" ? "Plaintext" : "Ciphertext (iv:base64)"}
-          </label>
           <textarea
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value);
+              setError("");
+            }}
             placeholder={
               mode === "encrypt"
-                ? "Enter text to encrypt..."
-                : "Paste encrypted string..."
+                ? "Enter confidential message or plaintext..."
+                : "Paste Base64-encoded encrypted string..."
             }
-            className="input-field min-h-[120px] resize-y font-mono text-sm break-all"
+            rows={6}
+            className="w-full rounded-lg border border-border-subtle bg-bg-page p-3 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-accent focus:outline-none resize-y leading-relaxed"
+            spellCheck={false}
           />
+        </div>
 
+        {/* Action Button */}
+        <div className="flex items-center gap-3">
           <button
-            onClick={handleRun}
-            disabled={!passphrase || !input || busy}
-            className="btn-primary w-full mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+            type="button"
+            onClick={handleProcess}
+            disabled={busy || !input.trim() || !passphrase}
+            className="px-4 py-2 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            {busy
-              ? "Working..."
-              : mode === "encrypt"
-                ? "🔒 Encrypt"
-                : "🔓 Decrypt"}
+            {busy ? "Processing..." : mode === "encrypt" ? "Encrypt Payload" : "Decrypt Payload"}
           </button>
-
-          {error && (
-            <p className="mt-3 text-sm text-error text-center">{error}</p>
-          )}
-
-          {/* Output */}
-          {(output || !error) && (
-            <>
-              <label className="mt-6 mb-2 block text-sm font-medium text-text-secondary">
-                Output
-              </label>
-              <div className="flex items-start gap-2">
-                <code className="min-w-0 flex-1 break-all rounded bg-bg-page border border-border-subtle px-3 py-2 text-xs sm:text-sm text-text-primary min-h-[42px]">
-                  {output || <span className="text-text-muted">—</span>}
-                </code>
-                <CopyButton text={output} label="copy" />
-              </div>
-            </>
-          )}
         </div>
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="aes-crypto" stats={stats} />
-        </div>
+        {/* Error */}
+        {error && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            {error}
+          </div>
+        )}
+
+        {/* Output Area */}
+        {output && (
+          <div className="pt-3 border-t border-border-subtle space-y-2">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-text-primary">
+                {mode === "encrypt" ? "Encrypted Ciphertext (Base64)" : "Decrypted Plaintext Result"}
+              </span>
+              <CopyButton text={output} label="Copy Result" />
+            </div>
+            <pre className="p-3.5 rounded-lg border border-border-subtle bg-bg-page font-mono text-xs text-text-primary whitespace-pre-wrap break-all max-h-72 overflow-y-auto leading-relaxed">
+              {output}
+            </pre>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="aes-crypto" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

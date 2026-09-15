@@ -1,9 +1,8 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useEffect } from "react";
-import Link from "next/link";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
 import CopyButton from "@/components/CopyButton";
 
 type KeyType = "RSA-2048" | "RSA-4096" | "ECDSA-P256" | "ECDSA-P384";
@@ -40,8 +39,6 @@ export default function KeypairGeneratorClient() {
   const [privateKeyPem, setPrivateKeyPem] = useState("");
   const [fingerprint, setFingerprint] = useState("");
   const [generating, setGenerating] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const generateKeys = async () => {
     setGenerating(true);
     try {
@@ -118,29 +115,10 @@ export default function KeypairGeneratorClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Main Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">RSA & ECDSA Key Pair Generator</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Generate asymmetric encryption & signing key pairs in standard PEM format (PKCS#8 / SPKI).
-            </p>
-          </div>
-
-          {/* Type Selector & Regenerate */}
+return (
+    <ToolLayout toolId="keypair-generator" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Type Selector & Regenerate */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6 p-3 bg-bg-page rounded-lg border border-border-subtle">
             <div className="flex flex-wrap items-center gap-1.5 bg-bg-card p-1 rounded-lg border border-border-subtle">
               {(
@@ -222,17 +200,7 @@ export default function KeypairGeneratorClient() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Right: Info Sidebar */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="keypair-generator" stats={stats} />
-        </div>
       </div>
-
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="keypair-generator" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

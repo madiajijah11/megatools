@@ -1,10 +1,8 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
 import { PDFDocument } from "pdf-lib";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+import ToolLayout from "@/components/ToolLayout";
 
 interface ImageItem {
   id: string;
@@ -14,95 +12,107 @@ interface ImageItem {
   height: number;
 }
 
+type PageSizeOption = "fit" | "a4" | "letter";
+type OrientationOption = "portrait" | "landscape" | "auto";
+
+const PAGE_SIZES: Record<"a4" | "letter", { width: number; height: number }> = {
+  a4: { width: 595.28, height: 841.89 },
+  letter: { width: 612, height: 792 },
+};
+
+function formatBytes(bytes: number): string {
+  if (bytes === 0) return "0 B";
+  const k = 1024;
+  const sizes = ["B", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+}
+
 export default function ImageToPdfClient() {
-  const [items, setItems] = useState<ImageItem[]>([]);
-  const [pageSize, setPageSize] = useState<"fit" | "a4">("fit");
-  const [orientation, setOrientation] = useState<"auto" | "portrait" | "landscape">("auto");
+  const [images, setImages] = useState<ImageItem[]>([]);
+  const [pageSize, setPageSize] = useState<PageSizeOption>("fit");
+  const [orientation, setOrientation] = useState<OrientationOption>("auto");
   const [margin, setMargin] = useState<number>(0);
-  const [converting, setConverting] = useState(false);
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
-  const [dragOver, setDragOver] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  const [pdfSize, setPdfSize] = useState<number | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
 
-  const handleFiles = useCallback((files: FileList | File[]) => {
+  const addFiles = useCallback((files: FileList | File[]) => {
     setError(null);
-    const newItems: ImageItem[] = [];
+    const validFiles = Array.from(files).filter((f) =>
+      ["image/png", "image/jpeg", "image/webp"].includes(f.type)
+    );
 
-    Array.from(files).forEach((file) => {
-      if (!file.type.startsWith("image/")) return;
+    if (validFiles.length === 0) {
+      setError("Please drop valid PNG, JPEG, or WebP images.");
+      return;
+    }
 
-      const url = URL.createObjectURL(file);
+    validFiles.forEach((file) => {
+      const previewUrl = URL.createObjectURL(file);
       const img = new Image();
       img.onload = () => {
-        setItems((prev) => [
+        setImages((prev) => [
           ...prev,
           {
-            id: `${file.name}-${Date.now()}-${Math.random()}`,
+            id: Math.random().toString(36).slice(2),
             file,
-            previewUrl: url,
-            width: img.naturalWidth || 800,
-            height: img.naturalHeight || 600,
+            previewUrl,
+            width: img.naturalWidth,
+            height: img.naturalHeight,
           },
         ]);
       };
-      img.src = url;
+      img.src = previewUrl;
     });
-    setDownloadUrl(null);
+
+    setPdfUrl(null);
+    setPdfSize(null);
   }, []);
 
-  // Cleanup object URLs on unmount
-  useEffect(() => {
-    return () => {
-      items.forEach((item) => URL.revokeObjectURL(item.previewUrl));
-      if (downloadUrl) URL.revokeObjectURL(downloadUrl);
-    };
-  }, [items, downloadUrl]);
-
   const moveItem = (index: number, direction: -1 | 1) => {
-    setItems((prev) => {
-      const target = index + direction;
-      if (target < 0 || target >= prev.length) return prev;
+    setImages((prev) => {
       const next = [...prev];
+      const target = index + direction;
+      if (target < 0 || target >= next.length) return prev;
       const temp = next[index];
       next[index] = next[target];
       next[target] = temp;
       return next;
     });
-    setDownloadUrl(null);
+    setPdfUrl(null);
   };
 
   const removeItem = (id: string) => {
-    setItems((prev) => {
+    setImages((prev) => {
       const item = prev.find((i) => i.id === id);
       if (item) URL.revokeObjectURL(item.previewUrl);
       return prev.filter((i) => i.id !== id);
     });
-    setDownloadUrl(null);
+    setPdfUrl(null);
   };
 
-  const convertToPdf = async () => {
-    if (items.length === 0) return;
-    setConverting(true);
+  const generatePdf = async () => {
+    if (images.length === 0) return;
+    setIsGenerating(true);
     setError(null);
 
     try {
       const pdfDoc = await PDFDocument.create();
 
-      for (const item of items) {
-        // Read file bytes
-        let imgBytes = await item.file.arrayBuffer();
-        const isJpg = item.file.type === "image/jpeg" || item.file.type === "image/jpg";
-        const isPng = item.file.type === "image/png";
+      for (const item of images) {
+        let imageBytes: ArrayBuffer;
+        let isPng = item.file.type === "image/png";
 
-        let embeddedImage;
+        if (item.file.type === "image/webp") {
+          const canvas = document.createElement("canvas");
+          canvas.width = item.width;
+          canvas.height = item.height;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) throw new Error("Canvas context unavailable");
 
-        if (isJpg) {
-          embeddedImage = await pdfDoc.embedJpg(imgBytes);
-        } else if (isPng) {
-          embeddedImage = await pdfDoc.embedPng(imgBytes);
-        } else {
-          // WebP or other: draw to Canvas and export PNG
           const img = new Image();
           await new Promise<void>((resolve, reject) => {
             img.onload = () => resolve();
@@ -110,316 +120,302 @@ export default function ImageToPdfClient() {
             img.src = item.previewUrl;
           });
 
-          const canvas = document.createElement("canvas");
-          canvas.width = img.naturalWidth;
-          canvas.height = img.naturalHeight;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) throw new Error("Canvas context unavailable");
           ctx.drawImage(img, 0, 0);
-
           const pngBlob = await new Promise<Blob | null>((resolve) =>
             canvas.toBlob(resolve, "image/png")
           );
-          if (!pngBlob) throw new Error("PNG conversion failed");
-          imgBytes = await pngBlob.arrayBuffer();
-          embeddedImage = await pdfDoc.embedPng(imgBytes);
-        }
-
-        const imgWidth = embeddedImage.width;
-        const imgHeight = embeddedImage.height;
-
-        let pageWidth = imgWidth;
-        let pageHeight = imgHeight;
-
-        if (pageSize === "a4") {
-          // A4 dimensions in points: 595.28 x 841.89
-          const a4W = 595.28;
-          const a4H = 841.89;
-
-          if (orientation === "landscape" || (orientation === "auto" && imgWidth > imgHeight)) {
-            pageWidth = a4H;
-            pageHeight = a4W;
-          } else {
-            pageWidth = a4W;
-            pageHeight = a4H;
-          }
+          if (!pngBlob) throw new Error("WebP conversion failed");
+          imageBytes = await pngBlob.arrayBuffer();
+          isPng = true;
         } else {
-          // Fit mode with orientation
-          if (
-            (orientation === "landscape" && imgHeight > imgWidth) ||
-            (orientation === "portrait" && imgWidth > imgHeight)
-          ) {
-            pageWidth = imgHeight;
-            pageHeight = imgWidth;
-          }
+          imageBytes = await item.file.arrayBuffer();
         }
 
-        const availableW = pageWidth - margin * 2;
-        const availableH = pageHeight - margin * 2;
+        const embeddedImage = isPng
+          ? await pdfDoc.embedPng(imageBytes)
+          : await pdfDoc.embedJpg(imageBytes);
 
-        const scale = Math.min(availableW / imgWidth, availableH / imgHeight, 1);
-        const drawW = imgWidth * scale;
-        const drawH = imgHeight * scale;
-        const x = margin + (availableW - drawW) / 2;
-        const y = margin + (availableH - drawH) / 2;
+        let pWidth: number;
+        let pHeight: number;
 
-        const page = pdfDoc.addPage([pageWidth, pageHeight]);
+        if (pageSize === "fit") {
+          pWidth = embeddedImage.width + margin * 2;
+          pHeight = embeddedImage.height + margin * 2;
+        } else {
+          const dims = PAGE_SIZES[pageSize];
+          let isLandscape = false;
+          if (orientation === "landscape") isLandscape = true;
+          else if (orientation === "portrait") isLandscape = false;
+          else isLandscape = embeddedImage.width > embeddedImage.height;
+
+          pWidth = isLandscape ? dims.height : dims.width;
+          pHeight = isLandscape ? dims.width : dims.height;
+        }
+
+        const page = pdfDoc.addPage([pWidth, pHeight]);
+        const availW = pWidth - margin * 2;
+        const availH = pHeight - margin * 2;
+
+        let drawW = embeddedImage.width;
+        let drawH = embeddedImage.height;
+
+        if (pageSize !== "fit" || margin > 0) {
+          const scale = Math.min(availW / drawW, availH / drawH, 1);
+          drawW *= scale;
+          drawH *= scale;
+        }
+
+        const drawX = margin + (availW - drawW) / 2;
+        const drawY = margin + (availH - drawH) / 2;
+
         page.drawImage(embeddedImage, {
-          x,
-          y,
+          x: drawX,
+          y: drawY,
           width: drawW,
           height: drawH,
         });
       }
 
       const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" });
+      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
       const url = URL.createObjectURL(blob);
-      setDownloadUrl(url);
+      setPdfUrl(url);
+      setPdfSize(blob.size);
     } catch (err) {
-      setError(`PDF generation failed: ${(err as Error).message}`);
+      setError(`PDF Generation failed: ${(err as Error).message}`);
     } finally {
-      setConverting(false);
+      setIsGenerating(false);
     }
   };
 
+  useEffect(() => {
+    return () => {
+      images.forEach((img) => URL.revokeObjectURL(img.previewUrl));
+      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const totalBytes = images.reduce((acc, img) => acc + img.file.size, 0);
+
   const stats = (
-    <div className="grid grid-cols-2 gap-3 text-sm">
-      <div>
-        <p className="text-text-muted text-xs">Images</p>
-        <p className="text-text-primary font-mono">{items.length}</p>
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Total Images:</span>
+        <span className="text-accent font-bold">{images.length} images</span>
       </div>
-      <div>
-        <p className="text-text-muted text-xs">Page Size</p>
-        <p className="text-text-primary font-mono uppercase">{pageSize}</p>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Source Size:</span>
+        <span className="text-text-primary">{formatBytes(totalBytes)}</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Page Layout:</span>
+        <span className="text-text-primary uppercase">{pageSize}</span>
+      </div>
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">PDF Output:</span>
+        <span className="text-success font-bold">{pdfSize ? formatBytes(pdfSize) : "—"}</span>
       </div>
     </div>
   );
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
+    <ToolLayout toolId="image-to-pdf" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-5 font-mono">
+        {/* Upload Dropzone */}
+        <label
+          onDragOver={(e) => {
+            e.preventDefault();
+            setDragOver(true);
+          }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={(e) => {
+            e.preventDefault();
+            setDragOver(false);
+            if (e.dataTransfer.files) addFiles(e.dataTransfer.files);
+          }}
+          className={`flex flex-col items-center justify-center p-8 rounded-xl border-2 border-dashed transition-all cursor-pointer ${
+            dragOver
+              ? "border-accent bg-accent/5"
+              : "border-border-subtle hover:border-accent/40 bg-bg-page"
+          }`}
+        >
+          <span className="text-2xl mb-2">📸</span>
+          <span className="text-sm font-semibold text-text-primary">
+            Drop images here or click to browse
+          </span>
+          <span className="text-xs text-text-muted mt-1">
+            PNG, JPEG, WebP supported. Multiple images compile into one multi-page PDF.
+          </span>
+          <input
+            type="file"
+            multiple
+            accept="image/png,image/jpeg,image/webp"
+            onChange={(e) => e.target.files && addFiles(e.target.files)}
+            className="hidden"
+          />
+        </label>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">Image to PDF</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Convert PNG, JPG, or WebP images into a PDF document.
-            </p>
+        {/* Error Notification */}
+        {error && (
+          <div className="p-3 rounded-lg border border-error/30 bg-error/10 text-xs text-error">
+            {error}
           </div>
+        )}
 
-          {/* Dropzone */}
-          <label
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragOver(true);
-            }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragOver(false);
-              if (e.dataTransfer.files?.length) {
-                handleFiles(e.dataTransfer.files);
-              }
-            }}
-            className={`flex min-h-[140px] cursor-pointer flex-col items-center justify-center gap-2 rounded border border-dashed px-6 py-8 text-center transition-colors ${
-              dragOver
-                ? "border-accent bg-accent-soft"
-                : "border-border-subtle bg-bg-page hover:border-accent"
-            }`}
-          >
-            <input
-              type="file"
-              multiple
-              accept="image/png,image/jpeg,image/webp"
-              className="hidden"
-              onChange={(e) => {
-                if (e.target.files?.length) {
-                  handleFiles(e.target.files);
-                  e.target.value = "";
-                }
-              }}
-            />
-            <span className="font-mono text-sm text-text-secondary">
-              $ drop images here -- or click to select
-            </span>
-            <span className="text-xs text-text-muted">PNG · JPG · WebP</span>
-          </label>
-
-          {error && <p className="mt-4 text-sm text-error text-center">{error}</p>}
-
-          {/* Controls & Image List */}
-          {items.length > 0 && (
-            <div className="mt-6 space-y-6">
-              {/* Options */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 rounded border border-border-subtle bg-bg-page p-4 text-xs font-mono">
-                <div>
-                  <label className="text-text-muted block mb-1">PAGE SIZE</label>
-                  <select
-                    value={pageSize}
-                    onChange={(e) => {
-                      setPageSize(e.target.value as "fit" | "a4");
-                      setDownloadUrl(null);
-                    }}
-                    className="input-field py-1 text-xs"
-                  >
-                    <option value="fit">Fit Image</option>
-                    <option value="a4">Standard A4</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-text-muted block mb-1">ORIENTATION</label>
-                  <select
-                    value={orientation}
-                    onChange={(e) => {
-                      setOrientation(e.target.value as "auto" | "portrait" | "landscape");
-                      setDownloadUrl(null);
-                    }}
-                    className="input-field py-1 text-xs"
-                  >
-                    <option value="auto">Auto</option>
-                    <option value="portrait">Portrait</option>
-                    <option value="landscape">Landscape</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="text-text-muted block mb-1">MARGIN</label>
-                  <select
-                    value={margin}
-                    onChange={(e) => {
-                      setMargin(Number(e.target.value));
-                      setDownloadUrl(null);
-                    }}
-                    className="input-field py-1 text-xs"
-                  >
-                    <option value={0}>None (0 pt)</option>
-                    <option value={20}>Small (20 pt)</option>
-                    <option value={40}>Medium (40 pt)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Thumbnails grid */}
+        {/* Page Options */}
+        {images.length > 0 && (
+          <div className="pt-2 border-t border-border-subtle space-y-3 text-xs">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
-                <p className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-2">
-                  Images ({items.length}) — Page Order
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                  {items.map((item, index) => (
-                    <div
-                      key={item.id}
-                      className="group relative rounded border border-border-subtle bg-bg-page p-2 flex flex-col items-center"
-                    >
-                      <div className="relative w-full aspect-square bg-bg-card rounded overflow-hidden flex items-center justify-center">
-                        <img
-                          src={item.previewUrl}
-                          alt={item.file.name}
-                          className="max-w-full max-h-full object-contain"
-                        />
-                        <span className="absolute top-1 left-1 bg-bg-page/80 border border-border-subtle px-1.5 py-0.5 text-[10px] font-mono text-accent rounded">
-                          #{index + 1}
-                        </span>
-                      </div>
-
-                      <p className="w-full truncate text-[11px] font-mono text-text-secondary mt-1.5 text-center">
-                        {item.file.name}
-                      </p>
-
-                      <div className="mt-2 flex items-center gap-1 w-full justify-center">
-                        <button
-                          onClick={() => moveItem(index, -1)}
-                          disabled={index === 0}
-                          className="px-1.5 py-0.5 text-[10px] btn-secondary disabled:opacity-20"
-                        >
-                          ◀
-                        </button>
-                        <button
-                          onClick={() => moveItem(index, 1)}
-                          disabled={index === items.length - 1}
-                          className="px-1.5 py-0.5 text-[10px] btn-secondary disabled:opacity-20"
-                        >
-                          ▶
-                        </button>
-                        <button
-                          onClick={() => removeItem(item.id)}
-                          className="px-1.5 py-0.5 text-[10px] text-error hover:bg-error/10 rounded"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-border-subtle">
-                <button
-                  onClick={() => {
-                    setItems([]);
-                    setDownloadUrl(null);
+                <label className="text-text-secondary block mb-1">Page Format</label>
+                <select
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(e.target.value as PageSizeOption);
+                    setPdfUrl(null);
                   }}
-                  className="btn-secondary text-xs"
+                  className="w-full rounded border border-border-subtle bg-bg-page p-2 font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
                 >
-                  Clear All
-                </button>
+                  <option value="fit">Fit to Image Size</option>
+                  <option value="a4">A4 (ISO 216)</option>
+                  <option value="letter">US Letter</option>
+                </select>
+              </div>
 
-                <button
-                  onClick={convertToPdf}
-                  disabled={converting || items.length === 0}
-                  className="btn-primary"
+              <div>
+                <label className="text-text-secondary block mb-1">Orientation</label>
+                <select
+                  value={orientation}
+                  disabled={pageSize === "fit"}
+                  onChange={(e) => {
+                    setOrientation(e.target.value as OrientationOption);
+                    setPdfUrl(null);
+                  }}
+                  className="w-full rounded border border-border-subtle bg-bg-page p-2 font-mono text-xs text-text-primary focus:border-accent focus:outline-none disabled:opacity-40"
                 >
-                  {converting ? "Building PDF..." : `$ convert ${items.length} images to pdf`}
+                  <option value="auto">Auto (Match Image)</option>
+                  <option value="portrait">Portrait</option>
+                  <option value="landscape">Landscape</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="text-text-secondary block mb-1">Margin ({margin}px)</label>
+                <input
+                  type="range"
+                  min={0}
+                  max={40}
+                  step={5}
+                  value={margin}
+                  onChange={(e) => {
+                    setMargin(Number(e.target.value));
+                    setPdfUrl(null);
+                  }}
+                  className="w-full accent-accent cursor-pointer h-1.5 bg-border-subtle rounded-lg mt-2"
+                />
+              </div>
+            </div>
+
+            {/* Images Queue Grid */}
+            <div className="space-y-2 pt-2 border-t border-border-subtle">
+              <div className="h-8 flex items-center justify-between text-xs">
+                <span className="font-semibold text-text-primary">
+                  Pages Sequence ({images.length} Images)
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setImages([]);
+                    setPdfUrl(null);
+                  }}
+                  className="text-xs text-text-muted hover:text-error transition-colors px-2 py-0.5 rounded border border-border-subtle"
+                >
+                  [Clear All]
                 </button>
               </div>
 
-              {/* Download banner */}
-              {downloadUrl && (
-                <div className="rounded border border-accent/40 bg-accent-soft p-4 text-center">
-                  <p className="text-sm font-semibold text-accent mb-2">
-                    ✓ PDF Document Ready ({items.length} pages)
-                  </p>
-                  <a
-                    href={downloadUrl}
-                    download="images.pdf"
-                    className="btn-primary inline-flex items-center gap-2"
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {images.map((item, index) => (
+                  <div
+                    key={item.id}
+                    className="p-2 rounded-lg border border-border-subtle bg-bg-page flex flex-col items-center space-y-1.5 relative group"
                   >
-                    Download images.pdf
-                  </a>
-                </div>
-              )}
+                    <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-bg-card/90 border border-border-subtle text-[10px] font-bold text-accent">
+                      #{index + 1}
+                    </span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={item.previewUrl}
+                      alt={item.file.name}
+                      className="w-full h-24 object-contain rounded bg-white/5"
+                    />
+                    <span className="text-[10px] text-text-muted truncate w-full text-center">
+                      {item.file.name}
+                    </span>
+
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        disabled={index === 0}
+                        onClick={() => moveItem(index, -1)}
+                        className="px-1.5 py-0.5 rounded border border-border-subtle text-[10px] text-text-secondary disabled:opacity-20"
+                      >
+                        ←
+                      </button>
+                      <button
+                        type="button"
+                        disabled={index === images.length - 1}
+                        onClick={() => moveItem(index, 1)}
+                        className="px-1.5 py-0.5 rounded border border-border-subtle text-[10px] text-text-secondary disabled:opacity-20"
+                      >
+                        →
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.id)}
+                        className="px-1.5 py-0.5 rounded border border-border-subtle text-[10px] text-error"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={generatePdf}
+                  disabled={isGenerating || images.length === 0}
+                  className="w-full py-2.5 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors disabled:opacity-40"
+                >
+                  {isGenerating ? "Compiling PDF..." : `Compile ${images.length} Images into PDF`}
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="image-to-pdf" stats={stats} />
-        </div>
+        {/* Download Link */}
+        {pdfUrl && (
+          <div className="pt-3 border-t border-border-subtle space-y-2">
+            <div className="h-8 flex items-center justify-between text-xs">
+              <span className="font-semibold text-success">
+                ✓ PDF Document Generated ({pdfSize ? formatBytes(pdfSize) : ""})
+              </span>
+              <a
+                href={pdfUrl}
+                download="images-compiled.pdf"
+                className="px-4 py-1.5 rounded-lg bg-accent text-bg-page font-mono text-xs font-bold hover:bg-accent-hover transition-colors"
+              >
+                Download Compiled PDF
+              </a>
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="image-to-pdf" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }

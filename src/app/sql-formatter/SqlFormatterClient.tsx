@@ -1,10 +1,12 @@
 "use client";
 
+import ToolLayout from "@/components/ToolLayout";
+
 import { useState, useCallback, useEffect } from "react";
-import Link from "next/link";
+
 import { format as formatSql, type FormatOptionsWithLanguage } from "sql-formatter";
-import InfoPanel from "@/components/InfoPanel";
-import MobileInfoDrawer from "@/components/MobileInfoDrawer";
+
+
 import CopyButton from "@/components/CopyButton";
 
 type Dialect = "sql" | "postgresql" | "mysql" | "sqlite" | "transactsql" | "bigquery";
@@ -20,7 +22,6 @@ export default function SqlFormatterClient() {
   const [tabWidth, setTabWidth] = useState<number>(2);
   const [mode, setMode] = useState<"beautify" | "minify">("beautify");
   const [error, setError] = useState<string | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const formatQuery = useCallback(() => {
     setError(null);
@@ -84,29 +85,10 @@ export default function SqlFormatterClient() {
       </div>
     </div>
   );
-
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-8">
-      <Link
-        href="/"
-        className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1"
-      >
-        $ cd ../
-      </Link>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8">
-        {/* Left: Workspace */}
-        <div className="card p-6 sm:p-8">
-          <div className="mb-6 text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold">
-              <span className="gradient-text">SQL Formatter &amp; Beautifier</span>
-            </h1>
-            <p className="mt-2 text-sm text-text-secondary">
-              Format, indent, and beautify complex SQL queries in your browser.
-            </p>
-          </div>
-
-          {/* Controls toolbar */}
+return (
+    <ToolLayout toolId="sql-formatter" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Controls toolbar */}
           <div className="mb-4 grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs font-mono rounded border border-border-subtle bg-bg-page p-3">
             <div>
               <label className="text-text-muted block mb-1">MODE</label>
@@ -226,26 +208,7 @@ export default function SqlFormatterClient() {
               className="output-field min-h-[200px] resize-y font-mono text-xs text-accent whitespace-pre"
             />
           </div>
-        </div>
-
-        {/* Right: Info Panel (desktop) */}
-        <div className="hidden lg:block">
-          <InfoPanel toolId="sql-formatter" stats={stats} />
-        </div>
       </div>
-
-      {/* Mobile FAB */}
-      <button
-        onClick={() => setDrawerOpen(true)}
-        className="fixed bottom-6 right-6 z-30 lg:hidden w-12 h-12 rounded-full bg-accent text-bg-page shadow-lg flex items-center justify-center text-xl font-bold hover:bg-accent-hover transition-colors"
-      >
-        ?
-      </button>
-
-      {/* Mobile Drawer */}
-      <MobileInfoDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
-        <InfoPanel toolId="sql-formatter" stats={stats} />
-      </MobileInfoDrawer>
-    </div>
+    </ToolLayout>
   );
 }
