@@ -65,11 +65,12 @@ Custom tokens in `globals.css` via `@theme inline`:
 
 ### Tool Page Pattern
 
-Every tool uses a two-file pattern:
+Every tool uses a standardized two-file pattern wrapped with `<ToolLayout />`:
 
+- **Scaffolding**: Run `npm run make:tool <tool-slug> "<Tool Title>" <category> "<Tech>"` to generate templates automatically.
 1. **`page.tsx`** — Server component. Exports complete SEO `Metadata` (`title: "<Tool> — MegaTools"`, `description`, `keywords`, `openGraph`, `alternates: { canonical: "/<tool-slug>" }`). Renders the client component.
-2. **`<Tool>Client.tsx`** — `"use client"`. Contains all state, event handlers, and browser API calls with `InfoPanel` + `MobileInfoDrawer`.
-   - **Header Baseline**: Input/output header bars must strictly use `h-8 flex items-center justify-between` with compact font-mono buttons (`text-xs font-mono px-2 py-1 rounded border`).
+2. **`<Tool>Client.tsx`** — `"use client"`. Contains state, event handlers, and browser API logic.
+   - **Mandatory `<ToolLayout />`**: Must wrap entire view with `<ToolLayout toolId="<tool-slug>" stats={stats}>`. Never write custom page headers, custom back links, or custom mobile drawers.
    - **Typography**: Geist Mono / `JetBrains Mono` (`font-mono`) for all numbers, hashes, keys, metrics, addresses, and hex tables.
    - **Zero Leakage**: 100% client-side execution. No user inputs sent to any remote server.
 

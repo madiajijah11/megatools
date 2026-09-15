@@ -13,12 +13,13 @@ Refer to `ARCHITECTURE.md` and `CLAUDE.md` for complete system design and compon
 3. **Tool Registry & Category Sync**:
    - Register in `TOOLS` in `src/lib/tool-data.ts` with full `ToolInfo` schema (`id`, `title`, `shortTitle`, `description`, `href`, `category`, `tech`, `steps`, `tips`, `example`).
    - Register `tool.id` in `TOOL_CATEGORIES` under the matching category `toolIds` array (critical for category filtering & dropdown menu).
-4. **Two-File Tool Standard**:
+4. **Mandatory <ToolLayout /> & Two-File Tool Standard**:
+   - **Scaffolding**: Always generate new tools using `npm run make:tool <slug> "<Title>" <category> "<Tech>"`.
    - `src/app/<tool-slug>/page.tsx`: Server component exporting complete SEO `Metadata` (`title` with `— MegaTools`, `description`, `keywords`, `openGraph`, `alternates: { canonical: "/<tool-slug>" }`).
    - `src/app/<tool-slug>/<ToolName>Client.tsx`: `"use client"` component.
-     - **Layout**: 2-column input/output headers must strictly use `h-8 flex items-center justify-between` with compact font-mono action buttons to eliminate vertical misalignment.
-     - **Typography**: `JetBrains Mono` (`font-mono`) for all numbers, metrics, hashes, hex values, and tabular data.
-     - **Help Panels**: Mount desktop `InfoPanel` and mobile `MobileInfoDrawer` via `getToolInfo("<tool-id>")`.
+     - **MANDATORY LAYOUT WRAPPER**: Must wrap entire view with `<ToolLayout toolId="<tool-slug>" stats={stats}>`. NEVER handcraft custom outer headers, custom back links, or custom info drawers.
+     - **Typography**: `font-mono` for all numbers, metrics, hashes, and code.
+     - **UI Consistency**: Use standard classes (`.card`, `btn-primary`, `btn-secondary`).
      - **Zero Leakage**: 100% Client-side execution. User data never leaves the browser.
 5. **Changelog & Documentation**:
    - Record additions/updates in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`).

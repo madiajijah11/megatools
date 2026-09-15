@@ -27,9 +27,12 @@
 | **Merkle Tree Root & Airdrop Proof Builder** | `/merkle-tree-generator` | Sorted Pair Keccak | Generate cryptographic Merkle roots and OpenZeppelin-compatible verification proofs for airdrops |
 | **BIP-39 Mnemonic Seed Phrase Studio** | `/bip39-generator` | BIP-39 & PBKDF2 | Generate 12/24-word recovery phrases, verify checksums, and derive master seeds |
 
-### 🤖 AI & LLM Engineering (5)
+### 🤖 AI & LLM Engineering (8)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **LLM Token Counter & API Cost Estimator** | `/token-counter` | BPE Tokenizer & Pricing AST | Count BPE tokens, visual subwords, and calculate real-time API inference costs |
+| **Few-Shot Prompt & Fine-Tuning Dataset Formatter** | `/few-shot-formatter` | Dataset Serialization AST | Construct few-shot pairs and export to OpenAI JSONL, Anthropic XML, ChatML, and Llama 3 |
+| **LLM Output Diff & Hallucination Spotter** | `/llm-diff-comparator` | Jaccard Metric & Diff AST | Compare AI model responses side-by-side with word diff and numerical hallucination spotting |
 | **AI Model Pricing & Context Matrix** | `/ai-model-comparator` | models.dev Open API | Real-time cost calculator and specs matrix for 25+ LLM models with models.dev live sync support |
 | **Universal AI Payload & SDK Exporter** | `/ai-payload-converter` | Multi-Provider AST | Convert system prompts and parameters into official JSON payloads for OpenAI, Claude, Gemini, and Ollama |
 | **Vector Cosine Similarity & Distance Engine** | `/vector-similarity` | Vector Math Engine | Calculate Cosine Similarity, Dot Product, Euclidean (L2), and Manhattan (L1) metrics for AI embeddings |
