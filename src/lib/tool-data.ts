@@ -1247,6 +1247,102 @@ export const TOOLS: ToolInfo[] = [
       output: "Flagged YoY growth discrepancy (14.5% vs 12.8%) with 92% semantic overlap"
     },
   },
+  {
+    id: "csp-builder",
+    title: "Content Security Policy (CSP) Builder & Analyzer",
+    shortTitle: "CSP Builder",
+    description: "Construct, analyze, and test hardened Content Security Policy (CSP) headers with cryptographic nonces and security audit.",
+    emoji: "🛡️",
+    href: "/csp-builder",
+    tech: "CSP Policy AST Engine",
+    steps: [
+      "Select a security architecture preset (Strict SPA, Ultra Hardened, Vercel/Analytics, API Only)",
+      "Customize directives and toggle common sources or inject custom hosts",
+      "Generate random 128-bit cryptographic nonces for script-src integration",
+      "Export ready-to-use policy for HTTP Header, HTML Meta, Nginx, Apache, or Next.js"
+    ],
+    tips: [
+      "Avoid 'unsafe-inline' in script-src by leveraging cryptographic nonces or SHA-256 hashes",
+      "Always include object-src 'none' to neutralize legacy plugin exploits",
+      "100% client-side validation with zero server transmission"
+    ],
+    example: {
+      input: "Strict Modern SPA Preset with 128-bit Nonce",
+      output: "Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-...' object-src 'none';"
+    },
+  },
+  {
+    id: "har-viewer",
+    title: "HAR File Viewer & Network Waterfall Analyzer",
+    shortTitle: "HAR Viewer",
+    description: "Inspect HTTP Archive (.har) logs with visual waterfall timelines, TTFB metrics, SSL/DNS timings, and request headers.",
+    emoji: "⚡",
+    href: "/har-viewer",
+    tech: "HAR JSON Parser & Waterfall AST",
+    steps: [
+      "Upload or drop any .har file exported from Chrome, Firefox, or Edge DevTools",
+      "Inspect interactive waterfall timeline showing DNS, Connect, SSL, TTFB, and Content Download",
+      "Filter requests by HTTP status (2xx, 3xx, 4xx, 5xx), MIME type (JS, CSS, XHR, Img), or URL search",
+      "Click any request entry to inspect detailed request/response headers, query parameters, and response bodies"
+    ],
+    tips: [
+      "High TTFB (Time to First Byte) usually indicates slow server-side backend queries or unoptimized database calls",
+      "All HAR files remain 100% private in browser memory without external server processing",
+      "Click on waterfall bars to view exact millisecond timing breakdowns"
+    ],
+    example: {
+      input: "network-log.har with 45 requests",
+      output: "Interactive waterfall diagram showing 1.2s total load time and 2.4 MB transferred"
+    },
+  },
+  {
+    id: "user-agent-parser",
+    title: "User-Agent String Parser & Client Hints Inspector",
+    shortTitle: "UA Parser",
+    description: "Parse User-Agent strings to detect browser versions, OS architecture, device models, and AI search crawler bots.",
+    emoji: "🔍",
+    href: "/user-agent-parser",
+    tech: "User-Agent AST & Client Hints",
+    steps: [
+      "Paste any User-Agent string or click [My Browser UA] to inspect your active device",
+      "Review parsed browser engine, major version, OS architecture, and device form factor",
+      "Detect if the User-Agent represents an AI search crawler (GPTBot, ClaudeBot, Googlebot, ByteSpider)",
+      "Copy parsed JSON profile for backend device targeting"
+    ],
+    tips: [
+      "Modern browsers freeze User-Agent strings (UA-CH) for user privacy — combine with Client Hints when available",
+      "AI crawlers like GPTBot and ClaudeBot identify themselves clearly in the User-Agent string",
+      "100% private in-browser analysis without external API dependencies"
+    ],
+    example: {
+      input: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/128.0.0.0 Safari/537.36",
+      output: "Browser: Google Chrome 128 · OS: Windows 10/11 (x86_64) · Device: Desktop"
+    },
+  },
+  {
+    id: "robots-generator",
+    title: "Robots.txt Generator & URL Match Tester",
+    shortTitle: "Robots.txt Generator",
+    description: "Construct standard robots.txt files with AI bot blocking (GPTBot, ClaudeBot), crawl delays, and live URL matching simulation.",
+    emoji: "🤖",
+    href: "/robots-generator",
+    tech: "Robots.txt AST & RFC 9309 Engine",
+    steps: [
+      "Select a robots.txt archetype (Standard Web App, Block AI Scrapers, Disallow All)",
+      "Configure User-agent blocks with custom Disallow and Allow path directives",
+      "Type any URL path in the Live Match Tester to verify whether a bot is permitted or blocked",
+      "Copy compiled robots.txt or download directly as a .txt file"
+    ],
+    tips: [
+      "Blocking AI scrapers like GPTBot, ClaudeBot, and CCBot prevents unauthorized LLM training on your content",
+      "Allow directives take precedence over general Disallow rules in modern RFC 9309 compliant search engines",
+      "Always declare your canonical Sitemap XML URL at the bottom of the robots.txt file"
+    ],
+    example: {
+      input: "Block AI Scrapers Preset with /admin/ Disallow and Sitemap URL",
+      output: "Standard RFC 9309 robots.txt blocking GPTBot, ClaudeBot, and CCBot while allowing search engines"
+    },
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
