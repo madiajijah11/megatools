@@ -22,7 +22,7 @@ Refer to `ARCHITECTURE.md` and `CLAUDE.md` for complete system design and compon
      - **UI Consistency**: Use standard classes (`.card`, `btn-primary`, `btn-secondary`).
      - **Zero Leakage**: 100% Client-side execution. User data never leaves the browser.
 5. **Changelog & Documentation**:
-   - Record additions/updates in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`).
+   - Record additions/updates in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`) using the REAL current ISO date (YYYY-MM-DD from new Date().toISOString().split("T")[0]). NEVER hardcode arbitrary past or placeholder dates.
    - Add new tool row to category table in `README.md`.
 6. **SEO & Indexing Pipeline**:
    - Verify dynamic sitemap in `src/app/sitemap.ts` reflects the route.

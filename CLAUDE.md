@@ -79,7 +79,7 @@ Every tool uses a standardized two-file pattern wrapped with `<ToolLayout />`:
 When adding any new tool:
 1. **Registry & Category Sync**: Add to `TOOLS` and register `tool.id` in `TOOL_CATEGORIES` under the target category's `toolIds` array in `src/lib/tool-data.ts`.
 2. **Create Routes**: Implement `src/app/<tool-slug>/page.tsx` and `src/app/<tool-slug>/<Tool>Client.tsx`.
-3. **Changelog & README**: Add an entry in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`) and add a row to the matching category table in `README.md`.
+3. **Changelog & README**: Add an entry in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`) using the REAL current ISO date (YYYY-MM-DD from new Date().toISOString().split("T")[0]). Add a row to the matching category table in `README.md`.
 4. **SEO & Indexing**: Dynamic sitemap automatically includes the tool. Run `npm run indexnow` after deployment to ping search engines (Bing, Yandex).
 5. **Verification**: Run `npx tsc --noEmit` and `npm run build` before committing.
 
