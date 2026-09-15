@@ -1,78 +1,68 @@
-# MegaTools Architecture & Development Standards
+# MegaTools Architectural & Component Specifications
 
-## 1. System Architecture Principles
-
-1. **100% Client-Side Execution (Airgapped Processing)**
-   - No sensitive data, files, certificates, or user input ever leaves the browser.
-   - All computation relies on native browser Web APIs (`WebCrypto`, `Canvas 2D`, `Web Audio API`, `Intl`, `MediaRecorder`, `TextEncoder`) or WebAssembly/in-memory libraries.
-
-2. **Terminal & Cyber Aesthetic Standards**
-   - **Colors**: Dark terminal background (`#0a0f0d`), elevated cards (`#101713`), borders (`#1f2b24`), glowing neon green accent (`#4ade80`), and muted text (`#8aa396` / `#5a6f63`).
-   - **Typography**: Geist Mono monospace font across all inputs, badges, logs, and outputs.
-   - **Interactive Elements**: Command prompt cues (`$`, `root@megatools:~$`, `[+]`, `[tech]`), CRT scanline toggle, and live status bar telemetry (`TerminalStatusBar`).
+MegaTools is a client-side suite of developer, security, AI, multimedia, and web3 utilities.
+All data processing occurs in the user's browser runtime with zero remote server leakage.
 
 ---
 
-## 2. Component Design & Layout Guidelines
+## 1. Single Source of Truth Layout Standard (<ToolLayout />)
 
-### Two-Column Input/Output Layout Standard
-When building side-by-side or two-column converter tools:
-- **Header Alignment**: Both left (input) and right (output) header rows MUST use fixed `h-8 flex items-center justify-between` to ensure horizontal baseline alignment of labels, clear buttons, and copy actions.
-- **Action Buttons**: `CopyButton` and `Clear` buttons in header rows must use compact font-mono styling (`text-xs font-mono px-2 py-1 rounded border`) to prevent vertical layout shifts.
-- **Matching Heights**: Textarea and output boxes must have matching fixed/min heights (e.g. `h-[280px]` or `h-[320px]`).
+All tool pages must strictly render through `<ToolLayout />` (`src/components/ToolLayout.tsx`):
 
-### Tool Page Pattern
-Every tool follows a two-file pattern:
-1. `src/app/<tool-name>/page.tsx`: Server component exporting SEO `Metadata` and rendering the client component.
-2. `src/app/<tool-name>/<Tool>Client.tsx`: `"use client"` component containing state, logic, `InfoPanel`, and `MobileInfoDrawer`.
-3. Registry: Registered in `TOOLS` array in `src/lib/tool-data.ts`.
+```tsx
+import ToolLayout from "@/components/ToolLayout";
+
+export default function MyToolClient() {
+  const stats = (
+    <div className="space-y-1 text-xs font-mono">
+      <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
+        <span className="text-text-muted">Metric Label:</span>
+        <span className="text-accent font-bold">Value</span>
+      </div>
+    </div>
+  );
+
+  return (
+    <ToolLayout toolId="my-tool" stats={stats}>
+      <div className="rounded-xl border border-border-subtle bg-bg-card p-4 sm:p-5 space-y-4 font-mono">
+        {/* Tool workspace UI */}
+      </div>
+    </ToolLayout>
+  );
+}
+```
+
+### Elements Automatically Rendered by <ToolLayout />:
+1. **Top Nav:** `← [cd .. / home]` + mobile `[?] Tool Info` drawer trigger.
+2. **Terminal Badge & Cursor:** `$ megatools --<tool-slug> --client-side █` with pulsing green cursor.
+3. **Hero Title:** Bold font-mono title with green keyword highlight and description.
+4. **12-Column Responsive Layout:** 8-column workspace on the left + 4-column desktop `<InfoPanel />` on the right.
+5. **Mobile Drawer:** `<MobileInfoDrawer />` slide-in panel.
 
 ---
 
-## 3. Core System Features
+## 2. Tool Registry & Synchronization Protocol
 
-- **Boot Splash** (`src/components/BootSplash.tsx`): Cyber kernel boot sequence on first visit; replayable via `[0:megatools*]` trigger.
-- **Notification & Changelog** (`src/components/NotificationBell.tsx`, `src/lib/changelog-data.ts`, `src/app/changelog/`): Live unread dot tracked in `localStorage` + `/changelog` route.
-- **CRT Mode** (`src/components/CrtToggle.tsx`): Scanlines and phosphor glow toggle with `localStorage` persistence.
-- **Telemetry Bar** (`src/components/TerminalStatusBar.tsx`): Realtime UTC clock, heap memory monitoring, sandbox status, and latency.
+### A. tool-data.ts (Dual Registration Requirement)
+Every tool must be registered in two places within `src/lib/tool-data.ts`:
+1. **`TOOLS` Array**: Object containing schema (`id`, `title`, `shortTitle`, `description`, `emoji`, `href`, `tech`, `steps`, `tips`, `example`).
+2. **`TOOL_CATEGORIES` Array**: The `tool.id` must be present in the matching category's `toolIds` list.
+   *Failure to register in `TOOL_CATEGORIES` causes the tool to be hidden on the homepage grid and search filters.*
+
+### B. changelog-data.ts (Notification Bell Protocol)
+1. Add entry at the **TOP** of `CHANGELOG_ITEMS`.
+2. Must use real current date: `new Date().toISOString().split('T')[0]` (`YYYY-MM-DD`).
+3. Powers the `<NotificationBell />` unread badge and `/changelog` page.
+
+### C. README.md & SEO
+1. Update matching table in `README.md`.
+2. Dynamic sitemap at `src/app/sitemap.ts` automatically maps over `TOOLS`.
 
 ---
 
-## 4. Development Workflow & Guardrails
+## 3. Tool Generation Command
 
-For **every** addition, fix, feature, or refactor:
-1. **Plan First**: Propose approach and obtain approval before editing code.
-2. **Realtime To-Dos**: Break work into granular steps with `todo_write`. Mark `in_progress` when working and `completed` the moment each step settles.
-3. **Zero Lint & Build Errors**: Always verify with `npx tsc --noEmit` and `npm run build` prior to committing.
-4. **Git Discipline**: Conventional commit messages (`feat:`, `fix:`, `refactor:`, `docs:`) with pushed changes to `main`.
-5. **Changelog Record**: Record tool additions, feature enhancements, or significant fixes in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`).
-
----
-
-## 5. Tool Creation & SEO Pipeline SOP
-
-Every new tool must follow this end-to-end integration checklist:
-
-1. **Registry & Category Mapping** (`src/lib/tool-data.ts`):
-   - Add tool object to `TOOLS` with `id`, `title`, `shortTitle`, `description`, `href`, `category`, `tech`, `steps`, `tips`, and `example`.
-   - Register `tool.id` in `TOOL_CATEGORIES` under the target category's `toolIds` array.
-
-2. **Route Files Creation** (`src/app/<tool-slug>/`):
-   - `page.tsx`: Server Component exporting SEO `Metadata` (`title: "<Tool> — MegaTools"`, `description`, `keywords`, `openGraph`, `alternates: { canonical: "/<tool-slug>" }`).
-   - `<ToolName>Client.tsx`: `"use client"` component.
-     - **Header Baseline**: Both input and output toolbars must strictly use `h-8 flex items-center justify-between` with compact font-mono buttons (`text-xs font-mono px-2 py-1 rounded border`).
-     - **Typography**: Geist Mono / `JetBrains Mono` (`font-mono`) for all numbers, hashes, keys, metrics, addresses, and hex tables.
-     - **Help & Info**: Mount desktop `InfoPanel` and mobile `MobileInfoDrawer` using `getToolInfo("<tool-id>")`.
-     - **Privacy**: 100% client-side execution. No user inputs sent to any remote server.
-
-3. **Changelog & Documentation**:
-   - Add entry in `src/lib/changelog-data.ts` (`CHANGELOG_ITEMS`) with version, date, type (`"feature"`), title, description, and tags.
-   - Add new tool row to corresponding category table in `README.md`.
-
-4. **SEO & Search Indexing Pipeline**:
-   - Dynamic sitemap (`src/app/sitemap.ts`) automatically derives URLs from `TOOLS`.
-   - Run `npm run indexnow` to immediately submit new/updated URLs to IndexNow (Bing, Yandex, etc.).
-
-5. **Quality Verification**:
-   - Run `npx tsc --noEmit` for instant strict type verification.
-   - Run `npm run build` to confirm full Turbopack static compilation passes with zero errors.
+Always use the scaffolding generator:
+```bash
+npm run make:tool <slug> "<Title>" <category> "<Tech>"
+```
