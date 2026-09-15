@@ -13,8 +13,68 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
-    id: "2026-09-05-llm-diff-comparator",
-    date: "2026-09-05",
+    id: "2026-09-15-robots-generator",
+    date: "2026-09-15",
+    title: "Robots.txt Generator & Live Path Match Tester",
+    type: "added",
+    toolHref: "/robots-generator",
+    toolName: "Robots.txt Generator",
+    description: "Construct standard robots.txt files with AI bot blocking (GPTBot, ClaudeBot), crawl delays, and live URL matching simulation.",
+    highlights: [
+      "Real-time URL match tester simulating crawler decisions (Allowed vs Blocked)",
+      "Built-in presets to block aggressive AI training scrapers (GPTBot, ClaudeBot, CCBot, ByteSpider)",
+      "Standard RFC 9309 compliant rule ordering and canonical sitemap declaration",
+      "One-click direct .txt download with zero server leakage"
+    ],
+  },
+  {
+    id: "2026-09-15-user-agent-parser",
+    date: "2026-09-15",
+    title: "User-Agent String Parser & Client Hints Inspector",
+    type: "added",
+    toolHref: "/user-agent-parser",
+    toolName: "User-Agent String Parser",
+    description: "Parse User-Agent strings to detect browser versions, OS architecture, device models, and AI search crawler bots.",
+    highlights: [
+      "Accurate detection of browser engine, major release, OS build, and CPU architecture",
+      "Integrated Bot & Crawler identifier for search engines and LLM crawlers",
+      "One-click [My Browser UA] client detection and Client Hints inspection",
+      "Clean JSON device profile export"
+    ],
+  },
+  {
+    id: "2026-09-15-har-viewer",
+    date: "2026-09-15",
+    title: "HAR File Viewer & Network Waterfall Analyzer",
+    type: "added",
+    toolHref: "/har-viewer",
+    toolName: "HAR File Viewer",
+    description: "Inspect HTTP Archive (.har) logs with visual waterfall timelines, TTFB metrics, SSL/DNS timings, and request headers.",
+    highlights: [
+      "Interactive visual waterfall timeline with millisecond timing breakdowns (DNS, Connect, SSL, TTFB, Download)",
+      "Filter requests by HTTP status (2xx, 3xx, 4xx, 5xx) and content types (XHR, JS, CSS, Img)",
+      "Deep inspector for request/response headers, query params, and JSON response bodies",
+      "100% private in-browser memory analysis without uploading sensitive HAR logs"
+    ],
+  },
+  {
+    id: "2026-09-15-csp-builder",
+    date: "2026-09-15",
+    title: "Content Security Policy (CSP) Builder & Security Auditor",
+    type: "added",
+    toolHref: "/csp-builder",
+    toolName: "Content Security Policy Builder",
+    description: "Construct, analyze, and test hardened Content Security Policy (CSP) headers with cryptographic nonces and security audit.",
+    highlights: [
+      "Visual directive builder for script-src, style-src, img-src, connect-src, and frame-ancestors",
+      "Real-time security audit identifying unsafe-inline, unsafe-eval, and missing object-src directives",
+      "Integrated 128-bit cryptographic nonce generator",
+      "Multi-target output for HTTP Header, HTML Meta, Nginx, Apache, Vercel, and Next.js"
+    ],
+  },
+  {
+    id: "2026-09-15-llm-diff-comparator",
+    date: "2026-09-15",
     title: "LLM Output Diff & Hallucination Spotter: Side-by-Side Comparator",
     type: "added",
     toolHref: "/llm-diff-comparator",
@@ -28,8 +88,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-05-few-shot-formatter",
-    date: "2026-09-05",
+    id: "2026-09-15-few-shot-formatter",
+    date: "2026-09-15",
     title: "Few-Shot Prompt & Fine-Tuning Dataset Formatter: OpenAI JSONL & ChatML",
     type: "added",
     toolHref: "/few-shot-formatter",
@@ -43,8 +103,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-05-token-counter",
-    date: "2026-09-05",
+    id: "2026-09-15-token-counter",
+    date: "2026-09-15",
     title: "LLM Token Counter & API Cost Estimator: Real-Time Pricing Matrix",
     type: "added",
     toolHref: "/token-counter",
