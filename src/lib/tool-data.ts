@@ -1392,6 +1392,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "secret-scanner",
       "pwned-checker",
       "webrtc-leak",
+      "csp-builder",
     ],
   },
   {
@@ -1462,6 +1463,9 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "email-dns-generator",
       "dns-lookup",
       "rdap-lookup",
+      "har-viewer",
+      "user-agent-parser",
+      "robots-generator",
     ],
   },
   {
