@@ -13,8 +13,8 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
-    id: "2026-09-15-graphql-formatter",
-    date: "2026-09-15",
+    id: "2026-09-17-graphql-formatter",
+    date: "2026-09-17",
     title: "GraphQL Query Beautifier & AST Inspector",
     type: "added",
     toolHref: "/graphql-formatter",
@@ -28,8 +28,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-cron-simulator",
-    date: "2026-09-15",
+    id: "2026-09-17-cron-simulator",
+    date: "2026-09-17",
     title: "Crontab Schedule Visualizer & Next 20 Executions Calendar",
     type: "added",
     toolHref: "/cron-simulator",
@@ -43,8 +43,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-regex-explainer",
-    date: "2026-09-15",
+    id: "2026-09-17-regex-explainer",
+    date: "2026-09-17",
     title: "Regex Visual Explainer & AST Token Breakdown",
     type: "added",
     toolHref: "/regex-explainer",
@@ -58,8 +58,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-json-to-csv",
-    date: "2026-09-15",
+    id: "2026-09-17-json-to-csv",
+    date: "2026-09-17",
     title: "JSON to CSV / TSV Converter & Table Exporter",
     type: "added",
     toolHref: "/json-to-csv",
@@ -73,8 +73,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-robots-generator",
-    date: "2026-09-15",
+    id: "2026-09-17-robots-generator",
+    date: "2026-09-17",
     title: "Robots.txt Generator & Live Path Match Tester",
     type: "added",
     toolHref: "/robots-generator",
@@ -88,8 +88,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-user-agent-parser",
-    date: "2026-09-15",
+    id: "2026-09-17-user-agent-parser",
+    date: "2026-09-17",
     title: "User-Agent String Parser & Client Hints Inspector",
     type: "added",
     toolHref: "/user-agent-parser",
@@ -103,8 +103,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-har-viewer",
-    date: "2026-09-15",
+    id: "2026-09-17-har-viewer",
+    date: "2026-09-17",
     title: "HAR File Viewer & Network Waterfall Analyzer",
     type: "added",
     toolHref: "/har-viewer",
@@ -118,8 +118,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-csp-builder",
-    date: "2026-09-15",
+    id: "2026-09-17-csp-builder",
+    date: "2026-09-17",
     title: "Content Security Policy (CSP) Builder & Security Auditor",
     type: "added",
     toolHref: "/csp-builder",
@@ -133,8 +133,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-llm-diff-comparator",
-    date: "2026-09-15",
+    id: "2026-09-17-llm-diff-comparator",
+    date: "2026-09-17",
     title: "LLM Output Diff & Hallucination Spotter: Side-by-Side Comparator",
     type: "added",
     toolHref: "/llm-diff-comparator",
@@ -148,8 +148,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-few-shot-formatter",
-    date: "2026-09-15",
+    id: "2026-09-17-few-shot-formatter",
+    date: "2026-09-17",
     title: "Few-Shot Prompt & Fine-Tuning Dataset Formatter: OpenAI JSONL & ChatML",
     type: "added",
     toolHref: "/few-shot-formatter",
@@ -163,8 +163,8 @@ export const CHANGELOG_ITEMS: ChangelogItem[] = [
     ],
   },
   {
-    id: "2026-09-15-token-counter",
-    date: "2026-09-15",
+    id: "2026-09-17-token-counter",
+    date: "2026-09-17",
     title: "LLM Token Counter & API Cost Estimator: Real-Time Pricing Matrix",
     type: "added",
     toolHref: "/token-counter",
