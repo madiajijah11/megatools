@@ -1343,6 +1343,102 @@ export const TOOLS: ToolInfo[] = [
       output: "Standard RFC 9309 robots.txt blocking GPTBot, ClaudeBot, and CCBot while allowing search engines"
     },
   },
+  {
+    id: "json-to-csv",
+    title: "JSON to CSV / TSV Converter & Table Exporter",
+    shortTitle: "JSON to CSV",
+    description: "Convert JSON arrays and nested structures into clean CSV, TSV, or interactive data grids with automatic key flattening.",
+    emoji: "📊",
+    href: "/json-to-csv",
+    tech: "JSON Stream & Delimiter AST",
+    steps: [
+      "Paste any JSON array, nested object, or list into the editor",
+      "Select custom delimiter (Comma, Semicolon, Tab/TSV, or Pipe)",
+      "Toggle automatic recursive key flattening (user.address.city)",
+      "Download .csv / .tsv spreadsheet or copy formatted table"
+    ],
+    tips: [
+      "Recursive key flattening converts deep JSON hierarchies into standard tabular spreadsheet columns",
+      "TSV format is natively copy-pasteable directly into Google Sheets and Microsoft Excel without text-to-column wizard",
+      "100% private in-browser parsing without uploading sensitive business data"
+    ],
+    example: {
+      input: '[{"id": 1, "user": {"name": "Alice", "city": "NY"}}]',
+      output: "id,user.name,user.city\n1,Alice,NY"
+    },
+  },
+  {
+    id: "regex-explainer",
+    title: "Regex Visual Explainer & AST Token Breakdown",
+    shortTitle: "Regex Explainer",
+    description: "Deconstruct regular expressions into clear plain-English token explanations, lookarounds, capture groups, and quantifier breakdowns.",
+    emoji: "🧩",
+    href: "/regex-explainer",
+    tech: "RegExp AST Decompiler",
+    steps: [
+      "Paste any complex regular expression pattern with flags (g, i, m, s, u)",
+      "Review visual color-coded token chips (Anchors, Character classes, Quantifiers, Groups, Lookarounds)",
+      "Read step-by-step plain English explanations of each token's matching behavior",
+      "Copy formatted regex documentation report"
+    ],
+    tips: [
+      "Lookaheads (?=...) and lookbehinds (?<=...) assert conditions without consuming characters in the match result",
+      "Non-capturing groups (?:...) optimize regex performance by avoiding memory allocation for unused backreferences",
+      "Click on any visual token chip in the stream to jump directly to its detailed breakdown"
+    ],
+    example: {
+      input: "^(?=.*[A-Z])\\w{8,}$",
+      output: "Start of string anchor -> Positive lookahead for uppercase letter -> 8+ word characters -> End of string"
+    },
+  },
+  {
+    id: "cron-simulator",
+    title: "Crontab Schedule Visualizer & Next 20 Executions Calendar",
+    shortTitle: "Cron Simulator",
+    description: "Simulate cron schedules, calculate next 20 upcoming execution timestamps in local/UTC time, and visualize active hours heatmap.",
+    emoji: "⏱️",
+    href: "/cron-simulator",
+    tech: "Crontab RFC 5-Field Parser",
+    steps: [
+      "Type any 5-field cron expression (minute hour day-of-month month day-of-week)",
+      "Read real-time plain English schedule explanation",
+      "View live countdown timer to next execution trigger",
+      "Inspect next 20 upcoming execution timestamps in both local time and UTC"
+    ],
+    tips: [
+      "Standard Linux cron uses 5 fields (0-59, 0-23, 1-31, 1-12, 0-6 where 0 is Sunday)",
+      "Step values (*/15) allow running tasks at regular recurring intervals",
+      "100% client-side calculation with zero server dependency"
+    ],
+    example: {
+      input: "0 9 * * 1-5",
+      output: "Runs at 09:00 on weekdays (Mon-Fri) · Next trigger in 4h 12m"
+    },
+  },
+  {
+    id: "graphql-formatter",
+    title: "GraphQL Query Beautifier & AST Inspector",
+    shortTitle: "GraphQL Formatter",
+    description: "Format, prettify, minify, and extract variables or operation AST metrics from GraphQL queries and mutations.",
+    emoji: "🔮",
+    href: "/graphql-formatter",
+    tech: "GraphQL AST Parser & Bundler",
+    steps: [
+      "Paste raw GraphQL query, mutation, subscription, or fragment",
+      "Click Formatted Query to prettify with clean indentation or Minify to compact for network transit",
+      "Provide JSON query variables to generate a bundled HTTP POST payload ready for fetch() or cURL",
+      "Inspect extracted operation type, operation name, and declared variables"
+    ],
+    tips: [
+      "Bundled HTTP POST payload includes both minified query string and variables object in standard GraphQL over HTTP protocol format",
+      "Prettifying complex nested selections and fragments improves code review readability",
+      "100% private in-browser AST parsing without external network requests"
+    ],
+    example: {
+      input: "query GetUser($id: ID!) { user(id: $id) { name email } }",
+      output: "Prettified query with 2-space indentation and bundled fetch() JSON payload"
+    },
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
@@ -1441,6 +1537,8 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "markdown-table",
       "clip-path-generator",
       "data-url",
+      "json-to-csv",
+      "graphql-formatter",
     ],
   },
   {
@@ -1466,6 +1564,8 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "har-viewer",
       "user-agent-parser",
       "robots-generator",
+      "regex-explainer",
+      "cron-simulator",
     ],
   },
   {

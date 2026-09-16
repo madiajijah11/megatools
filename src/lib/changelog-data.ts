@@ -13,6 +13,66 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-09-15-graphql-formatter",
+    date: "2026-09-15",
+    title: "GraphQL Query Beautifier & AST Inspector",
+    type: "added",
+    toolHref: "/graphql-formatter",
+    toolName: "GraphQL Query Beautifier",
+    description: "Format, prettify, minify, and extract variables or operation AST metrics from GraphQL queries and mutations.",
+    highlights: [
+      "Prettify and minify GraphQL queries, mutations, and subscriptions",
+      "Automatic AST extraction for operation name, root fields, and query variables",
+      "Query Payload Bundler generating HTTP POST payloads for fetch() and cURL",
+      "100% client-side execution with zero data leakage"
+    ],
+  },
+  {
+    id: "2026-09-15-cron-simulator",
+    date: "2026-09-15",
+    title: "Crontab Schedule Visualizer & Next 20 Executions Calendar",
+    type: "added",
+    toolHref: "/cron-simulator",
+    toolName: "Crontab Visualizer",
+    description: "Simulate cron schedules, calculate next 20 upcoming execution timestamps in local/UTC time, and visualize active hours heatmap.",
+    highlights: [
+      "Real-time plain English schedule explanation from 5-field cron syntax",
+      "Live countdown timer to next trigger event",
+      "Precise calculation of next 20 upcoming execution timestamps in local and UTC",
+      "Built-in presets for common server automation schedules"
+    ],
+  },
+  {
+    id: "2026-09-15-regex-explainer",
+    date: "2026-09-15",
+    title: "Regex Visual Explainer & AST Token Breakdown",
+    type: "added",
+    toolHref: "/regex-explainer",
+    toolName: "Regex Visual Explainer",
+    description: "Deconstruct regular expressions into clear plain-English token explanations, lookarounds, capture groups, and quantifier breakdowns.",
+    highlights: [
+      "Interactive color-coded token stream chips (Anchors, Sets, Quantifiers, Groups)",
+      "Step-by-step plain English explanations for every regular expression token",
+      "Support for lookaheads, lookbehinds, non-capturing groups, and greedy/lazy modifiers",
+      "One-click copy of full regex documentation report"
+    ],
+  },
+  {
+    id: "2026-09-15-json-to-csv",
+    date: "2026-09-15",
+    title: "JSON to CSV / TSV Converter & Table Exporter",
+    type: "added",
+    toolHref: "/json-to-csv",
+    toolName: "JSON to CSV Exporter",
+    description: "Convert JSON arrays and nested structures into clean CSV, TSV, or interactive data grids with automatic key flattening.",
+    highlights: [
+      "Automatic recursive key flattening for deep nested JSON objects (e.g. user.address.city)",
+      "Multi-delimiter support (CSV, TSV, Semicolon, Pipe)",
+      "Interactive data grid table preview with live row/column counters",
+      "Direct .csv / .tsv file download with UTF-8 support"
+    ],
+  },
+  {
     id: "2026-09-15-robots-generator",
     date: "2026-09-15",
     title: "Robots.txt Generator & Live Path Match Tester",
