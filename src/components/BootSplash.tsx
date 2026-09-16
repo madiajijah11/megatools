@@ -9,7 +9,7 @@ const BOOT_LOGS = [
   "[  0.112040] MEMORY: Initializing 100% in-browser airgapped heap... [OK]",
   "[  0.198421] FIREWALL: Blocking external telemetry & 3rd-party data egress... [OK]",
   "[  0.284902] CRYPTO: Random number generator (crypto.getRandomValues) online... [OK]",
-  "[  0.392019] PACKAGES: Mounting 92 tools (Dev, Security, Converters, Media)... [OK]",
+  "[  0.392019] PACKAGES: Mounting 96 client-side binaries (AI, Security, Web3, Dev, Converters)... [OK]",
   "[  0.512948] NETWORK: Local loopback 127.0.0.1 sandbox ready",
   "[  0.640192] SECURITY: System integrity verified. Access level: ROOT_PRIVILEGES",
   "[  0.780000] SYS: Launching MegaTools Terminal Shell...",

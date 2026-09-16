@@ -3,10 +3,10 @@ import Link from "next/link";
 import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import QuickSwitchBar from "@/components/QuickSwitchBar";
+import BootSplash from "@/components/BootSplash";
 import NotificationBell from "@/components/NotificationBell";
 import CrtToggle from "@/components/CrtToggle";
 import TerminalStatusBar from "@/components/TerminalStatusBar";
-import BootSplash from "@/components/BootSplash";
 import CopyButton from "@/components/CopyButton";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
@@ -66,6 +66,7 @@ export default function RootLayout({
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${geistSans.variable} ${geistMono.variable} ${jetbrainsMono.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased bg-bg-page text-text-primary">
+        <BootSplash />
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:px-4 focus:py-2 focus:bg-accent focus:text-bg-page focus:font-mono focus:text-xs focus:font-bold focus:rounded focus:outline-none focus:ring-2 focus:ring-accent-hover"
