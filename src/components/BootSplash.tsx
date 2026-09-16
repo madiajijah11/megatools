@@ -37,25 +37,20 @@ export default function BootSplash() {
         clearInterval(interval);
         setTimeout(() => {
           setFading(true);
-          setTimeout(() => setVisible(false), 350);
-        }, 300);
+          setTimeout(() => setVisible(false), 300);
+        }, 250);
       }
-    }, 70);
+    }, 45); // Snappy 45ms per line for authentic fast terminal boot
 
     return () => clearInterval(interval);
   }, []);
 
   const skipBoot = useCallback(() => {
     setFading(true);
-    setTimeout(() => setVisible(false), 200);
+    setTimeout(() => setVisible(false), 150);
   }, []);
 
   useEffect(() => {
-    // Skip if user prefers reduced motion
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-
     // Check if shown in current session
     const hasBooted = sessionStorage.getItem("megatools_booted");
     if (!hasBooted) {
@@ -63,7 +58,7 @@ export default function BootSplash() {
       startBoot();
     }
 
-    // Listen for custom trigger to replay boot sequence
+    // Listen for custom trigger to replay boot sequence anytime
     const handleReboot = () => startBoot();
     window.addEventListener("megatools:reboot", handleReboot);
 
@@ -73,7 +68,11 @@ export default function BootSplash() {
   useEffect(() => {
     if (!visible) return;
 
-    const handleKeyDown = () => skipBoot();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+        skipBoot();
+      }
+    };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [visible, skipBoot]);
