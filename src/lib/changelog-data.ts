@@ -13,6 +13,20 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-09-17-search-and-pdf-fixes",
+    date: "2026-09-17",
+    title: "Command Palette Search & PDF Organizer UX Improvements",
+    type: "improved",
+    toolHref: "/pdf-organizer",
+    toolName: "Search & PDF Organizer",
+    description: "Enhanced global search palette with capture-phase Escape key dismissal and added Clear/Change PDF controls to PDF Organizer.",
+    highlights: [
+      "Capture-phase Escape key and backdrop dismissal on Command Palette search",
+      "Added [Clear / Change PDF] action button to PDF Page Rotator & Reorder Grid",
+      "Instant state and memory buffer cleanup on document reset",
+    ],
+  },
+  {
     id: "2026-09-17-graphql-formatter",
     date: "2026-09-17",
     title: "GraphQL Query Beautifier & AST Inspector",
