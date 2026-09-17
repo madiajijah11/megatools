@@ -123,6 +123,16 @@ export default function PdfOrganizerClient() {
     });
   };
 
+  const handleClearPdf = () => {
+    setFile(null);
+    setPdfBytes(null);
+    setPages([]);
+    setError(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
   // Compile and export modified PDF
   const exportPdf = async () => {
     if (!pdfBytes || pages.length === 0) return;
@@ -218,6 +228,26 @@ return (
             </div>
           ) : (
             <div className="space-y-4">
+              {/* Active Document Info Banner */}
+              <div className="p-3 rounded-lg border border-border-subtle bg-bg-page flex items-center justify-between gap-3 font-mono text-xs">
+                <div className="flex items-center gap-2.5 truncate">
+                  <span className="text-base">📑</span>
+                  <div className="truncate">
+                    <span className="font-bold text-text-primary block truncate">{file?.name || "document.pdf"}</span>
+                    <span className="text-[10px] text-text-muted">
+                      {pages.length} pages · {file ? (file.size / (1024 * 1024)).toFixed(2) : "0"} MB
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleClearPdf}
+                  className="px-2.5 py-1 text-xs font-mono rounded border border-border-subtle bg-bg-card text-text-muted hover:text-error hover:border-error/40 transition-colors shrink-0"
+                >
+                  [Clear / Change PDF]
+                </button>
+              </div>
+
               {/* Toolbar Actions standard: h-8 flex items-center justify-between */}
               <div className="rounded-lg border border-border-subtle bg-bg-card p-4 flex flex-wrap items-center justify-between gap-3 font-mono text-xs">
                 <div className="flex items-center gap-2">
