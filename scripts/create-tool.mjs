@@ -159,4 +159,4 @@ console.log(`  - ${pascalName}Client.tsx (using <ToolLayout />)`);
 console.log(`\n👉 Next steps:`);
 console.log(`1. Register "${slug}" in src/lib/tool-data.ts (TOOLS and TOOL_CATEGORIES)`);
 console.log(`2. Add changelog entry in src/lib/changelog-data.ts`);
-console.log(`3. Run `npx tsc --noEmit` to verify`);
+console.log(`3. Run npx tsc --noEmit to verify`);

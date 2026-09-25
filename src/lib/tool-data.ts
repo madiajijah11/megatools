@@ -1439,6 +1439,121 @@ export const TOOLS: ToolInfo[] = [
       output: "Prettified query with 2-space indentation and bundled fetch() JSON payload"
     },
   },
+  {
+    id: "json-repair",
+    title: "LLM JSON Repair & Auto-Fixer",
+    shortTitle: "JSON Repair",
+    description: "Auto-fix broken, truncated, and malformed JSON from AI prompts. Fixes quotes, trailing commas, and brackets in-browser.",
+    emoji: "🩹",
+    href: "/json-repair",
+    tech: "AST & Token Parser",
+    steps: [
+      "Paste malformed JSON or raw LLM conversational output into the editor",
+      "Parser automatically repairs quotes, trailing commas, and unclosed brackets",
+      "Inspect applied repair rules and copy or download the valid JSON"
+    ],
+    tips: [
+      "Handles truncated streaming outputs by auto-closing brackets and braces",
+      "Strips markdown ```json fences and conversational prose automatically",
+      "Zero server leakage: your proprietary LLM data never leaves browser RAM"
+    ],
+    example: {
+      input: "{ name: 'MegaTools', items: [1, 2,], }",
+      output: '{\n  "name": "MegaTools",\n  "items": [\n    1,\n    2\n  ]\n}'
+    }
+  },
+  {
+    id: "pdf-metadata-editor",
+    title: "PDF Metadata Editor & Sanitizer",
+    shortTitle: "PDF Metadata",
+    description: "Inspect, modify, or 1-click strip all metadata (Title, Author, Subject, Creator) from PDF files in browser RAM.",
+    emoji: "📑",
+    href: "/pdf-metadata-editor",
+    tech: "pdf-lib",
+    steps: [
+      "Upload or drag and drop any PDF document into the browser workspace",
+      "Inspect embedded metadata properties or edit fields as needed",
+      "Click [1-Click Strip All] for privacy, or download the updated document"
+    ],
+    tips: [
+      "Stripping metadata protects privacy by removing author identities and software fingerprints",
+      "Editing document titles ensures clean browser tab titles when sharing with clients",
+      "100% Client-Side: zero data leakage, PDF files never leave your local device"
+    ],
+    example: {
+      input: "Document.pdf (Author: John Doe, Creator: InDesign)",
+      output: "Document-sanitized.pdf (Zero confidential metadata properties)"
+    }
+  },
+  {
+    id: "semver-calculator",
+    title: "Semantic Versioning Calculator & Range Tester",
+    shortTitle: "SemVer",
+    description: "Evaluate SemVer 2.0 ranges, simulate Major/Minor/Patch bumps, and sort multi-version releases in browser RAM.",
+    emoji: "🏷️",
+    href: "/semver-calculator",
+    tech: "SemVer 2.0 Spec Engine",
+    steps: [
+      "Enter a semantic version string or use quick presets to inspect components",
+      "Test version validity against range comparators (^, ~, >=, <=, ||)",
+      "Simulate 1-click bumps (Major, Minor, Patch, Pre-release) or sort version lists"
+    ],
+    tips: [
+      "Caret (^) locks major version, allowing non-breaking updates (e.g. ^1.2.3 matches <2.0.0)",
+      "Tilde (~) locks minor version, allowing only patch releases (e.g. ~1.2.3 matches <1.3.0)",
+      "Zero-dependency client-side execution ensures lightning-fast evaluation without telemetry"
+    ],
+    example: {
+      input: "Version: 1.4.2 | Range: ^1.4.0",
+      output: "Match: TRUE (Major: 1, Minor: 4, Patch: 2)"
+    }
+  },
+  {
+    id: "evm-calldata-decoder",
+    title: "EVM Calldata Decoder & ABI Inspector",
+    shortTitle: "Calldata Decoder",
+    description: "Decode raw Ethereum & EVM transaction calldata hex into human-readable parameters and 32-byte word slices.",
+    emoji: "📜",
+    href: "/evm-calldata-decoder",
+    tech: "Web Crypto & ABI Slicer",
+    steps: [
+      "Paste raw transaction hex calldata (0x...) into the input editor",
+      "Inspect the identified 4-byte selector or enter a custom function signature",
+      "Review decoded typed method arguments and raw 32-byte EVM memory word slices"
+    ],
+    tips: [
+      "Common ERC-20 and ERC-721 signatures are recognized automatically from their 4-byte selector",
+      "Address parameters are verified and displayed in official EIP-55 mixed-case checksum format",
+      "100% offline & private: decode transaction data without leaking addresses to public RPC endpoints"
+    ],
+    example: {
+      input: "0xa9059cbb000000000000000000000000d8da6bf2...3635c9adc5dea00000",
+      output: "transfer(to: 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045, amount: 1000.0 ETH)"
+    }
+  },
+  {
+    id: "sql-to-ts",
+    title: "SQL DDL to TypeScript & Zod Schema",
+    shortTitle: "SQL to TS",
+    description: "Convert SQL CREATE TABLE statements (PostgreSQL, MySQL, SQLite) into TypeScript interfaces, types, and Zod schemas.",
+    emoji: "⚡",
+    href: "/sql-to-ts",
+    tech: "SQL DDL Parser",
+    steps: [
+      "Paste one or more SQL CREATE TABLE statements into the input editor",
+      "Select desired output format: TypeScript Interface, Type Alias, or Zod Schema",
+      "Configure casing (snake_case vs camelCase) and copy the generated definitions"
+    ],
+    tips: [
+      "Handles primary keys, NOT NULL columns, serial types, arrays, and JSONB fields",
+      "Automatically generates Zod schemas with nullable/optional decorators and inferred types",
+      "100% private in-browser AST parsing without external database or network connections"
+    ],
+    example: {
+      input: "CREATE TABLE users (id SERIAL PRIMARY KEY, email TEXT NOT NULL);",
+      output: "export interface User {\n  id: number;\n  email: string;\n}"
+    }
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
@@ -1461,7 +1576,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
     id: "pdf-docs",
     name: "PDF & Documents",
     emoji: "📄",
-    toolIds: ["pdf-merge", "pdf-split", "image-to-pdf", "pdf-organizer", "pdf-watermark"],
+    toolIds: ["pdf-merge", "pdf-split", "image-to-pdf", "pdf-organizer", "pdf-watermark", "pdf-metadata-editor"],
   },
   {
     id: "crypto-security",
@@ -1539,6 +1654,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "data-url",
       "json-to-csv",
       "graphql-formatter",
+      "sql-to-ts",
     ],
   },
   {
@@ -1566,6 +1682,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "robots-generator",
       "regex-explainer",
       "cron-simulator",
+      "semver-calculator",
     ],
   },
   {
@@ -1579,6 +1696,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "keccak-calculator",
       "merkle-tree-generator",
       "bip39-generator",
+      "evm-calldata-decoder",
     ],
   },
   {
@@ -1594,6 +1712,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "token-counter",
       "few-shot-formatter",
       "llm-diff-comparator",
+      "json-repair",
     ],
   },
 ];

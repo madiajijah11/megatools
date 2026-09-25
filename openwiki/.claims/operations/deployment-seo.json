@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:833a0824ac6742923ae4a7f65affe7ddf417a3f8bd180544c534c6ffda789aad",
+  "claims": [
+    {
+      "id": "claim_369f7ae0da11430e8815c353063257b5",
+      "statement": "MegaTools builds as a client-side Next.js 16 application with Turbopack and React 19, enforcing strict TypeScript checks with noEmit and producing static output deployed to Vercel.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L5-L13",
+          "version": "repo-lines-v1:sha256:ae6003d185dad69826ef39fbcc73d73ad516884258610601adaf0d9d07f609ef:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ4MzNkNTk0OWMwM2E0MGNhOTUyNDkxNjEwYTY2NTk2NDRiM2FhNDY2MzYyZjc5OTAyMGRiZjE5ODE1NDdkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmRjOGI0MGQ2YjQwMjFhNzFkODdhN2E1OGU0NzU2NDhiNDU3OGVkZjI4N2YxMzZjZTkxNDMwNTlhZWMzMzNmMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmY1NjBmNjg3ZmQ4MDUwOGM4NzllZTY5NDYzNWU5OWE0MmNiMGNjOGM5ZDc5MDlhYjlhOGJiN2U5OTFkZDQ0OSJ9"
+        },
+        {
+          "resource": "repo://tsconfig.json#L7-L8",
+          "version": "repo-lines-v1:sha256:03fbc203a41d8508f214bd2882bc88a21d9c79d7f2ed37ee2e39f2d245c852bb:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNWI1YjNiY2MxYWMxNDYwNGNiMjI5MDk4ZTkxMDViZGI5NzM2YTAyMTRjZGE5ZDE0MjA5ZTc1YTM2YTU2YjFjMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2NlZTdkNjc5N2ZmMTBkMWM5Y2IyOTJjMmM3NjZjNjRlNzU5MjcxMTk1OThjNzRkNTA1YmYwZDY4Y2NmMmJjZCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiM2U0MzJkNWI4NjFlMzQ4OGYyZjdkMzVhMzhlMWVhYWM4NTUzZTNjMzA1MGI2MmZlOGNhOGQ2NGRhMDc2NDY5MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiN2Y0YzQ4OGEwZDI5ZGI2ZjdjMTk4ZjVhYTRiNDJmZTJkNTY4MzAxZWRiMTg5ODdjN2I4NGI5MzkwZGUzZTNmOSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_3cfd9317658643288c51ec2d1fc92f92",
+      "statement": "Production deployment integrates @vercel/analytics and @vercel/speed-insights for client telemetry, along with optional GoogleAnalytics via process.env.NEXT_PUBLIC_GA_ID.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/layout.tsx#L11-L13",
+          "version": "repo-lines-v1:sha256:5ad42d7aa0a27234b2e64fcae8bc8e45440625a6176c9ca028c53f7c06006d1f:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTJjYThlMGNmYWZiNDFlNTRiMmQxOGVjM2Q0YTVhMGUxZGFmOTNmMDhiNDk0YzA5ZjU1NWVlYjFmNmUyM2Q5NCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDcyYWQ2ZmEyZDFkN2Y4MGIwYzhlMjg2OTI0ZjBjNzdkNzY5MGVlN2RiYmZkNWE3NDE3YWRiMmQwZjkwYTEzYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZDNiMzhlN2VhNGJmMzA2Nzc0N2M4ZTEwMjc0Mjc3YjY0NjNkNjNkYTFiZTNmYzkyY2NhODA0YWI0M2E1MTFlMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzdlZWYwNDQ4MmQ5NzY5OTNhN2VlZDMwNWM4YzM4OGE4Y2U4ZWNkZTE5YWYxNjc1OTk2ZTczODk2YzQ1OWMyYiJ9"
+        },
+        {
+          "resource": "repo://src/app/layout.tsx#L159-L163",
+          "version": "repo-lines-v1:sha256:c62d33d5c02bf46e2454a79f80c7f57dcfe9059331517c8eee5c6c8a4d1178b9:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOWEwMWU3NjE1MWFiNjJjMWI3MzJiYjdlZjA5NmZlZDU3Y2NlOTFkZDI1NmVlZjg1ZDEwMDgyMGNhNTVhMTA5YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDdiOGMxMDg1Zjk1YTFhZmFiZTVkMTUyYWQ1OGRiOWRjMjYzMzZjMTIxOGUyYjg0MGFlN2FkODI2YTBkNTc0OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDRkZWU0ODgxNDMwMzJhZDVmZDNkZTYyODgwOGVlZTMxMzJmN2U4M2RmOTExNjVmZTY1MjdjOGFlZWNlNmQxMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjg1NGNmNDNjYWY5M2Y3NzdmYzhhMTAxNGIwZGNjYzAzMzBlZTE4MzNiNmI0OGFjNzNkYWI1YTk5ZWEyNmIwZSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_5c7e75291f5e407abf8c0dc5c6be503b",
+      "statement": "The RootLayout exports base metadata targeting https://megatools-tau.vercel.app with Google and Bing search engine verification tokens, and embeds Schema.org WebApplication JSON-LD structured data.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/layout.tsx#L37-L61",
+          "version": "repo-lines-v1:sha256:44f75101d62bf7da391db06a70613c1341a44dbf5601096c17c9ab0ed3f18826:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY4ZDk2Nzg5NzY1ZmUzMDg3YzkzZjRkM2EwYTY3Yjk1NTViYzg1OGIwZjNjZDRkZWIwNGIzOWUxNmJmYmMwYzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI4NzY5Nzg0ZDYzZGVhYjVmM2FjOGY1MWE5OTM3MmY3MmVkYmNmODhhYzFiNDkwNjAyMGMxZmVjNWI1M2RjZjAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQxY2FmYzg0ODUyZjRmNzM4YzAxYTMzMDA0MGQ2Y2Q0M2QyZDA1NGNlMjY1ZTA0OTgyNjIxMTNkN2M0MjBhY2QifQ"
+        },
+        {
+          "resource": "repo://src/app/layout.tsx#L94-L109",
+          "version": "repo-lines-v1:sha256:6981f5f8718928ee1966ad1219aa2d53e894ad6bd97e15f9e29aa6f02ef6b072:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE1MjRmMDNlZDA0ZWFmZDI5ZjczZjFjYzlkODlhYTk4NGU2MTgzNDQ3ZmQ0MDBkMzY2ODliNzUxZTBkOGZjZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZkYTU5M2ViODNjNzlmZTljNmQyNjhkMWMxYjg3ODdhMDkyODEwODYyYjIxZmU4YTFkMTYyZjRmMWQxZjMxMWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY1ZTlkZTU3MGI4YzYwMWJkZWFmZmI1ODAyMWZjZGRkMmZkNDhlY2MzZTAxOWVlZmNiMDVmZWE0ZDg2ZjQ3NDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBhMTFiYTdlOGY0MDM3ODdlYjVlODlkZGU2ZGMwMTQ2Y2Y1MGFlMjQwZjkxNWM3OWEzZTc0NzJkYTFjMzU1NGIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_51d24d14dc164c3684b2d5e80dfdf3a8",
+      "statement": "The dynamic sitemap generator dynamically produces URLs for static site pages and all registered tool routes in TOOLS with monthly change frequency, assigning 1.0 priority to the root and 0.8 to subpages.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/sitemap.ts#L4-L15",
+          "version": "repo-lines-v1:sha256:798f428a6a970745d93bfde1aa160e154dac9a810ed2c4e64583cc42184b715a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjM2Y2OGQxYTdiMTYyNGU1NWFlOWFlMjVjMGU0YjI5YzVkOWYxM2VhN2VmNDEzNjUxYzU4N2U1YjQzM2FmZTEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjkxYTVhMjFiZWYwMDYzMWViMGZlYmQ2OWU2NDI5M2U5MTMxMmZiZDQzNjNjZDBlYWFhZDRiOTJjZmZlZjMzMDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/lib/tool-data.ts#L14-L26",
+          "version": "repo-lines-v1:sha256:70b15e3acc1b597944ff8937f83fbff12f6ea3ab6b2011abb904c52ef16acc21:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRkZDdlODczZjQzZjkxYzRmMTZmZjBkZGNhMzY1NDQxMzZlYzVhOTczMWE0YWFhYTQxNThkN2Q4NWU4NjUxZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhhOTk4NjZhMDQ0YzFkNTY5Mjk5OGVkODY4YjMxMjg3MjU2ZDk4ZWI5NTQ4NGZjMzNlZTQyNjc4MDJjOTJhYTQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxNDNmNWM5NmYyMmViMmNiNTJjMjc5ODA2NzdkZmRkMzgxNWNjNDljNmFmN2Y2ZjI2NWYyMGM5NTcyNmJmZGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_eebfdea328694c0dadd895db1ede8280",
+      "statement": "The robots.txt generator allows all crawler user agents on all paths and references the dynamic sitemap XML URL.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/robots.ts#L3-L10",
+          "version": "repo-lines-v1:sha256:183b79f0c44a5a29c5310f26a436fa99c76196a0643937da1253f07d4d101220:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDkxOTFlYmQyNmE2MzQ0ZjE1ZTVjMDc4NTA4ZTU0Y2EyNDM4Y2I2YjVmOTUzYmFmM2E3Mjg0ODI2MzU1YjlhMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGU0MWE2MmIxY2IzNzc3YTU0MjJjY2MzN2MyMTI3YzdiNTgzZjIwODYyMWE4ZDI0OGM4N2JmNjMzMjJmMWE1YSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1d26f2c023d24b4aa97f1d72b57292a9",
+      "statement": "The IndexNow submission script extracts tool href values from src/lib/tool-data.ts via regex, combines them with static routes, and submits the batch to https://api.indexnow.org/indexnow using host megatools-tau.vercel.app and verification key 1e7e8c110e4fbbaa65afbd80547ae803 verified via keyLocation.",
+      "evidence": [
+        {
+          "resource": "repo://public/1e7e8c110e4fbbaa65afbd80547ae803.txt#L1-L1",
+          "version": "repo-lines-v1:sha256:273d321e0a21eefa92fcac2694e26d086316ec0179bd199d853929f45cb8e4f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjczZDMyMWUwYTIxZWVmYTkyZmNhYzI2OTRlMjZkMDg2MzE2ZWMwMTc5YmQxOTlkODUzOTI5ZjQ1Y2I4ZTRmMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMjczZDMyMWUwYTIxZWVmYTkyZmNhYzI2OTRlMjZkMDg2MzE2ZWMwMTc5YmQxOTlkODUzOTI5ZjQ1Y2I4ZTRmMSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://scripts/submit-indexnow.mjs#L8-L28",
+          "version": "repo-lines-v1:sha256:17039539fa10b8813c0a8a2aa1274e7ee816e5ae195640e5042c95f215c33606:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJmNTkxY2NkZTk0YWU0YmEzZWU1ZWVjM2IzMWVjYWJkYmI4Yzg3MjkxZDRlMmM5NGM0NmJkMmI3NDJiZjk1ZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFhMWQxYTYzMzkwMjI5Yzc5ODM0N2U4M2EwNDA1NDQxYzk0MDAwMzUyODRhZDE2OGMxYmY2Y2RmMWQ3MGEzNzAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZkYjI1Y2U0ZDUyOTVkYWZmN2EwNzhlYWZiYmUyOGYyMDM0M2NmZDMxYTMyNTc1YjEwZTlhZDRlYmUxMWE3YjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5ODFmYzk3ZGRkNTI3YjE5MTI4NTNiNjVjYzFiMDE3MjMwZjc1NTRmNjZhMzM1M2U5ODA4Yjk4NjFkOGU3NWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_be068b0cf8764d938df9a39099a04908",
+      "statement": "The npm run indexnow command sends an HTTP POST request with the URL list to the IndexNow endpoint and logs HTTP 200/202 responses for Bing and Yandex indexing.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L10-L10",
+          "version": "repo-lines-v1:sha256:8efd0340563c35c4b2484df164d18e922a6d479048c634c78e29b93047f4e29e:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVmZDAzNDA1NjNjMzVjNGIyNDg0ZGYxNjRkMThlOTIyYTZkNDc5MDQ4YzYzNGM3OGUyOWI5MzA0N2Y0ZTI5ZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGVmZDAzNDA1NjNjMzVjNGIyNDg0ZGYxNjRkMThlOTIyYTZkNDc5MDQ4YzYzNGM3OGUyOWI5MzA0N2Y0ZTI5ZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWQ0ZDVmNWYzZDIyMTVkNTkwYTJjNjYzMjFhZTc3MWY5OWFkNmNmZTFlMTkzMzY0Yjg2ODcwY2QzYzM0ZGMzYSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNzNjYmVjODdiMDk4NzUwYzBjNjRjZjQxZmVhMjRiZmQ0NzBiNWRjYzA5NzAzMzMzODg5Njk0ZTIyYjBmM2Q4MCJ9"
+        },
+        {
+          "resource": "repo://scripts/submit-indexnow.mjs#L30-L50",
+          "version": "repo-lines-v1:sha256:fd520a337381cdfaec6286cec3245b3ca4d8436354ef99bd7c97b664b62ed4dd:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjYwNTZmNWQ5Zjc5NjczZjA2YWE2Y2IzZmMxMTMzYWIzMmEyNmZhMDcyMjcwNzk2OWVhMWQ4MmYyMzM3ZTZhYjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE3ZjljMDAxZmNmNTFlYTg5NzUzOGI3ZWE3OGRlYzhlYjMxMWE0ZjdlNWE4NDZjZWU2ZGViYzcwZDZlYjBhOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxOWZiMjU4NmFmNmI0OTNmZTI2OGYyNmJjNjY5OTU0MWQzYTgzYmE4MGMxM2E2MmI3OTAzNGVjMGM4ZTJmNWMifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

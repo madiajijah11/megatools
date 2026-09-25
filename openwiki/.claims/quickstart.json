@@ -1,0 +1,112 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:3c6f2e5eb7e9bc8aacb1e6bd17ee26e951f4fa3b2ca7879d6918de5cfb312539",
+  "claims": [
+    {
+      "id": "claim_6476c53b73e649378ce31d02cb1d475c",
+      "statement": "MegaTools is a suite of over 92 client-side developer, media, blockchain, AI, and cybersecurity tools that execute 100% in browser memory with zero remote server data leakage.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L24-L24",
+          "version": "repo-lines-v1:sha256:f69a9b33cbd4dca3f391360053ecdfde5d6a6ebf230dbb61cd8442cee07edcf8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjY5YTliMzNjYmQ0ZGNhM2YzOTEzNjAwNTNlY2RmZGU1ZDZhNmViZjIzMGRiYjYxY2Q4NDQyY2VlMDdlZGNmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjY5YTliMzNjYmQ0ZGNhM2YzOTEzNjAwNTNlY2RmZGU1ZDZhNmViZjIzMGRiYjYxY2Q4NDQyY2VlMDdlZGNmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGViMDYyOTcyZmE4NDk5MDYwMjAzYjdjZGM5ZmU4NjMwNmE1NTUwMjQxMmFjNzUzMmVhMjFiMzJmNGM0NDRmOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTVkMzVkMTgzYjhmM2U5MmYyY2IyOWU0NGMwZTdlNDk5ZWU0OTllMzk4ZWMzYTZmMTI2NTdmNjFhNDllM2Y5NiJ9"
+        },
+        {
+          "resource": "repo://ARCHITECTURE.md#L3-L5",
+          "version": "repo-lines-v1:sha256:a9e66e050b3d4dda7f746f426396418ed7ab3cf6fe0742e24f613f23c81def48:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGRhY2Q4NTQ1N2M4OWNjMWVkMzdjYzU2ZDc4YjIxODEyMGNjZTYzOGQ4MjYyMjgzZjg4OTAxZDg5OThmZmY0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzVhNmZjYTlhMzgzZmNlYWRjNTc0NjIzNDlmNjA3ZDUwMWJlNDNkM2UyODU5YTYwY2E2NjhmZWJkYjdhYjdlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzU5NWYxYTYxMmFjN2FiYWQwOGVhNTYzOWVmNTY1MDNhMmFlMzFlZWQ1MjZhOTZhYmNhNDU3NDNmNDBiNjQ2YiJ9"
+        },
+        {
+          "resource": "repo://README.md#L1-L6",
+          "version": "repo-lines-v1:sha256:bf2157eff4b683b60f1b0ab788a0ca48f55af6e9468139275ac2a25580ede0f9:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAzMTU3ODQzZmJkODA3NTY1ZWY1MDdjZTc5MmRhZTk4YmE4YmMxNTcwYmE4ODBhZjc0MGQ0ZmYzNWNkZWJjMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNGI5MTY3YWYxZGU0MDZlMDZkMWYyODE4NDBkOTAxNDVkMGE3MWY0NzQxNmU2ZTE0M2I0OWUyNjQ1MTY5OTcyYyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_058c48400f7146ad93e1736bbde132b8",
+      "statement": "MegaTools is built on Next.js 16 App Router and React 19, utilizing a retro dark terminal aesthetic with Tailwind CSS v4 variables, Geist and JetBrains monospace typography, and emerald green accent highlights.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L14-L28",
+          "version": "repo-lines-v1:sha256:369470e6b7f92c930abe45cf650805e4cf7df6ad3e6efb3eda6a28652a9b8098:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImJhM2I0NjlkOWUwOTc1NzIyNDY2NjczNGM5ZWY3YjI1NGQ4ODUzNGY1ZDViYjcwOTg5NjA4MDVjNTUzZGMzMDciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkNWNkMmZiNGYzZGY4ODQ1MTUyNTViMzk1MjNmMmY4YjU0NzJiZWVhOWY1NjZmZmNhMjA0ZGI4MDI1NjEwNDEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczY2JlYzg3YjA5ODc1MGMwYzY0Y2Y0MWZlYTI0YmZkNDcwYjVkY2MwOTcwMzMzMzg4OTY5NGUyMmIwZjNkODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBlOGIwNTQzZTJmNDgxZjA1YmEyMmU2ZTE3YjNjMmFkMTlkY2QwNWFlYmYwN2JkZGJjMzE1ZjMyMmUxN2UyNGUifQ"
+        },
+        {
+          "resource": "repo://src/app/globals.css#L1-L36",
+          "version": "repo-lines-v1:sha256:ee52ae721ed311d3ee19e337530ef69b77495dbed8fedd504683067cc6aad19a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyMDcwZTBiNDViYjIwMWIyYjgzOGE1MmFhYWE2ZTk2NWY5NjRlMGI1NDJkOTdmMWZlNTE3ZmU1OWM0Yjc1YTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE5YTIyMjJlMmQzODFlMjdiYzkyNTUxZjkwYjkxYWRhOGEyMWE3ODc3Y2I2ODhjNTBiMzE0MjE4YTE5YTEyMGIifQ"
+        },
+        {
+          "resource": "repo://src/app/layout.tsx#L1-L93",
+          "version": "repo-lines-v1:sha256:e9cf429f4155896c40819835b783dff76bc9d4f85468d20800a452a080074cf4:eyJzZWxlY3RlZExpbmVDb3VudCI6OTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZlZDAzOWNiMWM0MzA0OTlkYzkyNDZiZTdhNDIyMWYwMDM4NTU4ODhjMjk5YzMzMTk2MmQ1MDAxMWNjZjczM2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNiMjU5ZTQ1ZGEzOGFlNzNkZGNmYWYwYWQ5NTYwNzI5MmQxYTc5NTM4YTI4MTYyYmM2NWVmMDMyNjM4YzFlOWMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImU1ZDRjMTM2NjI2OGE1Njc2ZjFhMmExOWRlYmEzYTVhZjk3NjEzYjMwNjc2ZTYxZjgyMTEzNTMwMDYzODc5ZmIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_9736e8cf2d824964a671e44bd2d21683",
+      "statement": "The CRT toggle component toggles the crt-active class on the root HTML element and persists state in localStorage under megatools_crt_mode.",
+      "evidence": [
+        {
+          "resource": "repo://src/components/CrtToggle.tsx#L5-L36",
+          "version": "repo-lines-v1:sha256:31db4c62ab8ecf9c65db758f736db097c556543fc7ba31edc6c89651387f3a92:eyJzZWxlY3RlZExpbmVDb3VudCI6MzIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxZTQ4Njc5M2RhZjg3Y2VhOWIzYmJiMTczMzQ0MjcwNzc2MTkwYzgzZTQ4OTA5ZmQwODYzZjNmODVlMzRkNjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZlODNjMDA1ZWUxNmI4YjczMzM4NzIwMTk1ZTFmZDU5MDFhMWYwM2FiZjNlOWY3MTU0ODNjNjAzOGRhOGRlYjQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ4ZGU3OGI2MDMzNTFkNzM4Y2E1OGQwMTUzZWEzMzA0MWE0ODU4MTk4ODU1ZWFmMDk2MjVkZTQwMjZkYzZlMzMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_062ae6c53a4142ba95784194d5b66292",
+      "statement": "Individual tools must wrap their client view in ToolLayout, which renders top navigation, a terminal prompt badge, title headers, a 12-column responsive workspace with an InfoPanel sidebar, and a mobile slide-in drawer.",
+      "evidence": [
+        {
+          "resource": "repo://ARCHITECTURE.md#L8-L41",
+          "version": "repo-lines-v1:sha256:ffd84248f3df34cb710c7e6fae3d0b734e3df9ec917bc040587ea4943a4e44f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2ZGNiOTIxOGEwMDZiZTZjMmRjNDUyMGU2YThjNzU3NTZmYzAzNDhkMTMxZDUzNzVjMzc5NDllOWJjZTA5MjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImNkMjAzMjA4M2VhYTRmMjFkMGFjYjRlNjdiNDhhNGFiNTFkYzlhNDkxYjdhMTU3MGY1MTFjOGQxNTc5NTFiY2QifQ"
+        },
+        {
+          "resource": "repo://src/components/ToolLayout.tsx#L9-L102",
+          "version": "repo-lines-v1:sha256:55e3b0decef1d71eb88fdf26cb1e62d28db6cb83c5793dde397ddd1bfbcff559:eyJzZWxlY3RlZExpbmVDb3VudCI6OTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOTFhNmViMDkyMjQ2YmNhYmM4YTUzZmIwNGQzNjMwODliN2M3YmFjZDU0MGNmZjUzZThlNzA3NGQ0OWIwMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyNDg5MmRiODkwZGUzYmEzMDk4MDlmNjdhMzVlZDVlMmZlOWY5NzVkY2Y2MmY0NzQ2Zjk4NmRlZjAzNzEzNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_723f4da6a81940b9bbd0fe6b5dd00436",
+      "statement": "MegaTools provides standardized npm scripts including npm run dev for local development, npm run verify for automated quality gate auditing, npm run make:tool for tool scaffolding, and npm run build for production compilation.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L5-L13",
+          "version": "repo-lines-v1:sha256:ae6003d185dad69826ef39fbcc73d73ad516884258610601adaf0d9d07f609ef:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzQ4MzNkNTk0OWMwM2E0MGNhOTUyNDkxNjEwYTY2NTk2NDRiM2FhNDY2MzYyZjc5OTAyMGRiZjE5ODE1NDdkYiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmRjOGI0MGQ2YjQwMjFhNzFkODdhN2E1OGU0NzU2NDhiNDU3OGVkZjI4N2YxMzZjZTkxNDMwNTlhZWMzMzNmMyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMmY1NjBmNjg3ZmQ4MDUwOGM4NzllZTY5NDYzNWU5OWE0MmNiMGNjOGM5ZDc5MDlhYjlhOGJiN2U5OTFkZDQ0OSJ9"
+        },
+        {
+          "resource": "repo://scripts/create-tool.mjs#L1-L40",
+          "version": "repo-lines-v1:sha256:f018d4df676ec1e9d697735089d879f5537bac0b3d654eaa0c6e23d61256e5a2:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1OWM0Nzg3MmI3MWYxMjU4OTk0Mjg5MjQ2NGU3NjRjMGRiMzUwYzIwYjcyMjI4NjQ1NjE1Y2MzNmUwYTA3MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI5NjYyZTBlYzZiODMxYTNhYTdiOTI1NWFkZjZhZGYxNTgyODQ1ZGZhZmM5MjRkNjM5MTE4MmE1YjhlNDYzOWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhjYjdhOWIyMzJkMzljMjU2NmU0ZTk1NmI0MWRkNWVjNTI3NjFmNzMxYjA5MDViYTExYTAwNzUzNGE1Yzc4NmEifQ"
+        },
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L1-L127",
+          "version": "repo-lines-v1:sha256:b1c47d9cf82e3723142d66f24a6a23f7a47e44cd165e0e86b97711a5008ad03e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTI3LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJhNTljNDc4NzJiNzFmMTI1ODk5NDI4OTI0NjRlNzY0YzBkYjM1MGMyMGI3MjIyODY0NTYxNWNjMzZlMGEwNzI1IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MCwicHJlY2VkaW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_0e7fb1fc96c843209fbac9c8ffc96308",
+      "statement": "Adding a new tool requires a mandatory 6-step protocol: planning, scaffolding with ToolLayout, dual registration in TOOLS and TOOL_CATEGORIES, prepending a real-date changelog entry, updating README.md, and passing verification.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L11-L43",
+          "version": "repo-lines-v1:sha256:e4bc5a1aba6b245e2c1f66cc6e0e0e36606e79946a3d4510853b08a008b73d6f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiOTMzZDlmZDNkZDRlMTVjMTM3ZTljYTZlMjJjYjc1MTM3MTBhYTg3Njk4NjY1MjI4NzlhZmNkYjA2Mzg4ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxNGVjOTkxNTM4ZTVmYTZiMWJhNmUzNWI5MjQwYjdmNDI4ODJkMWYyZDYzMzRjYjdiYmNiYTQ0ZGYxZDZhZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YjQ4YzFjOTNhZjYzMmQwZDU0ZjM3NWYzNGJlNjNiZmUwODRkYTIxZGJmOThkODlmMmM1MTc0ZjRmNTY2ZWEifQ"
+        },
+        {
+          "resource": "repo://ARCHITECTURE.md#L44-L68",
+          "version": "repo-lines-v1:sha256:390979c537f4590df6bc143185b1eb901f004067a985100d721db71d8be1919a:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI2ZjdlYTRmNGMwNzdiOTBkMDgxNDM3NTBkZmI0Mzc5MjgxOWYwMmZjOTQzZTA2NWI1NTk4NmRjZTc1NjE0N2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxYjkwMTg0NzM5MGIwZWQ3ZTM3NGU3YzFlNDY0ZWMxN2I0NmE0MjdjNDg3YTVhZDZjYmQyOTA2NDA1MDgzZDUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAwMWYyZWMxNzU5M2MxMDU0ZWI0NjM2N2Q4NDUzZWYyNGExNzNjZTk2YjcxMTdkOTFmOWE2OGQ0NGZlZjhiMDEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0daefad351864fd184afad147a942cea",
+      "statement": "The automated quality gate script verify-workflow.mjs validates ToolLayout usage across tool routes, bidirectional tool-data.ts registration, changelog date formats, and TypeScript compilation via tsc --noEmit.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L17-L126",
+          "version": "repo-lines-v1:sha256:5141918dd187d1e91c5238af3e1984783f1ed73f3ffcb92e3a291242a5bafb0f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2N2NkYWFhN2NjNTVjY2Q1YjM5YmZlZjUzNzgwZTFmNjVjMWFiMTU3NTQ2ZGE4OWE2ZjAzNDdiN2QyZDU0OWFjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI1YmRjZTY3ZTZmMGJlYzdkYTZhYzY4MGQxNzdiOGYyZDczZTkwYWUyODEwNTg0MDM1OTVkM2IyYWI5YzgyMDE4IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkNjllODliYzk4ODNmMTNlMTUwMDdhNWE1MmFlMDkwZTAyOWRkZmRjNTlmODZkYzUyYmM4NDU2MmE2ZGNkMWIzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MSwiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MTJjYTM0NWNjZjc1YmY5YzA4MDZiY2U2OTViZThkZTgwOGI3OTk4NDI1MWE3YTU0ZDIwMmNmNjEwMWRkNDUxIn0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

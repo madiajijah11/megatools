@@ -1,14 +1,14 @@
 # [megatools]$ ✦
 
-> **92+ free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
+> **101+ free, client-side developer, media, blockchain, AI, and cybersecurity tools** — running 100% in your browser. Zero server uploads, zero tracking, total privacy.
 
 🌐 **Live URL**: [megatools-tau.vercel.app](https://megatools-tau.vercel.app)
 
 ---
 
-## 🛠️ Complete Tools Directory (92 Tools)
+## 🛠️ Complete Tools Directory (101 Tools)
 
-### 📄 PDF & Documents (5)
+### 📄 PDF & Documents (6)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **Merge PDF** | `/pdf-merge` | `pdf-lib` | Combine multiple PDF files into one with custom page reordering |
@@ -16,8 +16,9 @@
 | **Image to PDF** | `/image-to-pdf` | `pdf-lib` + Canvas | Convert multiple photos (PNG/JPG/WebP) into a clean PDF document |
 | **PDF Page Rotator & Reorder Grid** | `/pdf-organizer` | `pdf-lib` Client Engine | Reorder pages, rotate orientations (90°/180°), and delete pages visually |
 | **PDF Watermark & Stamp Studio** | `/pdf-watermark` | `pdf-lib` Client Engine | Stamp diagonal/centered text watermarks across PDF pages with opacity control |
+| **PDF Metadata Editor & Sanitizer** | `/pdf-metadata-editor` | `pdf-lib` Client Engine | Inspect, edit, or 1-click purge confidential document metadata properties from PDF files |
 
-### ⟠ Blockchain & Web3 (6)
+### ⟠ Blockchain & Web3 (7)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **Ethereum Unit & Gas Fee Calculator** | `/eth-unit-converter` | BigInt Precision Math | High-precision conversion between Wei, Gwei, Finney, and ETH with EIP-1559 gas fee estimation |
@@ -26,10 +27,12 @@
 | **Keccak-256 Hasher & 4-Byte Selector** | `/keccak-calculator` | Keccak-256 Engine | Calculate Ethereum Keccak-256 hashes, Solidity 4-byte method selectors, and EVM event topics |
 | **Merkle Tree Root & Airdrop Proof Builder** | `/merkle-tree-generator` | Sorted Pair Keccak | Generate cryptographic Merkle roots and OpenZeppelin-compatible verification proofs for airdrops |
 | **BIP-39 Mnemonic Seed Phrase Studio** | `/bip39-generator` | BIP-39 & PBKDF2 | Generate 12/24-word recovery phrases, verify checksums, and derive master seeds |
+| **EVM Calldata Decoder & ABI Inspector** | `/evm-calldata-decoder` | Web Crypto & ABI Slicer | Decode raw Ethereum transaction calldata hex into formatted parameters and 32-byte memory word slices |
 
-### 🤖 AI & LLM Engineering (8)
+### 🤖 AI & LLM Engineering (9)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **LLM JSON Repair & Auto-Fixer** | `/json-repair` | AST & Token Parser | Auto-repair malformed, truncated, and unclosed JSON outputs from AI models |
 | **LLM Token Counter & API Cost Estimator** | `/token-counter` | BPE Tokenizer & Pricing AST | Count BPE tokens, visual subwords, and calculate real-time API inference costs |
 | **Few-Shot Prompt & Fine-Tuning Dataset Formatter** | `/few-shot-formatter` | Dataset Serialization AST | Construct few-shot pairs and export to OpenAI JSONL, Anthropic XML, ChatML, and Llama 3 |
 | **LLM Output Diff & Hallucination Spotter** | `/llm-diff-comparator` | Jaccard Metric & Diff AST | Compare AI model responses side-by-side with word diff and numerical hallucination spotting |
@@ -74,9 +77,10 @@
 | **Favicon & Icon Generator** | `/favicon-generator` | Canvas API | Generate standard icon sizes (16, 32, 48, 180, 192, 512px) + HTML tags |
 | **Web Audio Tone & Frequency Synthesizer** | `/tone-generator` | Web Audio API | Generate pure tones (20Hz-20kHz), binaural beats, and colored noise with oscilloscope |
 
-### 📝 Format & Code (17)
+### 📝 Format & Code (18)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **SQL DDL to TypeScript & Zod Schema** | `/sql-to-ts` | SQL DDL Parser | Convert SQL CREATE TABLE statements into TypeScript interfaces, types, and Zod schemas |
 | **cURL to Code Converter** | `/curl-converter` | Shell AST Parser | Convert cURL commands into JavaScript fetch, Python requests, Axios, and Go code |
 | **JSON to TypeScript & Zod Schema** | `/json-to-ts` | AST Generator | Infer TypeScript interfaces, types, and Zod validation schemas from JSON |
 | **HTML / SVG to JSX Converter** | `/html-to-jsx` | Regex AST | Convert raw HTML and SVG into React/JSX with camelCase attributes & style objects |
@@ -96,9 +100,10 @@
 | **Markdown Preview** | `/markdown-preview` | `@mdx-js/mdx` | Live Markdown and MDX renderer with sanitized output |
 | **Base64 Data URL & Asset Embedder** | `/data-url` | FileReader API | Convert images, fonts, and SVGs into RFC 2397 Data URLs & CSS rules |
 
-### ⚙️ Dev & Network (12)
+### ⚙️ Dev & Network (13)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
+| **Semantic Versioning Calculator & Range Tester** | `/semver-calculator` | SemVer 2.0 Spec Engine | Evaluate SemVer ranges (^, ~, >=, ||), simulate 1-click bumps, and sort multi-version releases |
 | **RDAP Domain & Registration Inspector** | `/rdap-lookup` | ICANN RDAP Protocol | Query domain registration, expiration, transfer locks, and IP ownership |
 | **DNS over HTTPS (DoH) Lookup** | `/dns-lookup` | Cloudflare & Google DoH | Query A, AAAA, MX, TXT, CNAME, NS, SOA records with DNSSEC validation |
 | **Cron Expression Generator & Parser** | `/cron-parser` | Cron Engine | Parse and explain crontab schedules in plain English & calculate upcoming runs |

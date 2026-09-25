@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:d3f8ddf3a3e2dc7e95a72e5c55af3c6f85c6a27d78e94ae22316b847d09b0f31",
+  "claims": [
+    {
+      "id": "claim_3136200981144da99a945e2e9b997ce5",
+      "statement": "MegaTools tools execute 100% in-browser within client RAM without exfiltrating user payload data to remote servers.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L24-L24",
+          "version": "repo-lines-v1:sha256:f69a9b33cbd4dca3f391360053ecdfde5d6a6ebf230dbb61cd8442cee07edcf8:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjY5YTliMzNjYmQ0ZGNhM2YzOTEzNjAwNTNlY2RmZGU1ZDZhNmViZjIzMGRiYjYxY2Q4NDQyY2VlMDdlZGNmOCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjY5YTliMzNjYmQ0ZGNhM2YzOTEzNjAwNTNlY2RmZGU1ZDZhNmViZjIzMGRiYjYxY2Q4NDQyY2VlMDdlZGNmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGViMDYyOTcyZmE4NDk5MDYwMjAzYjdjZGM5ZmU4NjMwNmE1NTUwMjQxMmFjNzUzMmVhMjFiMzJmNGM0NDRmOCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTVkMzVkMTgzYjhmM2U5MmYyY2IyOWU0NGMwZTdlNDk5ZWU0OTllMzk4ZWMzYTZmMTI2NTdmNjFhNDllM2Y5NiJ9"
+        },
+        {
+          "resource": "repo://ARCHITECTURE.md#L3-L5",
+          "version": "repo-lines-v1:sha256:a9e66e050b3d4dda7f746f426396418ed7ab3cf6fe0742e24f613f23c81def48:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMGRhY2Q4NTQ1N2M4OWNjMWVkMzdjYzU2ZDc4YjIxODEyMGNjZTYzOGQ4MjYyMjgzZjg4OTAxZDg5OThmZmY0ZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjIsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzVhNmZjYTlhMzgzZmNlYWRjNTc0NjIzNDlmNjA3ZDUwMWJlNDNkM2UyODU5YTYwY2E2NjhmZWJkYjdhYjdlZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzU5NWYxYTYxMmFjN2FiYWQwOGVhNTYzOWVmNTY1MDNhMmFlMzFlZWQ1MjZhOTZhYmNhNDU3NDNmNDBiNjQ2YiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8d6013c8aa64462895b3b492e82c0e26",
+      "statement": "Every tool directory under src/app/<tool-slug>/ pairs a server component page.tsx exporting metadata with an interactive client component *Client.tsx.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L20-L22",
+          "version": "repo-lines-v1:sha256:aae88affa19e08ea90af27f095e364a72b0aa76de24897eb4a19c8641d1ca222:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDRmYzBhY2U5MDRlODFmMDBjOGI5OTAzYmQwOTJlMzgzYmFkNmRhZTk1ZGVlYmMyMDM4ZmI3ZTViOTBkMmIwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODE3MDJhZmFkYzFlNmE1N2JlMTE5NTEwZTFiYTNhNGM2YzJjMmI0YTQ4Zjc0YmQ5YWIzOGNiZmQyZWMzOTJjNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmJhMjY0MjIzMjg2NDA1Y2JjZjgyM2Y1NDU1NmZlMTY5MWUyYjRkYTRhYjFkMGE2NmM2ZTIxYWIzNTdmMTlhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDBlZTAxOWI5YTlkZDQ2OTE2MzQ1MWQ0ODYxMGFkZGQ0MjBiYzlmOWU1ZTUxMzZmZDRjYWI2ZmM0ZDI3ZTRiNiJ9"
+        },
+        {
+          "resource": "repo://scripts/create-tool.mjs#L47-L72",
+          "version": "repo-lines-v1:sha256:3109783d967b95a311f09a203ca078f39bf106f36ae1e3a753b356f13205b9a6:eyJzZWxlY3RlZExpbmVDb3VudCI6MjYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzNTgyODA4Nzc1NWNjMDZiZGU2ZjI4MjM1NjExZjlkZjdmYzAwMzA3MzgwODA0Njg0MWQzMGFkZmUyZDEyMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5OWIxYzEzMzMyMWNjMmI2NmNjNjViYWFlNWQ1YjExNmQ5ZjIzNWQ0YzU4ZmQwNGZhODhmNWZkNWMwZjdkMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJlYjA2OTgzMGI4YmQyMGZkNDAwZDY0OTc5Y2U2OGM1ZjIxZWJjMjM3MjVlNzQ5NGEwMjA5OWFkZWE0MGM3MDUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5c00cea1680542efaf196b6c64325e27",
+      "statement": "Tool server page.tsx components define Next.js metadata specifying title, description, openGraph, and alternates.canonical set to /<tool-slug>.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L20-L20",
+          "version": "repo-lines-v1:sha256:04fc0ace904e81f00c8b9903bd092e383bad6dae95deebc2038fb7e5b90d2b00:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDRmYzBhY2U5MDRlODFmMDBjOGI5OTAzYmQwOTJlMzgzYmFkNmRhZTk1ZGVlYmMyMDM4ZmI3ZTViOTBkMmIwMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDRmYzBhY2U5MDRlODFmMDBjOGI5OTAzYmQwOTJlMzgzYmFkNmRhZTk1ZGVlYmMyMDM4ZmI3ZTViOTBkMmIwMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmJhMjY0MjIzMjg2NDA1Y2JjZjgyM2Y1NDU1NmZlMTY5MWUyYjRkYTRhYjFkMGE2NmM2ZTIxYWIzNTdmMTlhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOGViMDYyOTcyZmE4NDk5MDYwMjAzYjdjZGM5ZmU4NjMwNmE1NTUwMjQxMmFjNzUzMmVhMjFiMzJmNGM0NDRmOCJ9"
+        },
+        {
+          "resource": "repo://scripts/create-tool.mjs#L48-L69",
+          "version": "repo-lines-v1:sha256:e734990fe16c3ed3c7faafd4de7b90706187b2cbba54642343ffd17c8eeb8e5c:eyJzZWxlY3RlZExpbmVDb3VudCI6MjIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY5Yjg4N2QwOWEwODQ3MWEwYjZiYzJkZGFiMmM4NDM2ZmI4ODcxOWEzNjIwNTRjZjkyYzcyYTFmYWYxMGY0N2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhZDI5NTI1MzZmYzYwMDBhZDkxNTY2YmQ5NTNmMjViYzk1OTYxMGU4MTFhNTI5YTliZWY4YjRmMDdjMWM4Y2QiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU2NzA0NmE2NTcyY2RhMjNjYjI1N2M4ZTcwN2VhZjIwYzQ4ZmY0NTUwNWRkYzg1ZDM3ODhiNDdjZTgxZTUxOGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQzMzlhYmE0MjU2ZGVjZWI1MjE2NDViNDQwZGRkYTU1NjBkM2QyZDdhYzAwMzgzNjRjNTliNzJjNGQ0NGE0OGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8432b1b8e1a4493b8f203ff639a1d942",
+      "statement": "ToolLayout enforces a 12-column responsive layout with an 8-column workspace on the left and a 4-column InfoPanel desktop sidebar on the right alongside a mobile info drawer.",
+      "evidence": [
+        {
+          "resource": "repo://ARCHITECTURE.md#L39-L41",
+          "version": "repo-lines-v1:sha256:e62a28c5f8ce3a50d9db1a4377370d9e44accba3e29cd54bb55cd8fdb381c1af:eyJzZWxlY3RlZExpbmVDb3VudCI6MywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMTY3Y2IwZmIxZGEzMTQ3ZjBjNjQ5MTI1ZjdjMWQ3NDEyMjJmNjI3YTE2MWQ5MWU3ODRkNGUxMzUzZWUwMWNiNSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjg4ZmYwYzQ5NjAxNDk1OGMwNzlkMWI1NzY2ZGJjZjRiMjQzZTc1MWNhZDY1MWM0YWQ3NmNhNDVkMDA0MmU2ZSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2QyMDMyMDgzZWFhNGYyMWQwYWNiNGU2N2I0OGE0YWI1MWRjOWE0OTFiN2ExNTcwZjUxMWM4ZDE1Nzk1MWJjZCJ9"
+        },
+        {
+          "resource": "repo://src/components/ToolLayout.tsx#L84-L101",
+          "version": "repo-lines-v1:sha256:9bcc580cb0f38d84ab80f36d055e856fd63f69a2f73946273f2b5a663b62fa11:eyJzZWxlY3RlZExpbmVDb3VudCI6MTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM2MWUxZjUwZGNhNzFkNGU5YmMwMzJkZmZmMGI4YTI0MzExMmIwODRlNDYxOTY3NDYyMzdkYzE0MjA0NDg2ZDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwNTYzMDRiMGVlYWJkODhhZDRjYmRkNjBiZGY0NjY1MWFkODU3YWQxZTAxMDRlNDJhYmZmNmIwNDNhZThlYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImIwZGY0ZmZmNjcyNjQwZmIxMjYzYjVmNzgzODBmZWNlNTJhZWE4OTBiMjBiOTEyMzgwY2RlOWI2MTg4MmRjODgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoyLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdiOGI2MDBhNWI0NDhiMWU0ZDAyZGYwOTc0NmVkM2NhMzE3MmY3NWM0YWFiYjAxZGRlMDgwZTM2Y2FiMDc0YjQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_ea682bd4d00f4d2a82b33e991d4efa14",
+      "statement": "ToolLayout accepts toolId, stats, children, customTitle, customBadge, and customDescription props.",
+      "evidence": [
+        {
+          "resource": "repo://src/components/ToolLayout.tsx#L9-L25",
+          "version": "repo-lines-v1:sha256:4952f2b2bc335f95c4ac3baff398dcadb9839820eca041f765b61e6c57e18e9d:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVkOTFhNmViMDkyMjQ2YmNhYmM4YTUzZmIwNGQzNjMwODliN2M3YmFjZDU0MGNmZjUzZThlNzA3NGQ0OWIwMzkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE2Zjg5M2Y4MThiNDFmOTUwYjc3NTBkZTM3ODE5MTJkZTNiZmI5ZGU5ZTJlYTUwNzFjNTA1NGM3NGU3YWQ4NGIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMyNDg5MmRiODkwZGUzYmEzMDk4MDlmNjdhMzVlZDVlMmZlOWY5NzVkY2Y2MmY0NzQ2Zjk4NmRlZjAzNzEzNGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjA2MGE2NWQ5YmQyNTAyY2ZlN2NmMmY1OWY5ODc4Mzg5NGE0OTIyNmNiOGFmZTJkYTIyOGQxMWY4M2Q0MWU2NTgifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_f6767f5cef6b4bc8add04a0ba5e237ba",
+      "statement": "InfoPanel dynamically resolves tool metadata from getToolInfo(toolId) to render tech badge, how-to steps, stats, tips, and example copy fields.",
+      "evidence": [
+        {
+          "resource": "repo://src/components/InfoPanel.tsx#L7-L84",
+          "version": "repo-lines-v1:sha256:dc385a1345854be9bc3fc990572e5c8a4fe82b6ef0547adbfd8865967051d80f:eyJzZWxlY3RlZExpbmVDb3VudCI6NzgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE3MjJjMmE5MGJjOTQ4ZTMwZDEyZjc1YWM3YzJhZTRlNWRhZmJhNDIzZTJjNDRmMjU3NzBhNWVmYzRkN2U4Y2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk1ZWYwMWJjMDhkYmMzYjYzZTRlNzVlYTNkMjZhNWI5NDE4OTE4NzdlMjdhZDg5MTMyOWM4NDExZDdkOGRjNGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjEwMGNkNzgxYmRkYWIxYzMyMjY5OGNkODNiM2FiMDYzYTkyMDE4ODVkZWI3ZTBkNDBiMmE0NGY2NDIzZWRjZmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjoxLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_3619ebb03f6c49379ba71f3eaf9933c4",
+      "statement": "Workspace input and output card header bars strictly require an h-8 flex items-center justify-between layout with monospace action controls.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L23-L23",
+          "version": "repo-lines-v1:sha256:353746255adef4f7542c5611545eaeb59a1f89fd85481069e703f115373a4923:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMzUzNzQ2MjU1YWRlZjRmNzU0MmM1NjExNTQ1ZWFlYjU5YTFmODlmZDg1NDgxMDY5ZTcwM2YxMTUzNzNhNDkyMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMzUzNzQ2MjU1YWRlZjRmNzU0MmM1NjExNTQ1ZWFlYjU5YTFmODlmZDg1NDgxMDY5ZTcwM2YxMTUzNzNhNDkyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWFlODhhZmZhMTllMDhlYTkwYWYyN2YwOTVlMzY0YTcyYjBhYTc2ZGUyNDg5N2ViNGExOWM4NjQxZDFjYTIyMiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzVlOTliZmNlYWU1NzRjY2FkN2M2ZDRjNGVmYmM5YWEzNDlkMGNmNTE1M2ExZThhODhkYTIxODQ5ZGE5NjA5NSJ9"
+        },
+        {
+          "resource": "repo://scripts/create-tool.mjs#L101-L113",
+          "version": "repo-lines-v1:sha256:f27bf10162e57f4c4a869e4dbb87d9db2fc5d112fe29afa3fff2f0ce077279f2:eyJzZWxlY3RlZExpbmVDb3VudCI6MTMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzNmE1OTA1Mzc1OGRhZTlhYWM2YmFmYzMwOWJmMmQ5MmQ0NjUyNmU0NGZhMDkzNmU3ZWFjNjAzYjUyMjI0NTkiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFmMjE1ZmQwM2NmYzJiZWViZjgwNGExN2FjNWU5NDc5NTFmN2NkMmRjMDU2MDUyMjQ5OWM2MDZmZGJjZDcxODUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjRhZTA3YmE4NTQ1MWU0ZGU3OGMyYjc2NjljZDI5OTg0YTQzNmQ4ODBkYTZhODE1MWFiZjRmODMyZDJhZjIyOTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmZTRjMGZmNzYwNzJkYWFhMzA0NTAzYjgzNTc5ZDVlY2FiNzYwNjcwZDViZWMxMDY4YWZjY2VlNTA3ZjhkM2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_92d72195ccf54ff1a9ad6360852a467a",
+      "statement": "scripts/verify-workflow.mjs verifies that 100% of tool routes under src/app/ implement ToolLayout in their companion Client components.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L17-L49",
+          "version": "repo-lines-v1:sha256:0d62e7737501bf10ca99924ea7215bb28ac2f863c9b1e642968f9e2df719e1cb:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3Y2RhYWE3Y2M1NWNjZDViMzliZmVmNTM3ODBlMWY2NWMxYWIxNTc1NDZkYTg5YTZmMDM0N2I3ZDJkNTQ5YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2OWU4OWJjOTg4M2YxM2UxNTAwN2E1YTUyYWUwOTBlMDI5ZGRmZGM1OWY4NmRjNTJiYzg0NTYyYTZkY2QxYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY3OTBjNjQzODkzMTU3YjQ0ODkyNDFkM2UyZGE1NzNiYTUyYzdhOGVkYWQyODMwYWFmMDNmYzUyYzU3NmFjZmEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

@@ -31,6 +31,11 @@ Every AI agent or developer adding, updating, or refactoring tools MUST strictly
 4. **Changelog & Notification Bell ("What's New")**:
    - In `src/lib/changelog-data.ts`:
      - Add a new `ChangelogItem` entry at the **TOP** of `CHANGELOG_ITEMS` array.
+     - **TYPE DISCIPLINE**: Select the exact matching `ChangeType`:
+       - `"added"`: Brand new tool additions.
+       - `"fixed"`: Bug fixes, parser edge cases, syntax repairs, or broken features.
+       - `"improved"`: UI/UX enhancements, responsive layouts, or performance boosts.
+       - `"updated"`: Data dictionary, spec version, or algorithm refactors.
      - **DATE RULE**: `date` MUST use the **REAL current system ISO date** (`YYYY-MM-DD` from `new Date().toISOString().split('T')[0]`). NEVER hardcode past or arbitrary placeholder dates.
      - This directly triggers the unread notification bell badge in the header and lists the release on `/changelog`.
 
@@ -40,3 +45,20 @@ Every AI agent or developer adding, updating, or refactoring tools MUST strictly
 6. **Verification Gate**:
    - Always run `npx tsc --noEmit` to guarantee zero type errors.
    - When committing in confined environments, use `git commit --no-gpg-sign -m "..."`.
+
+<!-- OPENWIKI:START -->
+
+## OpenWiki
+
+This repository has a generated `openwiki/` evidence index. It is optional just-in-time context, not required startup reading.
+
+- Do not enumerate, preload, or search wikis at task start. Use retrieval when the user asks for it, when unfamiliar architecture or dependency behavior materially affects the task, or when source inspection leaves an important uncertainty. Stop once the question is grounded.
+- When those conditions apply and OpenWiki retrieval tools are available, use `openwiki_search` for just-in-time context and `openwiki_read` for the relevant complete sections. If search returns `workspace_required`, ask which listed workspace to use and retry with its ID.
+- Use `openwiki_list_workspaces` or `openwiki_list_wikis` when workspace membership itself needs to be discovered.
+- If the retrieval tools are unavailable, read `openwiki/quickstart.md` and follow its links to the relevant pages.
+- Treat source code and tests as authoritative. A brief's unknowns and review items are verification gaps, not automatic requirements.
+- Prefer the narrowest quiet validation that proves the changed behavior. Preserve complete failure output.
+
+The scheduled OpenWiki GitHub Actions workflow refreshes the repository wiki. Do not hand-edit generated OpenWiki pages unless explicitly asked; prefer updating source code/docs and letting OpenWiki regenerate.
+
+<!-- OPENWIKI:END -->

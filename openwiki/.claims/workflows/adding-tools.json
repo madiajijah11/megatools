@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:776cabdae9d45b88a2888ffe723d283256c239fc04eed18084fb65e18296402e",
+  "claims": [
+    {
+      "id": "claim_d8fd9580c237449ba31971ffeb79e664",
+      "statement": "The CLI generator is executed via `npm run make:tool <slug> \"<Title>\" <category> \"<Tech>\"` or `node scripts/create-tool.mjs`, accepting a slug with defaults for title, category (`dev-network`), and tech (`Web Standards API`).",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L11-L11",
+          "version": "repo-lines-v1:sha256:d0b03469d751f312d075d46a941c55fb5169cfd0a67c5e3b717f91d7b2fae963:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBiMDM0NjlkNzUxZjMxMmQwNzVkNDZhOTQxYzU1ZmI1MTY5Y2ZkMGE2N2M1ZTNiNzE3ZjkxZDdiMmZhZTk2MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZDBiMDM0NjlkNzUxZjMxMmQwNzVkNDZhOTQxYzU1ZmI1MTY5Y2ZkMGE2N2M1ZTNiNzE3ZjkxZDdiMmZhZTk2MyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYTdlM2RjZDBiZjhlZjMyZmRiZGE4ZDZiNjNhMDIxM2RlNGYyZGY5YjgzZGQ3MWZjZGRkNzI4YzcyNWRmNWUyMCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZmU5ZDE5YzJiNjcxODM5ZTY4ZWQ5ZGVlNzZjZjM2MjRhMzljMmQxMTc0OTEyNWFiNGE1NjE3NTM4ZGEwNGU0NSJ9"
+        },
+        {
+          "resource": "repo://scripts/create-tool.mjs#L12-L30",
+          "version": "repo-lines-v1:sha256:ac5b7e8fc98820b5ec56b5e823132fd207cbf0ac9adec1cca9d9e234ad338d6e:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNkNjRkZmRjNzRmMzI4NDNiNzhhYzFjMDkzNDZhYWE4ZDRhODdlYTU2MmYwNWUzNTE0OWQxYzU5MTY3NmU5MjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY1Y2UzZDlkMzdjZjE0ZWU2YTFiMjVmYmY0MzQzODc5MjMyYzQyMzllZmEzYTFhZTNhZjkzMTgyY2RkZDQwZTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjIyNGFiNDRiMzk5N2U2MDkyMjRmOTE5ODNlMDM0MGEwNDZlMTNkOTEzMTNhNDQ5Yjg3MTQ4NWM1M2Q0MjlhMTMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_08aeadb3bbd146a29d4441e43d7f4bd6",
+      "statement": "If the target directory `src/app/<slug>` already exists, the scaffolding script halts with an exit code of 1 and logs an error to prevent accidental overwrites.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/create-tool.mjs#L40-L45",
+          "version": "repo-lines-v1:sha256:90e2c354207a1385057a10f803c5f303a11e1574984522d06283446e36cbc917:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjk2NjJlMGVjNmI4MzFhM2FhN2I5MjU1YWRmNmFkZjE1ODI4NDVkZmFmYzkyNGQ2MzkxMTgyYTViOGU0NjM5YSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiM2Y2M2I3MjI2NjE5OGM1ZjA5MTgwYzU2M2VkZmE5MDJjODJkNDJiMGY2OGE2YzMwNTljMWM3ODNmNWIzMWFlZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTk2ZTkzMGNjNmMzMDExNjI3NzJmY2RhYzQ2NmE1MjAyYTljYjY0NWVlNzQzMzg1ODk3NjVkZDQwODNjMDIxNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZGQ3NjNiN2E4OTZlMGUzNDZhYWNlNTBkMmY1MmQ3N2U2OTEwNzBkNWE0MWY5OWZkMGQ0ODY3ZjBlMjY1MzVjNSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_1910b593aee04233836b50a923293556",
+      "statement": "The scaffolding script generates `src/app/<slug>/page.tsx` as a Server Component defining Next.js SEO Metadata (title, description, keywords, alternates canonical path, openGraph) and rendering the companion client component.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/create-tool.mjs#L47-L71",
+          "version": "repo-lines-v1:sha256:8198d13f5d14929068b5644582c5fb2ef4d709dc346a820206b339bbad2194c0:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgzNTgyODA4Nzc1NWNjMDZiZGU2ZjI4MjM1NjExZjlkZjdmYzAwMzA3MzgwODA0Njg0MWQzMGFkZmUyZDEyMTAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIxNzBjZWQ3NGU1ZTUyNWM3MDkwNjkwZDMzMDFlMDFjMDVhOWFlYjA2MzEzNTAwYTMyZWNlNmZjNDNiYzY1NzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI5OWIxYzEzMzMyMWNjMmI2NmNjNjViYWFlNWQ1YjExNmQ5ZjIzNWQ0YzU4ZmQwNGZhODhmNWZkNWMwZjdkMDIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijk0YTNlZmI5MjQ1NDI5OTVjODgwN2RmYmM4N2I2NzEyOTNjZTQ3NmY3ODViZTMwYThlY2E3MDM2NGIxNWY1ZGUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e00dcc3035c54e699a6b444586ab074f",
+      "statement": "The scaffolding script generates `src/app/<slug>/<ToolName>Client.tsx` wrapping the workspace UI in `<ToolLayout toolId={slug} stats={stats}>`, featuring an `h-8 flex items-center justify-between` card header bar and client-side reactive state.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L21-L24",
+          "version": "repo-lines-v1:sha256:685e75782ebb816841c32fe76865308fb2fdb58670cfb91409568f68c596dbd0:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTRkNjA0NjU1ZjNhNDgxZDlkMWZhNmI1ZTQ4ZTViMzNlOGY3NDcxMzI3YTkyNTk3MmQ2NGYxNzllOTkxOGViYSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZjY5YTliMzNjYmQ0ZGNhM2YzOTEzNjAwNTNlY2RmZGU1ZDZhNmViZjIzMGRiYjYxY2Q4NDQyY2VlMDdlZGNmOCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2VlOTc4NTM3MTEzYzdjM2ExN2FjZTc3MDlkMjRmMTljOWY5ODcwMDY0YjNiNmQyOGNmZTY0ODA4ZDU1YmNmNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTVkMzVkMTgzYjhmM2U5MmYyY2IyOWU0NGMwZTdlNDk5ZWU0OTllMzk4ZWMzYTZmMTI2NTdmNjFhNDllM2Y5NiJ9"
+        },
+        {
+          "resource": "repo://scripts/create-tool.mjs#L73-L154",
+          "version": "repo-lines-v1:sha256:5e5a6cbbfcd7ccd9942a757036c1c2012daea630f3a48bcc3560f7c7c931b5cd:eyJzZWxlY3RlZExpbmVDb3VudCI6ODIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk0OTM1ZmIxN2Q2ZjY0ZDMwMGIwZWQwMzQwYmM2OWQwOTFlZWMyYjYwYmZhODAxNzAzOTk4YjRjNzA2MzkwMzEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA4NmUxYWQ3ZDY4NzgzMTVkMGQ5OTY2ZDljMTU5YmU3ZGI0YjJjNDIwMTJiYjNjNWI5MTFhMzc1NTg2MjljOGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQzMzlhYmE0MjU2ZGVjZWI1MjE2NDViNDQwZGRkYTU1NjBkM2QyZDdhYzAwMzgzNjRjNTliNzJjNGQ0NGE0OGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkyODA4ZjY3N2Q5MWM3YzcwNjJmOTA4M2UzMDEzNjZhZGRjMWNmMTkxOThkNWEyOTQ4NGQ3YTA0YTQzZTMzNDEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1151696efacd4e16aba099597d4c304c",
+      "statement": "MegaTools mandates a 6-step Zero-Mistake Protocol for adding, updating, or refactoring tools: plan & confirm, scaffolding & ToolLayout standard, tool registry & category sync, changelog & notification bell entry, documentation & README update, and verification gate.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L11-L43",
+          "version": "repo-lines-v1:sha256:e4bc5a1aba6b245e2c1f66cc6e0e0e36606e79946a3d4510853b08a008b73d6f:eyJzZWxlY3RlZExpbmVDb3VudCI6MzMsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJiOTMzZDlmZDNkZDRlMTVjMTM3ZTljYTZlMjJjYjc1MTM3MTBhYTg3Njk4NjY1MjI4NzlhZmNkYjA2Mzg4ODciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMxNGVjOTkxNTM4ZTVmYTZiMWJhNmUzNWI5MjQwYjdmNDI4ODJkMWYyZDYzMzRjYjdiYmNiYTQ0ZGYxZDZhZDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU5YjQ4YzFjOTNhZjYzMmQwZDU0ZjM3NWYzNGJlNjNiZmUwODRkYTIxZGJmOThkODlmMmM1MTc0ZjRmNTY2ZWEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_344ea34fa6b34847b68b20c73219fdc9",
+      "statement": "Every tool requires dual registration in `src/lib/tool-data.ts`: first as a complete `ToolInfo` object in `TOOLS`, and second as its `tool.id` within the `toolIds` array of `TOOL_CATEGORIES`.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L26-L30",
+          "version": "repo-lines-v1:sha256:579f66776742489c54bc634098401f3faf7f0f9bcd706f6e0a30ab2a5fd69cd9:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMjRiMDEwNmI2OTI0N2E0NjJjODI0NGFmOTJlYzliYzNkN2IyMzZiMTUxMTQ0MDExZTkzNjY5MzRhMGY3NzJlZSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMDBlZTAxOWI5YTlkZDQ2OTE2MzQ1MWQ0ODYxMGFkZGQ0MjBiYzlmOWU1ZTUxMzZmZDRjYWI2ZmM0ZDI3ZTRiNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYmQyYmNlM2VlYTdiNmEyZTgwYzdmMTIwNjM0MDFjMWM1Mjk4NGZlY2Y3MGI3MjYzMGE3MzVhNWU4MTc1OTY4YyJ9"
+        },
+        {
+          "resource": "repo://src/lib/tool-data.ts#L1-L12",
+          "version": "repo-lines-v1:sha256:bf5416e7c54b54c67bc00b20c3bc3a8eb738eb55bdfe618e9f78db0657239d28:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMzFiOTQyN2EyZmE0YWVhNzAzNGFhZWVjYWYyZGZiZTI3ZTcwNjE2MGY3MjQ5OTlmYTI5MGE0MjI4MTcwYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhYjVlYjZhNzc0OWRhMmJjMDUyOGYxZTY3YTM2ZmE0ZjdmNDk2OTAwMTBiOTU4OTUxYzQ1ZmI4MjI0NDY0MDEifQ"
+        },
+        {
+          "resource": "repo://src/lib/tool-data.ts#L1459-L1465",
+          "version": "repo-lines-v1:sha256:6eb556a5a4c2f3341469522c829e4e3dd7778f8e735baf3b4e16ffe272ea042d:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYWRiYzk3NTRjYjEzNTU3ODRiMmRlYzlkZDVhNTJlZjEzNmM3MTNjYzc3NjcwNTQyYzBmOThmMWVlZWMxNzc5MyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGQ1Y2QyZmI0ZjNkZjg4NDUxNTI1NWIzOTUyM2YyZjhiNTQ3MmJlZWE5ZjU2NmZmY2EyMDRkYjgwMjU2MTA0MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2I4MmJmMGY4ZjE2ODEzOGZjNjM0ZDc2NTY3NWRjZmM5YWE3ZTRjYzg2MWRhMGI1YzI5Y2UyNDMxN2Y0MzZhNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjI3NTFmZTNiZWEzMTk4NDc1YjZkYTU0NWYyOGM1NjhiZDNiMzBlZmJhZDk0MDIxZWJjMzQzYzc0ODAyMjEyZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_b667e7e7a43245f282260fc7c1fc7cc1",
+      "statement": "New features must prepend a `ChangelogItem` to the top of `CHANGELOG_ITEMS` in `src/lib/changelog-data.ts` using the current system ISO date formatted as YYYY-MM-DD, which powers the notification bell unread indicator.",
+      "evidence": [
+        {
+          "resource": "repo://AGENTS.md#L31-L36",
+          "version": "repo-lines-v1:sha256:cb433d6239562cebbeb40291094210d49275610cb3bb3f32367596a478667e87:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZmVlOWM5NmEwYmUwOGY2NWE5ZDg2M2FjNWViNDgzYTVhYmQ4YjIyY2RlYWI5NGIwOTI1NjdiMzJiZWUxNjM3MSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmZhOGJiNTYzYTMzNjhmMzQ5YjFiOTk2NzkzN2FkMzk5MmZiODg1ZTJkM2M3YzlkNWIwNjA2YzEyMjIyMzJlYiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzZjZGE3NTU2NWJjYmEzNjk5MDZhYTYxZjRlOGYwMDUzY2MwMmI2OWVlMTkxYTAzM2VkY2M4NGY0MGIyYTg4YyJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L86-L109",
+          "version": "repo-lines-v1:sha256:682a39f1d9e3693cad45663a6c2c9ecb0f5c88edf608f9f1d7acb647ec25c79f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0MDI3YWUyYjcwZDVhN2YzMzdiYjU5NTdiZjgwMjEzZWU3ODM0NGFjM2RlMTRkYTBiOTBhZjE4YWQ4N2ZjNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5ZjZjODE4ZjViZDAwZjQ2ZTkyZDFmYTZhZDQzMTJkMWY2OWYwYmIyMjU1NzljNDllZGE0ZTUwOGQ1YjMzNjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhYWUwYmVmNTg3NjAyOTFmMDI2MjI5OTkxNDdjZTFhMjYzNGUyOGQ5OTQ2MjE4NzkyMGVjOTAyMGI2ZTE2NGMifQ"
+        },
+        {
+          "resource": "repo://src/lib/changelog-data.ts#L3-L14",
+          "version": "repo-lines-v1:sha256:0f8e79bca314207ad0ff85263f0157e57711137638a092e43cc5c5d251a51668:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVkZTU3ZWVjM2U3YTNkZjhiMjZiZjc4ZDU1N2I4MmZhYzNiNTMyMTBmMTg2NjEyNDYxNTUzNDU4Y2Q5Y2Y3YTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyNWUyNWFjMmI4YTMxNDJlMDQwYzEyZDRjNjdjODhhM2M4OTgzYTUxMTJiMDM3NjgwNmYwYjAxOWU5ZmJhM2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjoyLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI4M2Q2NjRlNTBlOGZiMjJlODJhNGRkNGEwZDcyZThiNWIyNzZjZmRkNjI5ZmE3NTBiNWZiNDhmYjQ3YmQyZTgiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxMjhiMDQzZTlhMjAxNzk3MjI5NmE2OWU0NzQ0MTEyM2ZmMTRhMjVhZDIxY2FhMDg3YjkzYTdiOWIwYzdhOGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e2f41f0f4bf649dc8042663a882dae65",
+      "statement": "The verification script (`scripts/verify-workflow.mjs`, invoked via `npm run verify`) sequentially audits ToolLayout usage across tool routes, dual registration between TOOLS and TOOL_CATEGORIES, non-empty changelog items with valid YYYY-MM-DD dates, and TypeScript compiler errors (`npx tsc --noEmit`).",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L12-L12",
+          "version": "repo-lines-v1:sha256:4e18f0ab621fe8e40b6df336f9331fdea1f87b33554f2bc7eee3c363d803ce8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGUxOGYwYWI2MjFmZThlNDBiNmRmMzM2ZjkzMzFmZGVhMWY4N2IzMzU1NGYyYmM3ZWVlM2MzNjNkODAzY2U4ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGUxOGYwYWI2MjFmZThlNDBiNmRmMzM2ZjkzMzFmZGVhMWY4N2IzMzU1NGYyYmM3ZWVlM2MzNjNkODAzY2U4ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWIyNjJlNjg1MDc4ZGQ4ZjVkNjQ2ZTQyYTY5YmIzMmRhZmYyZGU0NzllYTZhZmFlNjNkN2Q1YzlhMzU5MTFiYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTBjNjNhMDRiMDI2ZWJlODhjYmI3ZTUyN2NmYjNkMWZjYjRlZDgxZTM2N2ZlNDRiMTc5ZWRkODFlOWNjY2IxOCJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L17-L120",
+          "version": "repo-lines-v1:sha256:325c075871cde26005684de707f4b97e227ba8136edde4ddab7ef1c93c53da66:eyJzZWxlY3RlZExpbmVDb3VudCI6MTA0LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI2N2NkYWFhN2NjNTVjY2Q1YjM5YmZlZjUzNzgwZTFmNjVjMWFiMTU3NTQ2ZGE4OWE2ZjAzNDdiN2QyZDU0OWFjIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIwMWJhNDcxOWM4MGI2ZmU5MTFiMDkxYTdjMDUxMjRiNjRlZWVjZTk2NGUwOWMwNThlZjhmOTgwNWRhY2E1NDZiIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJkNjllODliYzk4ODNmMTNlMTUwMDdhNWE1MmFlMDkwZTAyOWRkZmRjNTlmODZkYzUyYmM4NDU2MmE2ZGNkMWIzIiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiIzMTU5ZjZkYTFlOTBkNjRhZjNjZjBkNjdlNDA4NGZmNDRjMWYzNWFiYjgwMjIwZWMwZmVkZmQ4NmFkYWI5ZjFlIn0"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

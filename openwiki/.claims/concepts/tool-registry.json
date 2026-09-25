@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:118136ae8145655c64a26e0ab8f9a69a9cf6d0cf7871ba1f1f056f230f28959a",
+  "claims": [
+    {
+      "id": "claim_e8215305bcc24129acb66f7fcff250a9",
+      "statement": "The tool catalog in `src/lib/tool-data.ts` defines all utility metadata via the `ToolInfo` interface, storing instances in the `TOOLS` array and generating an indexed dictionary `TOOLS_INFO` for constant-time lookup via `getToolInfo(toolId)`.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/tool-data.ts#L1-L12",
+          "version": "repo-lines-v1:sha256:bf5416e7c54b54c67bc00b20c3bc3a8eb738eb55bdfe618e9f78db0657239d28:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjkxMzFiOTQyN2EyZmE0YWVhNzAzNGFhZWVjYWYyZGZiZTI3ZTcwNjE2MGY3MjQ5OTlmYTI5MGE0MjI4MTcwYjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVhYjVlYjZhNzc0OWRhMmJjMDUyOGYxZTY3YTM2ZmE0ZjdmNDk2OTAwMTBiOTU4OTUxYzQ1ZmI4MjI0NDY0MDEifQ"
+        },
+        {
+          "resource": "repo://src/lib/tool-data.ts#L14-L1442",
+          "version": "repo-lines-v1:sha256:cf227933ad8d843d9407fee3ecc298870f94ebdd105c13583f82385c08527180:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQyOSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGRkN2U4NzNmNDNmOTFjNGYxNmZmMGRkY2EzNjU0NDEzNmVjNWE5NzMxYTRhYWFhNDE1OGQ3ZDg1ZTg2NTFlMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYjAyZDJjMGQ2ZGM1ZTc0ZDkyZmExNGI5MWRiZWEyNjQwOTBiZWIzNWZkYjkxODhkOWIzNDExODFkY2U5ZjRjZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiOGE5OTg2NmEwNDRjMWQ1NjkyOTk4ZWQ4NjhiMzEyODcyNTZkOThlYjk1NDg0ZmMzM2VlNDI2NzgwMmM5MmFhNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNWIwZDVjZjViMmI5OGM1NjQwOGY3NjdlNGZjZjM4ZTNlZjk1YTNhZDhjMzZkMDhjY2Q0MDcyNWIzMTViMWZhMSJ9"
+        },
+        {
+          "resource": "repo://src/lib/tool-data.ts#L1444-L1450",
+          "version": "repo-lines-v1:sha256:bbd1ed71db38ee22c077185df2e20e12aa5c70ec756d361cf08c634560d8a890:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZjcxZDdmMDFmOWVhYmFmNjVhZmM2MGY0YTg5NzhiYjIwMDFiYWNhMmU3NmQ5Y2ZmMWM1ZDFkNTBlYWUxNGY4NyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMThhOTE3NTk3MmZlMTVlMmE5NjQxYWIxMzFmNTcxZTZjN2NhYmNhMDY4Mzc2MmViYTVmMjM1M2U0ODNjM2Q1NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYTIwN2VhNTMyZDU5Y2FmZWY5NGNmMmY1MzQ0OTYzYTgyYzA3ZTE3YzAzMjlmMzQ4MDZiYjY3OWNkNGU4OWY2YyJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_56381764b93e431ea59ef036ea2d46a5",
+      "statement": "MegaTools enforces a dual-registration requirement in `src/lib/tool-data.ts`, requiring every tool entry in `TOOLS` to have its `id` mapped in the `toolIds` array of exactly one category in `TOOL_CATEGORIES`, which is verified by automated CI gates in `scripts/verify-workflow.mjs`.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L51-L85",
+          "version": "repo-lines-v1:sha256:94b33ccf1b02057e57945ade81bb98eb43c333de6e2b5f072c49600b2873c759:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3MDNmOGZhODhiMTFkZjlkN2Q3ZTQ0OWRkZjQ4ZmVmMmZlMzk0MzU1MzMxZTEzMTE4MDQxN2U2YWFlNzllYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3ZTM4M2E4ZWVkZmEzYWEzNDkyNGM4NjljYzgxNjRmY2Y3ZmJkZDc2YzhlNDY0YjZiYTE1ZGUyOTIzNzJiNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxYWE3NWY5Y2ExZGE3Yjc5YzA2ZGIxNmQyYmI3YTBlOTQ2MGMzZTAxZTk5MjZiZmQzZThlMDI5YzQ1ODY2MmMifQ"
+        },
+        {
+          "resource": "repo://src/lib/tool-data.ts#L1452-L1599",
+          "version": "repo-lines-v1:sha256:05712f031a219b115cf0f506b72fa7347184cd049e9fe811acde474d2fadc423:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQ4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJkYTJiMWY3NzkzZjBkMjg0MTk5MGQyNjRmZjM4ZmVjYTdjYWJlMWVmN2Y3MjQzYmM5ZTE5Y2JjMDQ1OGNmZWFmIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiJiMDJkMmMwZDZkYzVlNzRkOTJmYTE0YjkxZGJlYTI2NDA5MGJlYjM1ZmRiOTE4OGQ5YjM0MTE4MWRjZTlmNGNlIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4ZDM5Y2ZiODY3MjllN2YzNTYyYjNjZmJkN2JiNzQ1MzQxMzZjZTQ2MDE5YWIxZjBjZGYwM2Q0YjBkZjY4YTg3IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MCwiZm9sbG93aW5nQ29udGV4dEhhc2giOiJlM2IwYzQ0Mjk4ZmMxYzE0OWFmYmY0Yzg5OTZmYjkyNDI3YWU0MWU0NjQ5YjkzNGNhNDk1OTkxYjc4NTJiODU1In0"
+        }
+      ]
+    },
+    {
+      "id": "claim_163aca3fddd549e7a14ac82d6c4fe5a8",
+      "statement": "Omitting a tool from `TOOL_CATEGORIES.toolIds` hides it from homepage category-filtered results because `categoryToolMap.get(tool.id)` resolves to undefined, and omits it entirely from the header `<ToolsDropdown />` which iterates solely over `TOOL_CATEGORIES`.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/page.tsx#L19-L39",
+          "version": "repo-lines-v1:sha256:51e1209655c6ba42a26b3f0595836dcd05b3b5af54e8fc25f12039d65b1850bf:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU2ODI5MjBkOTQyMGRmZTBiM2VjMDMwOTYxNmEyMjA0ZmRkZmUxNmVkMGNlNWQyZGJiMTY5M2MyMzc5NWYwNWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1M2I3ZDE4OWMxZWI0MTQ2NmQzZTU0YzU4NTc2MjNiNzlkYmUwZTM3NmQ2MWM3YTM4N2M5OGE2ZDUxZjVlNGMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImYyNjkyNGNhZjFjZDQzMTZmODIwYjQ0Y2I5NmU5ZWRkMDE1YjcxOWQ2MTk0OTFmOTdhNjFhM2ZmOTJjNGNlOWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImFiZjA0MTMyYWI4ODVhY2UyZmQyYTBjMTA4YTRjMjhiMTNiZjA4MzA3ZmUwZDZmNWU4ZDgwNzgwZTZiZTM4NzkifQ"
+        },
+        {
+          "resource": "repo://src/components/ToolsDropdown.tsx#L72-L108",
+          "version": "repo-lines-v1:sha256:0ca89b551bdde10cd1cbc364d7ee9b11e5ee391a06a3d8ddb837b95df71b0625:eyJzZWxlY3RlZExpbmVDb3VudCI6MzcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxYTFkMjZjNDYzMGE5OWNjOWI5YWFkZTUxMmU5NTQ4ZTkxNDVmNDA5ZmQyMmVlYTk4M2I3ODI2MTdhNjQ2OWIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJkNDlhNjFiNGM4ZDc4ZTRkMThlMmZjODBmMjE1NWE5NTNiYWY1YWNlY2Y5ZmRiM2QyNDIwNDFkOTM4NmNiYTAiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImMzM2Y0NjA0YjE2NzcxNDUyYjM5NDU2Zjk3NDU0ODYxMWUxMGM0NTAwODRmNzcwZmI4NmQ2NTQ2YjZhNjA3MzkiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjAwYmY0YTUzNDMzYWUyZjM5ZGEyYWIxMGVlZGY3MGMxMGU4NjU1OWZlZWFjODA1ODFiYWJkMjNkY2U2MzdiM2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_12e7c06cfa174c539448c079b2135214",
+      "statement": "The changelog protocol in `src/lib/changelog-data.ts` requires prepending new updates matching the ISO date pattern `^\\d{4}-\\d{2}-\\d{2}$` to the beginning of `CHANGELOG_ITEMS`, where index 0 powers `<NotificationBell />` unread detection against `localStorage` key `megatools_last_seen_changelog`.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L86-L109",
+          "version": "repo-lines-v1:sha256:682a39f1d9e3693cad45663a6c2c9ecb0f5c88edf608f9f1d7acb647ec25c79f:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0MDI3YWUyYjcwZDVhN2YzMzdiYjU5NTdiZjgwMjEzZWU3ODM0NGFjM2RlMTRkYTBiOTBhZjE4YWQ4N2ZjNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5ZjZjODE4ZjViZDAwZjQ2ZTkyZDFmYTZhZDQzMTJkMWY2OWYwYmIyMjU1NzljNDllZGE0ZTUwOGQ1YjMzNjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVhYWUwYmVmNTg3NjAyOTFmMDI2MjI5OTkxNDdjZTFhMjYzNGUyOGQ5OTQ2MjE4NzkyMGVjOTAyMGI2ZTE2NGMifQ"
+        },
+        {
+          "resource": "repo://src/components/NotificationBell.tsx#L29-L56",
+          "version": "repo-lines-v1:sha256:1bbb5d3d678e209ad8711c12674df6e63d84d2bb7e259a1282410e5be3f7e6f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5NjZmYmZhODg5OThkYTc0NjU2YzUwMTk0OTU2YzI1ZjA4NDk0NTc2NjBjMDA5ZmU2M2QxZTlmYTlkYzkzMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ1MWJjMjA1NDc2NzEyZGE1M2FhZmMzN2UxYjY1N2JhZWYxMDUxNjc3YzIwNTg0YWY2NjRjNjU2ZGM4ZDA1NGQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZiNTljZTNmMjA4NDI1NjY2ZDNmMWY1YjkwM2EzNDUyMzk3MmNmMzRhZjExYmJlYTE5YzMzM2I4NWEwNjczOGMifQ"
+        },
+        {
+          "resource": "repo://src/lib/changelog-data.ts#L1-L14",
+          "version": "repo-lines-v1:sha256:371970787a28dc5da96689801bf0484aa5dd4a6ec4ae0c9a3b4e02d2ada01155:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY1NmUyYzJlNTdhZGVmMDQ1NmNhYmZmOWQxZWMxODZmNGE4M2UzNTgzOWM3MWEwMzllMGI0NDkwOGEzZDg2MDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYyNWUyNWFjMmI4YTMxNDJlMDQwYzEyZDRjNjdjODhhM2M4OTgzYTUxMTJiMDM3NjgwNmYwYjAxOWU5ZmJhM2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjgxMjhiMDQzZTlhMjAxNzk3MjI5NmE2OWU0NzQ0MTEyM2ZmMTRhMjVhZDIxY2FhMDg3YjkzYTdiOWIwYzdhOGQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8fa062a3dfb7433f8d447c6eec74acaf",
+      "statement": "`<NotificationBell />` tracks unread announcements by comparing `CHANGELOG_ITEMS[0]?.id` against `localStorage`, displays a pulsing dot badge when unread, reveals the 15 most recent items in a popover, and marks updates as read by saving the latest item ID upon opening.",
+      "evidence": [
+        {
+          "resource": "repo://src/components/NotificationBell.tsx#L130-L168",
+          "version": "repo-lines-v1:sha256:fec6ba3071daafbc067cd4edbd7ea2bba2517ccdfd655cd1939f2121c77d1d87:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIyMjFmMGFjNTVmZjdiNGZiM2U1ZDBjMWFlZjg5Nzc3ODQyOTRmNDU2OWE4NTc5MGM1ZmU2MzRlOTMwZTQyODUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBlMDA2Mzk5NzZmYTc2MzFhNWRiZDI3ZTNlNGNjMjI3YmI0YzM3MWM3NTVlNjVlNzlkNDlkZDMwMGVkOGY0M2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjczODljZWU1MDExOTBjNjNiMjBlOGYzNTJmZDYxYjU5YjE3OTczNTU4YzNjNGNjNzFmZDBjNTgzOTgwY2JjMjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImEzMzc1OWRiZjlmZjVkZmQ5YWJhMGZiOTM2NTZhNzg0ZjQ5NmNhZjVmNTBkNDQ5NjgwNmEzZWM3NDM0OTk1NmEifQ"
+        },
+        {
+          "resource": "repo://src/components/NotificationBell.tsx#L24-L111",
+          "version": "repo-lines-v1:sha256:d5726b9d3fb35f083a1e71982630cdb862e863fa13fe0cd97fb3a1a7c06cf94c:eyJzZWxlY3RlZExpbmVDb3VudCI6ODgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3NGYwODllMjkyYzNhNGRmMWExZDRjMjA4YzVlYmE4ZDE2OWJlODkzYWEwNmM0MGViYmNkNjAzYTYwZjJkMDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcxNjRlYzE0ODM4OWQyZDUyNmJiNDVlNTc4N2UwOTM5MTI2NWYxMjMxY2EyNWNiOWJkMzQ0N2QyNDczODY0NjUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZiNTgwZTk2NGY4M2E0NzNmNDNkNDQzODQ2Mjk0OWQ2OGI1NjAwZmRhNzg3ZjE2Mzc0NWQwMGRlODljYmYzNmEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY0MDNiZTAwYWI3Nzg2MmQ0NjM4M2FiODI3ZGYyNTA0NTBhYzZkYWE5YWVhMzY4NDIwYzYxZWE2ODJhZWFjY2UifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_45b29cc108fa4b539449a6e8087c8cc1",
+      "statement": "The `TOOLS` array serves as the single source of truth for platform discovery, dynamically generating `/sitemap.xml` routes in `src/app/sitemap.ts`, powering multi-attribute search across title, shortTitle, description, tech, and href in `<CommandPalette />`, and feeding the package counter in `<TerminalStatusBar />`.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/sitemap.ts#L1-L15",
+          "version": "repo-lines-v1:sha256:ba728d3915627cb3b848869a0433b019a0e7d93d0753a268e8807643bb50e2a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQyYmVmOWUyYjk0NTMxNmM3NWI5OWI5MzI5NTFjNjcwMWEzN2QwZTNmZGNhOWRjN2JiYzc1MGY4NjNhZDkzMzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        },
+        {
+          "resource": "repo://src/components/CommandPalette.tsx#L37-L48",
+          "version": "repo-lines-v1:sha256:213ec306ff355c45f4978b67d42dd657224e7bc77a88d9caa23a1b845879806f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA2ODEzOWY3NmJiZTQ3M2JjYzVhMDAzMjQ1MWFhZjQxYzExNWUyODEwODQxYWFjYzQzNzg5ZjU4YTc1ZWRiNzgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjZiZmQ1NmI4Yzk1NDJmZWU2Y2VmOTQ5Yjg0OWY0ZTkwYTA1YThjYThjODllNWIzZDA3NzJjMjdhNGEwYTJiMGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3MjFkYmQxNmZiZTk1NTI4MDI4MGM3NDE2NmY2NTAwMmYxZDVlZGRiZTIwNTBkYjQwNGVmOWEzMGJiYjgyYzEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImY2MjQ0NDMwN2JhZTBlMmRiZjVlOGU3M2Y3ZTBmNWVjYzQzNzAxYTk1Njc3ODk1N2UwODcyY2YwYzk5MjgwMzQifQ"
+        },
+        {
+          "resource": "repo://src/components/TerminalStatusBar.tsx#L53-L56",
+          "version": "repo-lines-v1:sha256:05d05000d9b5cb9a189d487be6202f794879ea07ad3d899d43b2e9e436aefcce:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjk2YzMyNmRmZTQ3MDJmYTRjNWZjZmMwOWMyYzA1NmNkNmIwYjYxZGY4YTE5MWIyNjcyMjkxYmEwZThiMjFhZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDA1MzJhMmFlMGIxMDYyMjY5ZmY5YzZlNzAyMzZkZGFiMDc3MGE5MjM1MjgxZDRmODA5MWUxOWY4Mjg0YWQ3OCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMWFjMWMyNjhiOTgyZjVmOTA0NWI5MWE5Nzk2NTEyMzNhZmRiMjI1NTZhMWE5N2YwNjViYzM0NGQ1NzBiZjk3MSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODhmODIyMWQ1NjVkMTVhYTk4NzE3NTE0YjY2MmQ0ODFiOTkzN2EzMmYxNjJhZTZhZjZiMjZlMDZhOTNjOTFmNSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

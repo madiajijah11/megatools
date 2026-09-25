@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:02a83d77e4a7b5c3f27ba92eaa284582661ddee303b5a271acc80325e2e00085",
+  "claims": [
+    {
+      "id": "claim_4d995df5a0e243589f88d43bf8096fe0",
+      "statement": "npm run verify executes scripts/verify-workflow.mjs to perform automated pre-commit and quality gate auditing across four sequential phases.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L12-L12",
+          "version": "repo-lines-v1:sha256:4e18f0ab621fe8e40b6df336f9331fdea1f87b33554f2bc7eee3c363d803ce8f:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNGUxOGYwYWI2MjFmZThlNDBiNmRmMzM2ZjkzMzFmZGVhMWY4N2IzMzU1NGYyYmM3ZWVlM2MzNjNkODAzY2U4ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNGUxOGYwYWI2MjFmZThlNDBiNmRmMzM2ZjkzMzFmZGVhMWY4N2IzMzU1NGYyYmM3ZWVlM2MzNjNkODAzY2U4ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWIyNjJlNjg1MDc4ZGQ4ZjVkNjQ2ZTQyYTY5YmIzMmRhZmYyZGU0NzllYTZhZmFlNjNkN2Q1YzlhMzU5MTFiYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTBjNjNhMDRiMDI2ZWJlODhjYmI3ZTUyN2NmYjNkMWZjYjRlZDgxZTM2N2ZlNDRiMTc5ZWRkODFlOWNjY2IxOCJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L1-L15",
+          "version": "repo-lines-v1:sha256:a154f8a00622730ea635bea1a0eb0353c7178655bca7e08abfba701d2a0128ba:eyJzZWxlY3RlZExpbmVDb3VudCI6MTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImE1OWM0Nzg3MmI3MWYxMjU4OTk0Mjg5MjQ2NGU3NjRjMGRiMzUwYzIwYjcyMjI4NjQ1NjE1Y2MzNmUwYTA3MjUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAyYzMyYWJlZmIwMjMxZTIzOTA1MWY0MWI4MjJkOWZlNzA4ZDNjZjdlZGE5NWVmYWRmZmQyYjdmZDM5OGQ0MmMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjowLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImExOTg0ZjJiYzk4NmEwMjU4ZmY5NDI1Y2RkNmMyZmUxOWZiZmEzNzBkYzRhYTFlZTdhZjU1NWJlYjllM2IzMDQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_a43b5428b0b0416eba22847c11736e56",
+      "statement": "scripts/verify-workflow.mjs verifies 100% ToolLayout coverage across src/app/* (excluding about, privacy, terms, and changelog) by checking for a *Client.tsx companion file containing the <ToolLayout tag.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L17-L50",
+          "version": "repo-lines-v1:sha256:a8d5231dcd0ed865fce0486a875731fe83635d576ce90a8808d8549b1456edd6:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY3Y2RhYWE3Y2M1NWNjZDViMzliZmVmNTM3ODBlMWY2NWMxYWIxNTc1NDZkYTg5YTZmMDM0N2I3ZDJkNTQ5YWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQ2OWU4OWJjOTg4M2YxM2UxNTAwN2E1YTUyYWUwOTBlMDI5ZGRmZGM1OWY4NmRjNTJiYzg0NTYyYTZkY2QxYjMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImQ5YzE1YzQxZGVhOGRjNDExNzE1MTAzMzI5YmQ2ZmY4NGJlYTUyMjYwMjE5NWJlYjg5ZjQ1MjYxZTI0MTg5MmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_dcf6318d45dd4046a071df15f94a65af",
+      "statement": "scripts/verify-workflow.mjs enforces bidirectional registry synchronization between TOOLS and TOOL_CATEGORIES in src/lib/tool-data.ts, failing if any tool ID is unmapped in either direction.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L51-L85",
+          "version": "repo-lines-v1:sha256:94b33ccf1b02057e57945ade81bb98eb43c333de6e2b5f072c49600b2873c759:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI3MDNmOGZhODhiMTFkZjlkN2Q3ZTQ0OWRkZjQ4ZmVmMmZlMzk0MzU1MzMxZTEzMTE4MDQxN2U2YWFlNzllYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjA3ZTM4M2E4ZWVkZmEzYWEzNDkyNGM4NjljYzgxNjRmY2Y3ZmJkZDc2YzhlNDY0YjZiYTE1ZGUyOTIzNzJiNDUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQxYWE3NWY5Y2ExZGE3Yjc5YzA2ZGIxNmQyYmI3YTBlOTQ2MGMzZTAxZTk5MjZiZmQzZThlMDI5YzQ1ODY2MmMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_982758c1586d4a2b9167840bd3aa8d92",
+      "statement": "scripts/verify-workflow.mjs validates changelog entries in src/lib/changelog-data.ts, asserting that CHANGELOG_ITEMS is non-empty and that every entry date matches the ISO format ^\\d{4}-\\d{2}-\\d{2}$.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L86-L110",
+          "version": "repo-lines-v1:sha256:ea462940797affe86e4f8e982ac020299033cc41ccaca1c9bde16082401bf5f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0MDI3YWUyYjcwZDVhN2YzMzdiYjU5NTdiZjgwMjEzZWU3ODM0NGFjM2RlMTRkYTBiOTBhZjE4YWQ4N2ZjNjciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5ZjZjODE4ZjViZDAwZjQ2ZTkyZDFmYTZhZDQzMTJkMWY2OWYwYmIyMjU1NzljNDllZGE0ZTUwOGQ1YjMzNjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQwYmYyN2UwNjMxOTkxN2RkNTU1YzkxOGFiY2I4Yzc1ZWVmY2QwNjY5ZmQzNmE1NzlkYjE3NGMwZjM2MDBlODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0d90e0a8f3914e569cd93278112db67e",
+      "statement": "scripts/verify-workflow.mjs executes npx tsc --noEmit synchronously to verify zero TypeScript compiler errors across the codebase.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L38-L38",
+          "version": "repo-lines-v1:sha256:7a322de86cec8a4b51a693d4437bb844bda5511307f03f50b1f38da88f008210:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2EzMjJkZTg2Y2VjOGE0YjUxYTY5M2Q0NDM3YmI4NDRiZGE1NTExMzA3ZjAzZjUwYjFmMzhkYTg4ZjAwODIxMCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2EzMjJkZTg2Y2VjOGE0YjUxYTY5M2Q0NDM3YmI4NDRiZGE1NTExMzA3ZjAzZjUwYjFmMzhkYTg4ZjAwODIxMCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYWI1N2Q2MGJlOGEyYTUyOTE1OTk0ZWQwMGJhMDBjNWMxMWUxMDAzMTkyYzY0YzMxZjk3ZWRlMmMzOTEwNDVmMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjIsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmJjNWM5MGY2YTQzNDMwZDNiZmVlOGE2MmE4NTljNDM0MzEyMzZhMzQzZGMyOGJkOTFjMWE1MDdkYTAzM2RiZCJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L111-L120",
+          "version": "repo-lines-v1:sha256:f6328a3da8cdee23644d9c82c9a70492cbda8c89230e3d830582b611106ce223:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ3ODQwYjgyYjAxYzQyZDI2NzA4ZjI1ZmZhMzU3M2E0MDJiYTY1MTVlYjYyYTQwZWJmMjQ0YWIyOTk1YWRmZTgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY5ZjZjODE4ZjViZDAwZjQ2ZTkyZDFmYTZhZDQzMTJkMWY2OWYwYmIyMjU1NzljNDllZGE0ZTUwOGQ1YjMzNjIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMxNTlmNmRhMWU5MGQ2NGFmM2NmMGQ2N2U0MDg0ZmY0NGMxZjM1YWJiODAyMjBlYzBmZWRmZDg2YWRhYjlmMWUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_58581125ecc14c068303a4234c57b59b",
+      "statement": "scripts/verify-workflow.mjs tracks errors across all validation phases and exits with status 1 on any failure or status 0 when all checks pass.",
+      "evidence": [
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L121-L127",
+          "version": "repo-lines-v1:sha256:823fbee4182e866f04e1ea436e3f26390681a486e5d35b6004fc34a3dc876511:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYjlhNmJiODc4MDZhZDljMTcyYThiMzY5MTQ4ZTg0M2JhMWYyZTQ1MmI5NjFjMTkxZTA1MDkwYzcyYjc4YmI3YiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNjlmNmM4MThmNWJkMDBmNDZlOTJkMWZhNmFkNDMxMmQxZjY5ZjBiYjIyNTU3OWM0OWVkYTRlNTA4ZDViMzM2MiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        },
+        {
+          "resource": "repo://scripts/verify-workflow.mjs#L15-L16",
+          "version": "repo-lines-v1:sha256:71574f11398624053761047fcdee899de94bf2d645537d2735d1cf1b453be41c:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMDJjMzJhYmVmYjAyMzFlMjM5MDUxZjQxYjgyMmQ5ZmU3MDhkM2NmN2VkYTk1ZWZhZGZmZDJiN2ZkMzk4ZDQyYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMDFiYTQ3MTljODBiNmZlOTExYjA5MWE3YzA1MTI0YjY0ZWVlY2U5NjRlMDljMDU4ZWY4Zjk4MDVkYWNhNTQ2YiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmExMGZkNmJkYzhjNDY0NDc0NDQ2OTVkZjEwNjcxNzZkYWY5ZmI0N2RjZjgwMjNmNjgwZjdhMjg4MjVhNTYyNCIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiOTEzOTNkOGY2YzdhZTJhNDE1YzdjY2RiMjUzODIwNDA1Njk2YjQ0MTBjODFjYTVhYWU0Yzg5ODYwZjdjYTUwMSJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

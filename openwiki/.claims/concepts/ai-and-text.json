@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:54ea2d894f37ee3771446a01d406da20478f6e8f6919ecc9d489d043ce65a5d7",
+  "claims": [
+    {
+      "id": "claim_5ccd0de0a9e04425ae03d16325d244d0",
+      "statement": "The AI Model Comparator hydrates model definitions from localStorage or bundled models-dev-data.json, and allows direct client-side synchronization against the models.dev open API without server proxying.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/ai-model-comparator/AiModelComparatorClient.tsx#L111-L157",
+          "version": "repo-lines-v1:sha256:4ef62ada50fbd8346022bfb2a24ddd1f68bdbe66ca5cfbdd071a8a232cd78653:eyJzZWxlY3RlZExpbmVDb3VudCI6NDcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVjNGRmMjZjMzNiM2QwNjY1ZTk4MWIwYjZkZDE5NjA1MzczM2ZiMjM5MGM1MDIyMWMyMTUwMGE1NTYxYjY0YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZkYzUyZjA4YjM5YjA4YjAxYzhkMzA4YmY4ODBiMGJlZjAyZmQxZGZjYzlkOWFhOTNhNGQxYjVmNGQ1OGI2Y2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNjMmFiMjVkOTYyZDNjZDRjY2UxMzlmZGIxN2Y1NWUyMjZmMzI2OGIwMmI5YzI5OGY1OTEyNzEyODE1MzQ3MWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJiY2VjYzhhMzJiNWY4ZTQ5MGY2OWFmZWE0OTNlNmQxOWJlY2YzODYzNzFjYzBlMWRlMDE5MjhmNGM5ZjU0NzMifQ"
+        },
+        {
+          "resource": "repo://src/lib/models-dev-data.json#L1-L1",
+          "version": "repo-lines-v1:sha256:8fc467476b5be502af549f56f3e3f353af63d12fae3302a76e1b140122b93229:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOGZjNDY3NDc2YjViZTUwMmFmNTQ5ZjU2ZjNlM2YzNTNhZjYzZDEyZmFlMzMwMmE3NmUxYjE0MDEyMmI5MzIyOSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGZjNDY3NDc2YjViZTUwMmFmNTQ5ZjU2ZjNlM2YzNTNhZjYzZDEyZmFlMzMwMmE3NmUxYjE0MDEyMmI5MzIyOSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_8a61261b6f3e4577b67c0e926c989f1d",
+      "statement": "The AI Payload Converter transforms prompt configurations into vendor-specific request schemas for OpenAI, Anthropic, Gemini, Ollama, Vercel AI SDK, and Python requests client-side.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/ai-payload-converter/AiPayloadConverterClient.tsx#L22-L131",
+          "version": "repo-lines-v1:sha256:f2671a56c6974a7e5b257fbb32203929c588a48c8241c2d8d615822e6e1b6acd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTEwLCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiJiNjM0MmNkZWNlZTVmN2M4M2I0OTAwZTY1MjljMWI0NzViZWJhYWNiZWMyNTlmYWE5OGZkMmUxOTlmODg5YzY2IiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiIzZjAxMGQ2OGVmZmQ3YThiY2M5MTkxYzJmNGZkMDU3NDRlYzRhYjZjNWYwOGM3Mzc2ZTAyODIwZGE5NjY1ZDU4IiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiI4ZTU5ZjJjMzNjZDI3YjZiNDkwMjRlMWY5ZmVlOWY5NzA3NDZjMGE3MDc3YzNiMTI0NWJlZWM4YzdiYmMzODI4IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI0MDRjODJkYWQwZTQ5MDA0OTAwM2JlYTQ1MWQ2OGExYzA2YmVmOGEwNTAwYzhiOTcxZGQzZDVmNTljMGFkMzNmIn0"
+        }
+      ]
+    },
+    {
+      "id": "claim_1fca98cb2e2c4bc58a7ce9c57cd2a654",
+      "statement": "The RAG Chunker recursively splits text using hierarchical separators and caps the sliding overlap window at fifty percent of the target chunk size.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/rag-chunker/RagChunkerClient.tsx#L103-L123",
+          "version": "repo-lines-v1:sha256:41471b4ed644e2a4840818b256374787ff5923ff165d181a7baf0ea213847f6d:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRiYjEyNDE0MDg1ZTk2NDdhNGVkZmM2NmU2ZDdiMWFhNjA2ZWUzZGFiY2U3ZmUwNGZiOGFhZWJlMzc2MmI1NGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkZWMxN2IxMzg2MzIxY2E5ZWYxZWEyM2Y2ODc4ZjRhMmE2M2U5ZjQ2ZDUwMmRkYzQ5ZjBiZjdkNWEwODFjMWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjZmNDRlNzMwODU0MjIzZDYwZmRmMTc1YjkxNWVhMzMxM2ZiNGU5MzJmNzU5NjUyMGU0NTMwNzAzYTBlNGU2NTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQ0MGY3N2RhZGFkYTI2YjVlYzAxYzcwNGVmNzE2MWYxNTExNTM3Njg5ZmRmOTMxMDYxZGUyNjU1MzQwY2E5N2QifQ"
+        },
+        {
+          "resource": "repo://src/app/rag-chunker/RagChunkerClient.tsx#L46-L94",
+          "version": "repo-lines-v1:sha256:cd7d7ee6889ccf2cdc2703ffeccf580a84766c3d7e19f5731efecd6bdf0988e5:eyJzZWxlY3RlZExpbmVDb3VudCI6NDksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRmMzBlOTA4YzI3OGI4YmRlM2M1ZjcxMGY4MDZkY2NkOWE0M2U5NjQxZjMwZTliZmZhZDI0ZmM5ZmRjZjU3ODEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5NmUwYTY3NDNkODBhNmNlYzExMjE4ODZlMzI5MTcwM2FkMjM3MmY0MTIzMWY2NGU2NTU1NzcyN2VlMjgwNTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyZjI4YTg1YTNjYWVjZWEzYzI2MGM4ODEyMTQ5NGJkN2NmN2Y3ZjU4NGY1YzI1MzE3NDRjNmMyNTA1YWY1ZTEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_af5a012ce4e2485cb05202bf939cfb4e",
+      "statement": "The Token Counter estimates token counts using an offline subword regex heuristic slicing alphanumeric strings over five characters into four-character pieces, projecting costs across multiple LLM provider pricing tiers.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/token-counter/TokenCounterClient.tsx#L137-L176",
+          "version": "repo-lines-v1:sha256:7ed381671bc59e46f87b1bfed92cddc15d85755180389ff0acd2a26e6f31824c:eyJzZWxlY3RlZExpbmVDb3VudCI6NDAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyYmFiM2VjOTRmNTEwM2QwOTdkMzY3NDE4Y2IzMTkzNjBmN2JmZTUzZDg3ZmNlOGZmNTZiYmU4MTk2YjMwNDIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjE0ODliNWFiMDgxNDA3YTEwODQ4MDAwNTI1MjdiNjI0MjE0NGZlNDU4YTRkYTNlNDk2ZmY3MjY1NzgyNmM1N2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjliMzFmM2UwNDQ3OGFlMzFlMjM5N2IwMDAyYzU1YWRhYjQxODhhNzRhNWJhODgzMzZhOTlhZDMwMjZmMjllYWMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjZkMThmOTA4YzNjMmRkNWY0MTNhODUxNjIwNjUyZmQ0NTk2ZWFlYWJhNjgxODZhOTkxMGM4MGZhMjhhNDk1MmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_964a69805f1e495f8b067582bbfc1ca6",
+      "statement": "The LLM Diff Comparator calculates tokenized Jaccard semantic overlap and uses regex pattern matching to extract and cross-examine numerical and currency statistics between two model outputs.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/llm-diff-comparator/LlmDiffComparatorClient.tsx#L73-L111",
+          "version": "repo-lines-v1:sha256:edd5ad4a3c7840e2e6657260433079447b5d4533675b84c7786533aa05cbca2a:eyJzZWxlY3RlZExpbmVDb3VudCI6MzksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIzNjQwYzIzMmQ1ZjViMDMwMDJkZjJiNWVhYzlhNjFlMzRlMTU3ZDEyZDMzY2RkMjU2Njc0NzI0OTU4ZDU5NWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ1NmI2YThiNDYxOGU2NTZjYzQ1MDg4NDcxMWEwMzE2MGYwNTc3ODg2MWJlMTBmZDg2ODgwOTNiODIzM2ZlNjYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzMmY1Zjg0NjEyN2JkNTNkNDY2YzU3OTU5MzAxNTY0Y2Y3MmI3NmIxODkyNTI3MTM5Nzk4MzczODhkOTA0ODYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMwYjllNjg0MDQxZTcxZjliNTllZTJiMDY1MmIwMWZlOTE1ZDNkMDg3MjI3NGUxNjkwODE0Y2E3OTI2NzYyMDMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b03dc2635a25432cb588e8f687ffe7b6",
+      "statement": "The Markdown Preview tool strips scripts and event handlers before compiling and evaluating MDX in the browser via @mdx-js/mdx and react/jsx-runtime.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L15-L16",
+          "version": "repo-lines-v1:sha256:3e683f095c37377a4215dba4d258eb376871f9812b5c9cdbbdc3822a6f282908:eyJzZWxlY3RlZExpbmVDb3VudCI6MiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNjhmZWJlYTkxYmRmMDA0Yjg5MDEyN2QwMzNmY2RlOTJhZTFlYjgzMjkxMGQ2ZDk0ZjBmNjZhNjU0YjJkNzNjZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZGJiMjA0OTcwNThiZDU1YjI2M2EzMDVkMGUzMjg3YzliNWQwN2YwZTU3ZTljNTNmMTlmMTEwZDQzOTg0YjMzNSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZmU5ZDE5YzJiNjcxODM5ZTY4ZWQ5ZGVlNzZjZjM2MjRhMzljMmQxMTc0OTEyNWFiNGE1NjE3NTM4ZGEwNGU0NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzc3MzU5ODEyMzc4ODU0MzQ4M2MyMGVlMTcyMDBjZGY0ODU3ZmU3NWUyOTFjOTlhZDM5NzgwMWI3YTdhMjZmMyJ9"
+        },
+        {
+          "resource": "repo://src/app/markdown-preview/MarkdownClient.tsx#L24-L44",
+          "version": "repo-lines-v1:sha256:90c350e3a3c46eefb2df3d4a0015150f631dad2cbcc64cf84cf4fa8bef6f0ca3:eyJzZWxlY3RlZExpbmVDb3VudCI6MjEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM5M2JiZGU2ZTg0NjRjZDUxZGNjYzEwNzQwNTdhYTAzYzY1NDMxMjk5MTZhMjlmOTNjYjM4ZjQwM2Y5MDE3N2YiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI3ZDE0MmI0NzZlNmY2MTJiMDk1YzVmZTY5ZmI2OTJjZDVjMWFkNzFkYTUzZjE4YjBiODNiNmJhODMzODk2ZGEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE1YzA5Y2RkYWQ5Mjc5Nzk1MWUzZjI3N2ViNmFlNzFkNDMzOGQ5MTZmMzE1MWUyZDhkNWU5ZTUyOGVmYzM0ZmEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_fee0ab2f9d224c2f8bf535ae410ffb96",
+      "statement": "The SQL Formatter uses the sql-formatter library to format queries across SQL, PostgreSQL, MySQL, SQLite, Transact-SQL, and BigQuery dialects, or minify queries by removing comments and collapsing whitespace.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L27-L27",
+          "version": "repo-lines-v1:sha256:1aef69d843306ecb7b8bcdb9c458cb09b9c258ae324833f8b8db70ac5bb28c6c:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiMWFlZjY5ZDg0MzMwNmVjYjdiOGJjZGI5YzQ1OGNiMDliOWMyNThhZTMyNDgzM2Y4YjhkYjcwYWM1YmIyOGM2YyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWFlZjY5ZDg0MzMwNmVjYjdiOGJjZGI5YzQ1OGNiMDliOWMyNThhZTMyNDgzM2Y4YjhkYjcwYWM1YmIyOGM2YyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMGZlMTMyMmMwZDVjNWUzMmFmOTVhMmNhNGQ5YzE3MTU3NDYyMzNjODdjYTJhMjM5NGUzYWFkOWMxOWE4MmY0NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiY2UwMTdjMDk0ZjQ4ZTE0MDQ1OTEyZjRiOGI2ODBiZjA0MTZkYmVjNDU5YmJlNmRiNTA1NWMzYzZlN2IxNGI1NSJ9"
+        },
+        {
+          "resource": "repo://src/app/sql-formatter/SqlFormatterClient.tsx#L26-L56",
+          "version": "repo-lines-v1:sha256:55403ed38ca9480bb2adf158b4ac9028b96936884b38744d1bac0b71398b3b61:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImViNTY1NmI3YTMwZmIxMDE0YTM1MThkY2I2ZjJlMTNjYmM2MTQyNjE0NDFjNzgwZDM5Y2FjMzZhM2M1ZGI1YTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFiN2UzOTQ5NmU1MDQ3NjdmOWU4MTdiNTY0ZmQ0NDUwZTgyYTJiMTYwMjA3NDdmYmNjZTIxZjNmODVhY2IxMWYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImViYjQ3NDI5ODA0OTQ3NDY4MTNmMTk0NDdjNWY0ZTAyYTUxZDIxYTE3NWU1ODdiY2EzYzI1ZTljYWM4ZTAzOWIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjdjZGY4MzkxMDU4NTExZmMwYTA4NmQwNmZjMGFhNjI1NTU5YzZiMzRkYTczZmU3MWJlYjI2YTYxMDkxMTFhNWIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_b7993857e6474885bcd17d878eec34a1",
+      "statement": "The YAML/JSON converter uses js-yaml to bidirectionally convert data between YAML and JSON in browser memory with configurable indentation.",
+      "evidence": [
+        {
+          "resource": "repo://package.json#L21-L21",
+          "version": "repo-lines-v1:sha256:a0ded835faa87a266959bfab51002239cdf344f9f467c6dbda1bc42f73f7d9af:eyJzZWxlY3RlZExpbmVDb3VudCI6MSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYTBkZWQ4MzVmYWE4N2EyNjY5NTliZmFiNTEwMDIyMzljZGYzNDRmOWY0NjdjNmRiZGExYmM0MmY3M2Y3ZDlhZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYTBkZWQ4MzVmYWE4N2EyNjY5NTliZmFiNTEwMDIyMzljZGYzNDRmOWY0NjdjNmRiZGExYmM0MmY3M2Y3ZDlhZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMmQxMTJiY2RkNWEzOTgxZmJlYTVjZGE0YWEwN2RmMzJiMTVjMWVlZWE0ZmJlYTM4N2YwNzg0ZGJjNTMxZjg1YyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNmRlODI2ODY4YWU4NTllNGQ3MDhlM2ViOTNhNTZkNjk5OGM4MzRiYWIxNjcxNmRlNGVhMDE1MmFkNjQ0ZWE0OSJ9"
+        },
+        {
+          "resource": "repo://src/app/yaml-json/YamlJsonClient.tsx#L55-L78",
+          "version": "repo-lines-v1:sha256:1f9fb78765813a2849ed0416ecf6e846de1610a69d516c9eaa6f5355fabe9e83:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjA1MGZiZmQ1MTAyZGI1YWYyMDYyMzg5YmZiNjgwZDc4MDMwNGJiYmM5NGQ2NWQ1MmRiZjE5NjYxMDM1OTllM2EiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyNGU3NzgwMzRjMmFkYjlhN2Q4YTBkZDA5OWI2MTc3NTA0MzE4Y2EwZmYxOTYyNzQ3ZWU5NTczZDAyNzA5OTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU5MjliNjU1YzA2MTBhNDQ0YzNiYzlkMWY5MGNlZTc3YmNiNTQzODI3NDRmMTE1ODE1MDlhMTI5MTc1ZTUwOTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRmZTU1ZjA3MTBkODIwZGUyZmVjNmFlY2RlNTk4ZTdjZTk2YTI1YzRmMzA1YmFiZWRhZWVlYmYzNDU1Y2NmNzQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_0fc97ca12e3b40acb09566e5f4c39e5e",
+      "statement": "The text diff tool calculates line-level additions, deletions, and unchanged segments using a dynamic programming Longest Common Subsequence matrix with backtracking.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/text-diff/DiffClient.tsx#L14-L67",
+          "version": "repo-lines-v1:sha256:4b712d327dfed0201fc07d1aaa1d8c7c587698868f13b9d665fd67dffe909fe5:eyJzZWxlY3RlZExpbmVDb3VudCI6NTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjIwNDFmZWJkNTY4ZTNhNzI3OTE5ZmZjNzJjZjdjNGJlM2MyZjM3NTA1OTM2MzVkMjkxODY4NjZiNzBlYmVmNjQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImFhOWNhMzUxMjQxNTIwMTliOTY2M2VmZWNjMjA4MDAyZTI3NTEyMTZkMjQ1YmRkOTljMzQyZGJjYzk3NzlkNjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImVlYjBlZjQzZmNjMzY2ODE5MzYyYjE1ZTMxOTFlZGI1Zjc4MTA3ZGZmZGUxMjE2YjU3N2Q1Mjc2OTQzZjY2NGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_091148dc7c3446bb97434cbbdf4b556d",
+      "statement": "The Regex Tester executes RegExp patterns with loop-guarding against zero-length matches for highlighting, while the Regex Explainer deterministically tokenizes pattern syntax into anchors, character classes, quantifiers, and lookarounds.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/regex-explainer/RegexExplainerClient.tsx#L43-L200",
+          "version": "repo-lines-v1:sha256:467f29eb24638871377cdca9e4dd435ebdcde9c4cd86ed0d1e2b5e0b7c7648b9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTU4LCJmaXJzdFNlbGVjdGVkTGluZUhhc2giOiI0NDRmZDU0YjU1MDJhMTg1YTRjNGZmNGE1OWI1NTk4N2FiN2JiZDk2NDA5MmJhMzgxZTJiNTUxODQ3NWM4MzdlIiwibGFzdFNlbGVjdGVkTGluZUhhc2giOiI0ODkzZjQwZTM3ODFlYjg5NmM4MmQwNDZhMDgwNjdhMTFlMzVjZGYyZjFkZmFmMjZmZWE5MGI4ZGI2Njc2NDEzIiwicHJlY2VkaW5nQ29udGV4dExpbmVDb3VudCI6MywicHJlY2VkaW5nQ29udGV4dEhhc2giOiJiYTM4ZWU5Y2M3M2M5ZjFmMmM4ZjhjNTZkMDBiZDAwZGU1YjA3MzY5ZjEyZTA4MGFiYmQ3OWM4YzQzNzU2YzE1IiwiZm9sbG93aW5nQ29udGV4dExpbmVDb3VudCI6MywiZm9sbG93aW5nQ29udGV4dEhhc2giOiI5OTdhNzgwZmQyY2FhMzI4ZDJkMDRhNWMxMDUwMjY1OTExNjVhMWY4ODMwZjU2NTc1MDdmNjZiYjQwNzVhZmY1In0"
+        },
+        {
+          "resource": "repo://src/app/regex-tester/RegexTesterClient.tsx#L35-L89",
+          "version": "repo-lines-v1:sha256:0c5b1e1c3feec48b9b86bc511a967a8d425fdafe64aac7f83494259024e21b05:eyJzZWxlY3RlZExpbmVDb3VudCI6NTUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQ0ZmUxZmZlOGUwYWY1M2E5YWRhY2FmNmVlYjI4NTY2NGY4MDlhMTdkZDgxZjAwNTc0YTYzNDdlMTg2MGJiMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjJlN2Y5NTk1ODg4MjkzZGUxMzkzYzU3M2M1NGIyYWQxOTVhZWFiMjNkZmMxZDYyMmNkYmU3OWE0MjU4MWUwNjgiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBhZmZlZjU5ZDg0OWE0MmYzZWMxMTUzZmI1NTBhZmM2NzU3N2U1MjJhNDNhZDJlNmExMjc5ZTc0NDI3YTM5NjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxOTdkY2FiZjU3MzRlYmI4NWQzNDRmMzhkODk3NDAwOGM4ZGYyMGJiNjIwMjQwNjEyYzBkZWYwMThjMWQ4MTEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

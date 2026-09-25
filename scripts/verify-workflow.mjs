@@ -95,12 +95,21 @@ try {
     hasErrors = true;
   } else {
     const invalidDates = changelog.filter((item) => !/^\d{4}-\d{2}-\d{2}$/.test(item.date));
+    const validTypes = new Set(["added", "fixed", "improved", "updated"]);
+    const invalidTypes = changelog.filter((item) => !validTypes.has(item.type));
+
     if (invalidDates.length > 0) {
       console.error("   ❌ [Changelog Date Error] Invalid date formats found in changelog:");
       invalidDates.forEach((i) => console.error(`      - ID: ${i.id}, Date: "${i.date}"`));
       hasErrors = true;
-    } else {
-      console.log(`   ✅ Valid Changelog: ${changelog.length} entries verified (Latest: ${changelog[0].id}).`);
+    }
+    if (invalidTypes.length > 0) {
+      console.error("   ❌ [Changelog Type Error] Invalid ChangeType found (must be added | fixed | improved | updated):");
+      invalidTypes.forEach((i) => console.error(`      - ID: ${i.id}, Type: "${i.type}"`));
+      hasErrors = true;
+    }
+    if (invalidDates.length === 0 && invalidTypes.length === 0) {
+      console.log(`   ✅ Valid Changelog: ${changelog.length} entries verified (Latest: ${changelog[0].id}, Type: "${changelog[0].type}").`);
     }
   }
 } catch (err) {

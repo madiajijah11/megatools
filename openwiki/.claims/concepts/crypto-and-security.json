@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:f1de12799e12643ec56e0a45d435e7ba362a5cb2e91ce99d630088bc6275a8ea",
+  "claims": [
+    {
+      "id": "claim_b6ae1d28603448a98870784ae246da87",
+      "statement": "AesCryptoClient derives a 256-bit AES-GCM key from a passphrase and a 16-byte salt using PBKDF2 with SHA-256 and 100,000 iterations via crypto.subtle.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/aes-crypto/AesCryptoClient.tsx#L9-L33",
+          "version": "repo-lines-v1:sha256:9730eb7598892951aa6bc6a893108ddc9e290ea9f32b10377a59d022708b85db:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4MzJmZDRmZDY5Yjg5NjVlMzU1YmQ3MzYzZTFhZDZlM2E3MjM1MGU3MDlhZjFjOTU1ZGZkZWRjNjc1YTA4N2UiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImY0ZThiN2JiMGE4OTdlNjliNDNmZGFlMjYyZWEzMjA0MDE0NDNlZWMxOTM1MTJjMTRjYWY4MGFkM2E2YzQzYTAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE3ZmZkMDkwNTZiZjViYTE2MzczOTRjNGFjNTdkNWM1NzBkODQyYjZiNmI4ODBiNjZmODQxODVhMTZiZGZiZWQifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cd8f7737a5da45bf84caeb99d84afddd",
+      "statement": "AesCryptoClient serializes encrypted payloads as a single byte stream concatenating a 16-byte salt, a 12-byte initialization vector, and the AES-GCM ciphertext with authentication tag before Base64 encoding.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/aes-crypto/AesCryptoClient.tsx#L71-L94",
+          "version": "repo-lines-v1:sha256:6637c1c3a0d329935a0f3390f2c906417bbc2d74ea317d7a3ec2fbee01997085:eyJzZWxlY3RlZExpbmVDb3VudCI6MjQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImM1MzEzNDNhMzJiYjc3NDkxOTBjNDdhMmYwZDIzYjFhOGJlMzA2MjhjMTM1MzQyM2VlYTNmYzRjNTY0YzVkYjAiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImU2YjA0NDkxNDY5NzIyZTgzNjNhOTRlNDA0NDUzOGUwMTNhMmEyMTdlMzZiMWU1NjhiYTYwYWNiN2I0YzhmMmUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyNjhhOTQwMWY4ZWEwNGQxYmZlOTY1N2I3Y2I1ZGM5MWEwM2QxOTQyZTg5Mjg1YTViMTM1NjhhMTAwNDlmMjciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjQyNmE5YTkzNGY2OTU2ZGZiNTZkYmQ5NDhkNmVjYTBmN2FmZGM1MmU0MTVjODMzOTczODUxNjI0NDdkODczMDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c785fce75de9429fb33f6d0cf4940078",
+      "statement": "Bip39GeneratorClient derives a 512-bit seed from a mnemonic and optional passphrase by passing NFKD-normalized inputs into crypto.subtle PBKDF2 with salt 'mnemonic' + passphrase, 2048 iterations, and SHA-512.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/bip39-generator/Bip39GeneratorClient.tsx#L31-L57",
+          "version": "repo-lines-v1:sha256:3e373812ea89d55d25c78fca400830a2348dc53c228c87e8ddad1236da8be566:eyJzZWxlY3RlZExpbmVDb3VudCI6MjcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjBmNmVkYTI3YzU3OWNhMTQ4NTAyZjQ0YjQ3Y2RhYTYwNmFiOTEzOTc4YzY0NDVkOGUwNzFjMTMwODdjNzcwMGYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE3MTJlYWFlODNmNDZkNTNlMjg5ZjY4MDgyYWRmNTNjNWExMGE4ZWFiZmU2ZThlZjFlMzllYjZkZGI1Nzg1NTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImRlMTJhOGU1NDQxZmRmZmZhZTJhOTU1YTlhMjQ1ZGUxZjZmMTljZDlmYWQ0MzNlOGFlNWUzZDBhZGJhMDYyNWMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d60f9a4f8fbb486e8737bb2efa863ea0",
+      "statement": "Bip39GeneratorClient samples 128 or 256 bits of CSPRNG entropy via crypto.getRandomValues, appends an initial SHA-256 checksum slice, and divides the 132 or 264 bitstream into 11-bit chunks mapped to the 2048-word BIP39_WORDLIST.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/bip39-generator/Bip39GeneratorClient.tsx#L60-L94",
+          "version": "repo-lines-v1:sha256:f38c6da1a4ad7cf16d19a718684d67457e6217b1be7af9ee721b9c007df4da8c:eyJzZWxlY3RlZExpbmVDb3VudCI6MzUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFiYTZkYmU2NDQ5MzNjYTI4NmQzMzg2YWJiZDhkYjcwNjIyMjg3ZjhhYWM4OGU0NWYyNGY5MzdiNDE0MjNmZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjMzZWFhNzYzYjk0ZTcyMjE4ZDBkOTQ1ZDIxOTVlNGYyNGNhY2NjZDE1Y2E4MjBkM2U2NDQ1NjZlNzY0ZGZhOTEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjEwNWU4NDk5YzZhYzgwMzUwMzBmZDJlZDY1MWRhYzYwYmYwNjlkODBiZDg3Yjg0ODYwYjY4NDgxOTQ0NWE0NDcifQ"
+        },
+        {
+          "resource": "repo://src/lib/bip39-words.ts#L1-L5",
+          "version": "repo-lines-v1:sha256:1826eddfddecbacccf0c172c90253e80b07d29d8b044cc34ac0bebab2b714e7f:eyJzZWxlY3RlZExpbmVDb3VudCI6NSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYmYzNDRiYmQ0YzJhNzJkZDMwYTU5MjIxNjI1MjZlZDQ0ZjJlYWU4OWY1N2Q1NjRkMWUzYmYxZWFkNmExMWY2MiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDk5NjdlYzFlZDM4MzZmOGViMTdhZmYxNzJiNWJmZWY3ZGU2MDQ4NWE0MzljNmNhMTFjNTkxZTE3NTU3MzlhZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjAsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjAsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiZTNiMGM0NDI5OGZjMWMxNDlhZmJmNGM4OTk2ZmI5MjQyN2FlNDFlNDY0OWI5MzRjYTQ5NTk5MWI3ODUyYjg1NSJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_34bb0460b7ab4344bfc98c12003ace01",
+      "statement": "The keccak256 function implements Ethereum-standard Keccak-256 across a 5x5 matrix of 64-bit BigInt words with a 136-byte rate, 0x01/0x80 padding, and 24 permutation rounds.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/keccak.ts#L32-L118",
+          "version": "repo-lines-v1:sha256:481c4c3d41c700a744b4fbd3ea4b75da9e337da92dd8bba0205c058e5f9f8417:eyJzZWxlY3RlZExpbmVDb3VudCI6ODcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjUzMTEwYzQ3Mzk0Yjg1MmRjOTYzNDVjMDI0NWYyNTMyYTlhM2VmNDdmMzllYTQwN2ZiMDg3ZTYxNWY5NzY4ZTMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVkMmE1YjA1MmY2ZmZiOWU2NTQxYzg0YmVhNTViN2RjYmEyYTRhNmMxZjNkMmVjNjU0OGVmMjMyNzMwNmIxYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVmZDRhMTBkODg0OTI4Y2ZlM2IwY2Y1Yjk4ZWMxNGQ2YzZlZDk0NDQxNGRmNTgwNzlhYzQ2MWU2NDZmNjVhM2QifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_e0a80bcb44c7437b96f6fc488db15ced",
+      "statement": "toChecksumAddress implements EIP-55 address case folding by hashing the lowercase 40-character address with Keccak-256 and capitalizing characters whose corresponding hash nibble is 8 or greater.",
+      "evidence": [
+        {
+          "resource": "repo://src/lib/keccak.ts#L127-L143",
+          "version": "repo-lines-v1:sha256:9281c66bb31b9a6bc44f16bfc96d0ad71d199757ce7352a468cf91fbcdc518f9:eyJzZWxlY3RlZExpbmVDb3VudCI6MTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ5MThjMTI5ZmI5ZDFlYjYxM2VjYjBhY2QwN2Y5NWRiM2EyNDk4ZTU1MGNmZTM3MDExOTBlMTk3ZGM1ZGU3ZmYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjcyNDBmNWE1ZmZmNjExNzhlZjViY2Q2NDAzZTkzNjE3MWQ3ZTc4MTI2YThjYjRlY2ZmY2IzM2NmZGExMjMyYWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjowLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImUzYjBjNDQyOThmYzFjMTQ5YWZiZjRjODk5NmZiOTI0MjdhZTQxZTQ2NDliOTM0Y2E0OTU5OTFiNzg1MmI4NTUifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_50f8bf9fdecf4bc583ef9a02f75f73d9",
+      "statement": "MerkleTreeGeneratorClient constructs OpenZeppelin-compatible binary Merkle trees by hashing lexicographically sorted pairs with Keccak-256 and promoting odd nodes to the next level.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/merkle-tree-generator/MerkleTreeGeneratorClient.tsx#L23-L29",
+          "version": "repo-lines-v1:sha256:59339f55a83b4ec63a19bc3cec3316a8b870c47fbb89d579bb06b09e2c2f9223:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiM2RmMGNkYmFlNzRlYjFmOWE4NjI1NTdmNDFjMjkyMmFmM2UyNWUwZTFmOTQ3YjU1YWY5MmMwNmRkOWIyZTVhMSIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMzU3ODkxNTU0ZWM0MzE4ZmMyMWNkZjczYzhjNGM3NmVmYjBjNmNjMDZmMmI2Yjg5MzA5YjY0Y2Y5YzE4M2I3NiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDRmZTAxMDI4NjkzOGYwNmRkM2VmYjU3NzFiYTY5Yzc0OGE4MWM1MmE4OTZhMjZhNzZlNDU4YmIxNTNhMjEzNiJ9"
+        },
+        {
+          "resource": "repo://src/app/merkle-tree-generator/MerkleTreeGeneratorClient.tsx#L70-L85",
+          "version": "repo-lines-v1:sha256:99f4d111edcda6ba73d867bfe408d1f8cba26dce0cd4f6b4bf380308cea475b4:eyJzZWxlY3RlZExpbmVDb3VudCI6MTYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjY4MGJkMDYxMGExNmE5MDRkMjc0MTFkODEyOTE2YmZjMTRlNDIzZTU5ZTkxOWE3N2Y1NWY1MmQ0NzEwMDZjYzciLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjliNjJmNjBkODU5MGE1NzljZjQ2ZjhkNjczNzhjNGM1NzJiOTYyY2VjY2RiOTBjN2E1ZjdiNDJiOTYwNzgyYTQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjJlYWYyNjExODg0MzAyNjUxYjg3OTIyN2FjNDNjYTlmMDNlOTUxZjg4MDAyNTcyNTQ5ZDhlZGY2NWE3NzIxY2YiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjRlNmI1OTRhODJmNTI0YWQ0ZWQ4MzU3ZWJlNDBiNDdlMTAyZjRjZmYzMDIzMWMzNjI5YzI3MjMwZTg3NTcxODAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1b3265772c004a27aed1bfcc9dd30521",
+      "statement": "PwnedCheckerClient enforces k-anonymity by calculating SHA-1 locally, transmitting only the first 5 hexadecimal characters to the Have I Been Pwned range API, and matching the remaining 35-character suffix in browser memory.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/pwned-checker/PwnedCheckerClient.tsx#L18-L23",
+          "version": "repo-lines-v1:sha256:7257713392b76fefc65e757b6640c8c8c21e9c75a4f845a61af0fbd576e68638:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiOTNiNzc4OTA0OGYwZTRhZDM1MjExNWYxOGU2M2VkMGJjNGE0MzNkMTYzNjFlOTM1ZDZkOGQ5MGU1MGI2ZDJkYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNDEyY2EzNDVjY2Y3NWJmOWMwODA2YmNlNjk1YmU4ZGU4MDhiNzk5ODQyNTFhN2E1NGQyMDJjZjYxMDFkZDQ1MSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNGEwMDE0YjIyYTUwY2IxZmU0OTVkYWFlOWY5NTk1NTU0NmVhNWNmNTFmYjBjMjU3ODJkM2ZjM2ZlOTYzYzgxZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMDk1NjUwN2MzZWY1YjQzYTYzYWFhYWU4MzAyODc0MzY2ZDExMThjZDZkZTMzYjk4OTZmNmU2NzU3MjQyZWM2YyJ9"
+        },
+        {
+          "resource": "repo://src/app/pwned-checker/PwnedCheckerClient.tsx#L67-L97",
+          "version": "repo-lines-v1:sha256:eb455329e4ca7917bf9a342428b2662c834874f027e97356e60ba09eef22d7a5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdhOWI4ZTdjMGUyMjAzOWFhNDM3M2YyMDdkZDViNjM5YjNlNTZiZDEzODg0YjFlNDlmNTFhMGY3NjRlYTI2ZjYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjNiMThlMTlmMTI5Y2VkODAyYjJlYzJkNzRhZWJmNmYzNjYzMGVmNmE3MTM0MTlmNTNkYTllNzhmZWE4ZmM3ZGMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkxMTJjOTM2N2JkYzdkYjVlNzBjYWExMTU4YjRjZDA5Y2I4YmE3ZmM5NmZhZDQzNDYwOWMxMmIxNjhhMzZjMzEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_bfc8c6fc84394f25a3cbf96ceee121a9",
+      "statement": "WebRTCLeakClient gathers ICE candidates from Google STUN servers via RTCPeerConnection and detects IP leaks by comparing reflective candidates against public HTTP egress IP from api.ipify.org.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/webrtc-leak/WebRTCLeakClient.tsx#L160-L190",
+          "version": "repo-lines-v1:sha256:2a8e5c172130182e74a1b116ad7542ea611b9e2f89232a1b37be3b7fe96338e4:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdlNGUzODQyY2ZhN2JiZTVhNmQ1MjZlNTUwMzlmZmZhN2MwODRlZTFkNDEzNGIzYmM2ZjZmMWU5OTM4YzE3MWYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMzNkYzczMWU3ZDA3YjFmMGMwNWNmZWJkN2UxOTIyMDIzZTYwNzdiYzBhZTdiYTMwMTQ4ZjUwODMzYTI1YTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImRmM2E1MDYzMzBiMGU1NDBiZjM1ZDYwZGM2ZjZlNTNmZDBkNmE0ZjllNGM3NGIyOTI0NGQ0YzMyZmNjMTkxZjUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImJmZWNlYTVhYjNkOWUxYmYzZTNiYzNiZDVlNGY4YmY1MzYxZjQyOTZmNjAyNjU0MTM1NDRkYWQ3MDljYTU4NzQifQ"
+        },
+        {
+          "resource": "repo://src/app/webrtc-leak/WebRTCLeakClient.tsx#L70-L94",
+          "version": "repo-lines-v1:sha256:b19ccc15efe0634bc5ee2191d93c44ca7e0f62e41b84a7135cc8cfa94bbee5ba:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImYxNzM4MzIwYTMyNWIzMWQ4ZGQ3OTRlMTNjZTZlMTA3YjdlNjYzOTM2MGUxOTZjNTdlMzJkMmI2MjZiMGFhOGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlMzNkYzczMWU3ZDA3YjFmMGMwNWNmZWJkN2UxOTIyMDIzZTYwNzdiYzBhZTdiYTMwMTQ4ZjUwODMzYTI1YTkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImEyMjZhZTE5Zjk1YjFkYTg3ZjA2NTFlMzVkOGQ1OTE2YTU3MTUwZmRmZWU2ZTYyOGZjZmQ5OGJjZjAxNzZmNzMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjkzNjEzZWJiYjQwY2NjZmU5Y2MwNmNhMmExNTQxNjI1M2JlOWYxNDNiNmNhNmVmNTdjY2Y2MmQ4ZTI5NDBjM2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_1d99526dcd194ab9b444e8cd733fcfcb",
+      "statement": "CertInspectorClient parses X.509 DER byte arrays in browser memory using regular expressions to extract UTCTime/GeneralizedTime validity dates, subject alternative names, and signature algorithms.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/cert-inspector/CertInspectorClient.tsx#L43-L140",
+          "version": "repo-lines-v1:sha256:00e2d19ca4530c5d39e684f022277b697f8e58fdb20feb72d6d7ac9786c78a33:eyJzZWxlY3RlZExpbmVDb3VudCI6OTgsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjNkY2QwM2ZkNTg4MmJjOGE2NTUwOGMxZWI3Zjc5ODc4ZjdlNTE4MmViNTYyNGVkYTkyMWM2YjU4MDFjMGE0NDEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjI1OTc1ZDJiNzQyMWRjNDZkN2FkMTNlZDRiOGJlNjQzYzJjNWEyMzBiM2MxZmQ0YzFjYTMxMjA1MjljYjg3YzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUwMzM4NmMyODU0MjgwMTRkNDg2YzAxMmYyYzA2ZDg2YjEwZWRlM2U2ODkzYzg3MDMxYzMyOWE5OWM5MmM0NGEifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_aa71e7ac310947f8a8ce1da34ecff97f",
+      "statement": "CspBuilderClient generates random 16-byte cryptographic nonces using crypto.getRandomValues and audits configured policies for risks including unsafe-inline in script-src, missing object-src none, and missing frame-ancestors.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/csp-builder/CspBuilderClient.tsx#L203-L244",
+          "version": "repo-lines-v1:sha256:34f1e85fbb43e812272f4cd2223c0c13d6a3cf6542c5279f4c53b46f3e41c1ab:eyJzZWxlY3RlZExpbmVDb3VudCI6NDIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImNhOWI1NWE1MzAwZmRhOWM2NGY5MGYxMmJjZWJkMDc4MDk5ZjUzZTMyNWVhZjZjYjYxMTI2NzI1YTc4MzBiNjEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFlYmVmNzgyYWJlNWFhMzRmN2ZhMzcxZThhMGI4ZWJkOTgxNjY3YmVlMmQ1MzgwM2I1NWYwMzA2YzM5YTdkMTUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZjZmIzMTc3NDdmYzNmM2ExMWY1OTA1YTczYTk0NGUyYmIxYjI4OTY3NDY0NWMxMzU5ZTBkMzJhMThhYTJlNTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImE1YmY2NjVlZDYzMjlmZmYxNWMzNGU4NzQ3MDY5NzJjMmVlOGViYTM3MjdhNDc0NjUwYTk5ODU2NGJlNmU2OTUifQ"
+        },
+        {
+          "resource": "repo://src/app/csp-builder/CspBuilderClient.tsx#L98-L105",
+          "version": "repo-lines-v1:sha256:d51c7a888a3977855491cf701879efa37e195864e3ee4d357fcf3b7100877059:eyJzZWxlY3RlZExpbmVDb3VudCI6OCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZTA3NWNjMDNhY2NlZGYwNzk5ZjhkMjZjNjkzNmI2ZDc0MzEyNTBjNDJhODU3MWQxYjViZTI1MDAzNWQ1MzY3ZiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmRjNTJmMDhiMzliMDhiMDFjOGQzMDhiZjg4MGIwYmVmMDJmZDFkZmNjOWQ5YWE5M2E0ZDFiNWY0ZDU4YjZjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzc3OGYzODYyODMyM2VmNDZmZjE4OGYzNTMxNDViMWFmZTY2NmQ2NWNlNWIxNWYyNjI2NjJjMzE2ZGZhZTI4ZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODVmZTgxOGM1NzVkMTA3MTFjYzA4YzUwNmFjOTk0MDIxMTIwNjU3YjVkOTlkMmVkMWFiODNlYjc3ZTEzMGJiZiJ9"
+        }
+      ]
+    },
+    {
+      "id": "claim_448c00fae59344c7936bb63946152c3a",
+      "statement": "SecretScannerClient evaluates potential secrets using a multi-pattern regex catalog and computes token Shannon entropy to differentiate high-randomness credentials from normal source code.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/secret-scanner/SecretScannerClient.tsx#L20-L33",
+          "version": "repo-lines-v1:sha256:277d21e0b7b30799c4e8256846c76c89aeb7127f38e4fe8205d5a4fed8afb43a:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjEyMTU2MjEyNGU5MmQyMDAyYzIyZjRhMGY3NjhmMWZlNWIwNmEyMTA0NjM5NDcwMmE4N2FjZTMwNjU3MWQzYWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjgzODBhNmE3ZWVkZjcwODVkODU1MmE4ZTQxOTNhNGFjMGUyMjdjODQ3NjE0MTZkNmRlODc0OWQxZjA2ZWY5ODQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjM1YzM1NDY0ZjJlODNlY2JhOWY3NWU2ZWQ3OWRkMDk0MDQ0NTZhMmRmNTYxMGI1MWUxNzFhYTJkNWQ0M2ZjYWIifQ"
+        },
+        {
+          "resource": "repo://src/app/secret-scanner/SecretScannerClient.tsx#L74-L102",
+          "version": "repo-lines-v1:sha256:5f029c2595eae61be9cc3ca12b90c938caba7d6b8fb59ad89053fd060ce49e75:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdkNzcxYTE1NmUyNzg0OGRkOGM1MjA2OWUyOGZiNDc2MjQ2YTZlNGIwMWMxMDgxYTlhZDZmOGIxNzQ5NWMxZmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRkMGM2NjdhODBmNzVhYjZmYzkxYjE2MmI0MDRhNmFlMWE1NmRmYjc2ZGRiZWRmMDBiNmYxOTU2ZmRlZWViMjQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjVhZjAwNzYzYmU5ZmYwN2U3YzFjNTdkYTNmMTg0ZThjZmIzYTNjMjBkY2JhZmM5YTI3Mjc1NWIxZGM2YWU5NTIiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImYwNmVmNjk2NTMwZTA2ZmIyZWE3NTMxODkwZWVmNzc2MGQyYjk2ZjUwMzRmZTI4OTA0NTZkMTkyZTEzYzJjZWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_6922f38198e84d0393e28a2fe546d949",
+      "statement": "BcryptGeneratorClient implements a pure JavaScript OpenBSD Eksblowfish cipher operating across 2^cost rounds using a custom Base64 alphabet and 64 enciphering rounds of the OrpheanBeholderScryDoubt constant.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/bcrypt-generator/BcryptGeneratorClient.tsx#L11-L35",
+          "version": "repo-lines-v1:sha256:1a51d577ae3c7bb8fcf5a0727c701b26f3fd8fdcedcc1d032ad4a62c12277523:eyJzZWxlY3RlZExpbmVDb3VudCI6MjUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjI3MjQ2MTRmMmFmYTA3NDZlYjYzNjBjMjZjMmE0MDk4NDk3NjY1NGJkNGExOWZjOTcyZTUxZmI5NTg1NDBmNDQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImIwMmQyYzBkNmRjNWU3NGQ5MmZhMTRiOTFkYmVhMjY0MDkwYmViMzVmZGI5MTg4ZDliMzQxMTgxZGNlOWY0Y2UiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjhlZTkxZjU0NGQ0YTQ3MzRiNmQxMGFlODEwNjk5ZDY3Y2IwNzc4ZTE5N2RmNWQ3OTU4Njk4NTJkY2U3NThlNTciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6Ijg3NGNhZjU2MTI4YWMyZWQyZTgzMTJmNzhhODJmOGE1MjMyMjE3YmYyNGYwYmJkMWNiNDFiNTM3Zjk5YzExZmUifQ"
+        },
+        {
+          "resource": "repo://src/app/bcrypt-generator/BcryptGeneratorClient.tsx#L160-L205",
+          "version": "repo-lines-v1:sha256:eba71e17585b03b72418b63eb680e907a0fd6d146a8c20521ce65fc0c8be482d:eyJzZWxlY3RlZExpbmVDb3VudCI6NDYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZmMTIyNzU5YTk2NmEzZjlkZGVhYTU3MTkzMDcwZDc3ODVmMmUxODllYjE4ZTg0NDc5M2Y1YWQ5YThjMTBlMWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQxMmNhMzQ1Y2NmNzViZjljMDgwNmJjZTY5NWJlOGRlODA4Yjc5OTg0MjUxYTdhNTRkMjAyY2Y2MTAxZGQ0NTEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImE2NWRjNGNlMGRmOGI5MDFkNWQ5YjFkZDE0MDgyNThlNTI5MWY3YThmZTkzOTNmODBjMzVkMzNiNWQyN2IwODEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjNhZmU1N2E1ZDZjMDJjYTU3YWMyYzY4OWJlY2U5MmQzMjA0ZWVlN2IzMGVmNTZlMTcxNzU3ZGZhZTNlYTgzZGMifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c2f4a3e2a6864a49a5e7cb67c9c058bd",
+      "statement": "KeypairGeneratorClient generates RSA-OAEP and ECDSA keypairs via crypto.subtle.generateKey, formats SPKI/PKCS#8 Base64 outputs into PEM boundaries, and computes a SHA-256 fingerprint of the SPKI buffer.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/keypair-generator/KeypairGeneratorClient.tsx#L42-L86",
+          "version": "repo-lines-v1:sha256:58ff0c7b89860e640ee3013ea82920367eb102bdd4e048134842d887f17b2aec:eyJzZWxlY3RlZExpbmVDb3VudCI6NDUsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjcyNWRhYTkyMDFhMGM1NjM3NDFkNDY5MmY2ZGRjMjFmZmEyMzM5MWU5NGQ4MzJmMWY0NWRhYzFkMTY5NWU2YmIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImZhODBkMDk3ZmFmZDA5OTUwNWJkNTc0YjM3ZjVkNDBiYThlZTU3MGZiODNkNzM3YTgwOGVmMGEzOGI5OWU0ODAiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImMxOTM1YmM4ZGMzMmEzNzBkZmRiNzFhMTlhZDMyZjJmYzM1NzNkNDI4NDhjZmE2ZDExNzFkMDQ1OWVmMTk0NzEifQ"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

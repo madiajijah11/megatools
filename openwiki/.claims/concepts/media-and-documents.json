@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "pageVersion": "sha256:cecb820cc82477b6ed91547b26cf8b3d461268b54bbd023a7396d3b617e66957",
+  "claims": [
+    {
+      "id": "claim_9d1a3abb46464f2aaaacd159f9c18098",
+      "statement": "Document manipulation tools execute PDF merging, splitting, reordering, rotation, and vector watermarking in client-side memory using pdf-lib without server roundtrips.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/pdf-merge/PdfMergeClient.tsx#L84-L95",
+          "version": "repo-lines-v1:sha256:9d9c82eef0fad8f909d4863dedc411d7c9746947e251de2645e67c7b4a130b1c:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijc4MjcxM2MzMWYzOWZmMTRjODEyNjE2ZGE4OTM0ZWY4ZmI3N2MzZGYyNzhmYjIzM2Q4MTE0NDM3NmM2OWQ0OGEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjdjOGNkOWFhOWFiYTE0NDliNDJkNTgyMjk2ODJjYzU3YWJjZDVkYWVjNWI5NGM0MzMxZWVkYzlhOGE0MTVhMDYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlY2IzNzMxY2FkMGVmMTZhM2EzMzkzMjQ1YTA3Zjk3MzAxMjRiY2Q0N2JhMjEzOTNiMDc2NWFhNGM5ZGRkMjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjMyOTU4YjA4YTI2NDcyMTg0Y2EwOWY3ZDgyOTY5YzQ5MTY4NTNmNzI3ODg2NTY5ZTZiMDE4NGJhZjMyNWZmMTkifQ"
+        },
+        {
+          "resource": "repo://src/app/pdf-organizer/PdfOrganizerClient.tsx#L142-L153",
+          "version": "repo-lines-v1:sha256:2ec184d1e214c6d9c4555fd0a4c599b3774503e32ca549b52c1ae1097073ec93:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRjZGQzNGExZjZkZWQwYjczYjZiYTY1M2RmMDRlY2MzMDkwMTc1MjE0ZjgzZjM1ZDliNTFlMDRkYTZlZDNkZDUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjU5NDc1ZWM1ZDdhMjE2MzNjMjdkNGU3Y2E2NzlkZmQ3ZDVlN2I0ZDk2NjFhMjVhYjQyNTcwNTk0ODgzMjcyMmQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjY0OWY1ZjNkODlmYWUzODIwNGY4NDY0MWIyMGRkYjlkMjNmMTQxNzJiZTkyOGFkZjUyNTVlNGEzNmM2MGEwZWQiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjBmYWY1NzAyNjVjNmVjNmZkMTliYzZkODJjOTZhNDY1MWFlOGIwM2Y4OWQxMjU2NGQ5MzY4OGNkNzc3MTE2NjUifQ"
+        },
+        {
+          "resource": "repo://src/app/pdf-split/PdfSplitClient.tsx#L90-L98",
+          "version": "repo-lines-v1:sha256:89ef1799ea14d16c44195161a85f7d862dfdc03413264b9ce4e8e55dbcbfc587:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiODEzNGZmMDNhOWY1MTVhMDJlZGMwMTRkNDczODA5NTQyZTI2MmI3MjNlNDU5ZjBlOWY0ZjMxZDY0MDVkZmRiMyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiN2M4Y2Q5YWE5YWJhMTQ0OWI0MmQ1ODIyOTY4MmNjNTdhYmNkNWRhZWM1Yjk0YzQzMzFlZWRjOWE4YTQxNWEwNiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2VjYjM3MzFjYWQwZWYxNmEzYTMzOTMyNDVhMDdmOTczMDEyNGJjZDQ3YmEyMTM5M2IwNzY1YWE0YzlkZGQyMSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiMzVmMWY1YmU4NDFiMzcwMDJjOGNmNmVlNGUzODU3ZTlmNWY2M2NmMjFiYzUwZjllM2RiNDRmOTBlODI1MmIzNSJ9"
+        },
+        {
+          "resource": "repo://src/app/pdf-watermark/PdfWatermarkClient.tsx#L107-L137",
+          "version": "repo-lines-v1:sha256:e4cc1249fb954b8095e965521dd2246d07739ecd3d82f6f7a1f5f7660f2b96d5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzEsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjVmNWFiNTdiZDFiMDMwMWMyMDFjMTRkNjY3YzNjZjZiOWEyZWMxMzljYzk2Y2RhZTc2Y2FmNWVlNWRkMWNhZWEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyODVhOTIzNzA1MjczZWE3MzlhZWRiMWQwNDJiMDIxOGUwMDQ0ZDQ0Njc0NzJhNWMyZTNmNTc5NWY5MzYyM2IiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjdlY2IzNzMxY2FkMGVmMTZhM2EzMzkzMjQ1YTA3Zjk3MzAxMjRiY2Q0N2JhMjEzOTNiMDc2NWFhNGM5ZGRkMjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjY5N2IzMWY0MzE2NzUxZjNmNWJmYzdmZGY0NmEwMDUxNDMzOTNmMGZhZWYzMGU4MmYwMThiMjBjMjhlMjY4NzkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_31a193b304db4c1eb249c7ec17e35cae",
+      "statement": "ImageToPdfClient embeds PNG and JPEG buffers directly into PDFDocument, but routes WebP images through an offscreen HTMLCanvasElement rasterizer to convert them to PNG buffers before embedding.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/image-to-pdf/ImageToPdfClient.tsx#L109-L137",
+          "version": "repo-lines-v1:sha256:16d35bec353cfd0af9ef05fcf545eeed151271c2a88c39be8db8161b362a145b:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVmYzhkZWZlY2Q0YTA5N2E0NjkxNTQ3YjUzNjRhMTA5MjdhOGQ4YzRlMWZlYjY5Yzk4NjliYTNkOGJhYTYyMDMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjAxYmE0NzE5YzgwYjZmZTkxMWIwOTFhN2MwNTEyNGI2NGVlZWNlOTY0ZTA5YzA1OGVmOGY5ODA1ZGFjYTU0NmIiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjU4ZTEzNzgzZWNlZGE4Zjg5ZjAxZTllNjAxMWMwYjk5ODUyOTc4ZjAxMjc0ODU1YTQ4NWI2ODFhMDQ4ZGZiZjYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjYwYmI3OWYxYWFjMTFjMzdlYWZiMjhlMWE3NGUzMTU3ZmY2MTdiZTE5ODZkMGZlNTgwZDM0NDkwOTU4YmFlYTYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_cab13076eb004c7985ce377432f818a5",
+      "statement": "ExifStripperClient removes EXIF, GPS, and device metadata by redrawing source image pixels onto an HTMLCanvasElement and re-encoding a fresh binary container via canvas.toBlob().",
+      "evidence": [
+        {
+          "resource": "repo://src/app/exif-stripper/ExifStripperClient.tsx#L41-L54",
+          "version": "repo-lines-v1:sha256:134b01c5e27c9abf4ecaa2bd5301cbdc13532eb3f3cd6087f1da242248e493a8:eyJzZWxlY3RlZExpbmVDb3VudCI6MTQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlMWMzMDYyZTdmZThhZWQ5ZWViOGFkODU5ZGI3YWUxNWQxNThkMzIwMzZlMTE0NGY1MDU3NWE1Y2ExZTM2NjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImMyZTBkYjIyMWNkOWYxNTdlYTE3MzdhNzAyYTc3YzVjZTRlYjY1ZWNiMTQ3MThiOTQyNTEzM2VhNGE1NGY3MGYiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImU4NGE2ZDkyZDJhNjI2OTI4ZmM0MGQ5OTEwMTY5NjdkZmNlMjE2YmM3MDA5NzBkY2IzNzcyZTYxZWZlZWM5MmYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjU0MDhmZjlkMGMxMTAxMjBkOTc1YTJiN2FlMzUwNmZhYTc2OTdiNGNkODRmYTMzZGQ1ZGVlYWJmYmEyNDM3NzAifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_c227f45939774176b403f45de1424cf0",
+      "statement": "ImageClient performs client-side aspect-ratio downsampling and lossy compression via HTMLCanvasElement drawImage and canvas.toBlob, pre-filling with a white background for JPEG exports.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/image-compressor/ImageClient.tsx#L40-L73",
+          "version": "repo-lines-v1:sha256:1fd9534d3dedb64e895d9dc75eaa4ecdc73994b4bf862a623a443a493bfdacf5:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImRmNDYxZTgzZDg1Y2U3N2NiMjVjOTE0MTA0YzY2ZjA2YjViYjAzNjMwNGQ2MzRkMTVjZGIzZDk5NTg0ODAxZjIiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjFlNzVjNzBkOTQ2MzYyNWUxMDc5ZmQ4ZmM4ZWU2MmFkMmU5MmM0MmJlYWFiZmQ4NWI3OGQ4ZTBhNDk3OWI5NGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjFmYzUxNDk4NWE0NmY2NWQ5MzEyNTgwZDRjNzdjOTgwYTI4N2UyMDJlOGU4M2ZhODAyYTU0Y2U2MjAzNmE4NGYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjVlYzNmYjEwNmMxZDNlOTAzNjEwZWU0Yjg1Yzc2YTJkNGRlN2E5YzM4MjU0MGNkMzRiNTUwZTIwZWMzNWQ4MWYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_5bbca22796724e76827b152939fc699e",
+      "statement": "AudioTrimmerClient decodes compressed audio files with Web Audio decodeAudioData, extracts sub-buffers with OfflineAudioContext, and serializes 16-bit PCM WAV blobs in client JavaScript memory.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/audio-trimmer/AudioTrimmerClient.tsx#L159-L165",
+          "version": "repo-lines-v1:sha256:a9339bd3b30d5206833ea63782ceea5b675336e21a86623c7e64592d6e5a3ef9:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTI2ODUwOThmNzkxMGE4OTg5NDgzM2RkYjI5MDg1Mjk4MDk3NTUwNzhmOGZkOTZkNGZhZjAwOGU1ZTQ2ODc5OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWEzZmU0MWI2NzUzMzY0MjQ4YWQ1ODBjZWFjOWMwMjc2Zjk4Y2Q1M2IzMDJjZWNkZDBmMTZlYzYzMWVkYWYwZSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNWE4N2QyZTUyNDc5NDkyMmNkYWY2M2E3ODg4ZjIzNzg0Y2NlNmE1ZWJiZTdmOWY0MDA5Y2RlNDY1M2VlYmZlYyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYjA5OWJjNDI3NWMxMzRkMDI1NGY4Zjk2MjkzZjdjZDljYzkwNDRiNDE0MmU5ZjIwMjhiNmZhYzgxODQ4NGU4YiJ9"
+        },
+        {
+          "resource": "repo://src/app/audio-trimmer/AudioTrimmerClient.tsx#L224-L235",
+          "version": "repo-lines-v1:sha256:60b28f9024ccf6ef91473d706547853bcd11d97c0f1cbd9663d7911e885dc7fd:eyJzZWxlY3RlZExpbmVDb3VudCI6MTIsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQzZDE2NmE5NjU1MmZlZjYwMmE2MDE2ZDQyODVjOWZhYzczNDQ2MmE4YjRlYmQyNTQ3M2E2YTFiNjRhNDMzZWMiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQzYzgzMTU0MmRiN2Q5ZWM1MTdlODgzMTA5NjEwOTlhNmI2ZTg1MjUxZTQwMjc4YzMzNzVhMTk5N2M1Y2RiNGEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjBjOTlhNDFhNDBkZjBlZDBlZjIyNTAxZGYxNTZmNjQwMmQzYzM2OWJkNmI3M2IyZjNkNTRhOWVhY2ExM2Y4NDciLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImM3Nzc4MWUwOWZmNjNhMjZmZjgzMWQwYmNiOGE5OTRhOWI0OTY3ZjlkNWEzOGEyNzFmOTdmNzcxNDM1ZjU4OTMifQ"
+        },
+        {
+          "resource": "repo://src/app/audio-trimmer/AudioTrimmerClient.tsx#L8-L64",
+          "version": "repo-lines-v1:sha256:a75172fd3ac0e0c4cfd086dc07c2a0254d674805960f480cd371e157a4da6172:eyJzZWxlY3RlZExpbmVDb3VudCI6NTcsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjRhNTE1NzQ2MzgzZTljMjIzYjc5NzYzOTI5YjY2ZWNmMGY3ZjUwYzM2Nzc3MTQwNjU2Njk5ODVkYWIxMDIwYzUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImQwMzUzMzAwMzFjN2MzYzA5NGFhYjYxMGJlNmJhYTE4NmE5N2NiYjhmZWE3YTBjNDgwZmEyMjFiOTRlYWZhMzUiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImVjYTYxMGUzZDRiMTU3NjViYmIxNTdmYjUwMjlhZDNjM2MwZWRlYzI1ZjA4YzhiZWQ0ZTJhYmNhZDU0MzIwMjEiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImI0MDE3ZTBjNjBhYzVkN2M5NzRkOGM4YzI3ZWVhNzM5MTJhZDQ5ODZjMjExYmUxZmY0NTAwMjNiZTAxOWJkODkifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_985b7e752f744ac7a1febcb7af064abd",
+      "statement": "ToneGeneratorClient synthesizes monophonic waveforms, binaural stereo channels with ChannelMergerNode, and procedural white, pink, and brown noise loops via Web Audio API nodes.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/tone-generator/ToneGeneratorClient.tsx#L140-L175",
+          "version": "repo-lines-v1:sha256:a50c1ad7ab4ec20c03f0508107fe7466ea1c4aa2700921bf2b04a3065c583ea2:eyJzZWxlY3RlZExpbmVDb3VudCI6MzYsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFjZjZkZDExMTAyYmJmMzNkZWM0YTFjOWQ1NjNjODFiNjI3MGI3YmY3MjJhYzdiYWUxNjY4MTEyYjI0ZmVhYWQiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQ4OTNmNDBlMzc4MWViODk2YzgyZDA0NmEwODA2N2ExMWUzNWNkZjJmMWRmYWYyNmZlYTkwYjhkYjY2NzY0MTMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImI0N2E3MTBkNmU4MDdjZjhjYTdmMWQ0YWQ5MGY3ZjNmNTVmZTQ1NGY0YzIwNmMyY2ExNzVkODg2M2IyZjEwYWYiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjhiOTBkZjgzNjA4YmI0Y2QwNzM2MjJjMjJmMWJlNmQ2N2EyMDNiOGFkMWJjYjMwNDIyZDA3NGYwYzVkNjYyYzgifQ"
+        },
+        {
+          "resource": "repo://src/app/tone-generator/ToneGeneratorClient.tsx#L90-L123",
+          "version": "repo-lines-v1:sha256:a7f529e9210ed18ad2a782576c312057f34a582b6e0148ec7470308551b0d0b7:eyJzZWxlY3RlZExpbmVDb3VudCI6MzQsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImVlOGVhMWJjODJmNzRiMDVhOGI2MjgwYzVjMmFmZjlmMTQ2ZjM1YmZmOWYzM2ExN2FjMzdmZGJkM2VjODZkMTYiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6IjQyYTJjYjI1YTEyMmI0NDIyMWE2MjM0ZWM2NjBhN2I1ZmI3ZjliZGU3YjNiOWUyYjNjNTU5YTBkOTZmYWM3MzkiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6Ijg3MTQwZjI3ZDRjNDAxY2NmZDkzMjcwYjhiZjE3ODVjZjFmMWM3ZWYyZDEwODZhODg1NTkxYzVlMDg1NzEyYzUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6ImZkYzFkOTQ4NWNiZDI4NmI4ZTNkMmQwMmVhODI2ZGZlZTFmODY1OWVlMDA0ODdkMmQzMmRhM2Y5M2U1NmMxYjYifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_d007b160415d4a159a30c99038637e87",
+      "statement": "ScreenRecorderClient captures display streams via MediaDevices.getDisplayMedia, mixes optional microphone inputs using an AudioContext destination node, and records chunked media blobs via MediaRecorder.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/screen-recorder/ScreenRecorderClient.tsx#L81-L150",
+          "version": "repo-lines-v1:sha256:f38acb59f9642a37b2f93c6f9b6f6bafc1c0fd14e0bc123ae200a2029866e367:eyJzZWxlY3RlZExpbmVDb3VudCI6NzAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImY2NTZlNzlkMjA1Nzk5MWNhNDM4ZThjZDVhYjY3NzI2ZTg4MmMxNDA0MmMzY2NkMzBjMGYwMmNmOWYxMjdjMmEiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImI2M2UxOGUwNjQxMGFiMzJiZjE5NGI3YmJmNjY2NTYyNDY2Y2UzZmIwYmQ0MGFhN2U2NDYzNDZjYzZiMDExMzMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImNhZGUzYjE3ZTFmZWVhMzk5MGM3YmY4YWU1NGUyOGQ0ODM5OTdhZWRlNzQzM2Q3YTk5MTQwMzZjZjhhYmIwYTUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjJmYjUyMjcxZjU5M2Q1ZGY1M2NmOGE5MWE0NDUyZmEwMWZlZTliZjQ5NDFiMmM3Mjk4ZWY2MWY3YmNjZTA2ZDIifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_8e985e95b95c4231980895153e616eb4",
+      "statement": "QRClient generates raster data URLs and scalable vector SVG strings with configurable Reed-Solomon error correction using qrcode, while QrScannerClient prioritizes the native BarcodeDetector API with a Canvas fallback.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/qr-scanner/QrScannerClient.tsx#L31-L59",
+          "version": "repo-lines-v1:sha256:82b67a6ea00e50ab34b30fb51bd19b4080201c0bf0a8ce75acf5f07da4b126f1:eyJzZWxlY3RlZExpbmVDb3VudCI6MjksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjgyYjcwNmZmNWUwZDJlNTIzMTIxMzExZGQwMzQ5OTBhYmFkZTllZTI1ODk2ZWE5YzJkMDk1YTlhMTI4ZTQ4ZmUiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImFkOWUxMjU0NjQyNTU3NmQzZGVhZThjOWI5ZGJmMTI4ZDVkNmRkYWY1ZDdmZTg1NzkzNDkyN2RlZmZhM2I5ZGQiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjAxNmNlMzIzZWVlZTAxMzQwNzY5ZDhiODA3MDUxNTQzMDdkYmMxYzczNzE4YjE3YjJhOTc4ZWI1ZTU2M2UxN2IiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjcyOWU5MDMxYTYyZTVkM2FiMDk3ZGYxYjBlNDhlNGRmOTU0MWNjMWMyN2E4MjhjZmY2NGRiNzg0YmUyZWM4ZGQifQ"
+        },
+        {
+          "resource": "repo://src/app/qrcode/QRClient.tsx#L19-L28",
+          "version": "repo-lines-v1:sha256:1df3bb26d07e868af8a6ac29435496dc580d974518f713f93b3bbaa1832e56a7:eyJzZWxlY3RlZExpbmVDb3VudCI6MTAsImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6ImUwODQ3ZDJmMjRkNGNjZjBlYjNiYmEwNzZmZDMzZjA2NTQ2NjNkNDg4YmNiZWZiYzRhNTdmOWU5ODNmNmFiZjgiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6Ijk3NjA0NzBiM2JjYjU0Yjg1ZmM3Y2U0YzM2NmE0YzdlZTA3NWQyMTA0ODAwMmYwNzQxZjQ4N2MxNWJiMzIwZDMiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6ImQyYzBkNDNlYjdjZDM2ZmM0YzI5NjJiMjI1YmU3ZTA5NTllODUzNDUxNjRiMjNhMDQ5MDg4MmZhY2QwYmI5NWUiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjE2ZmZkNDdlMTMzY2UxMGI1YjliNWNiMWM4M2JmYWNkNTA3NjU2OWE3NDE1ZGI0NDRhOThlMjJmNzg4ZmNlYzgifQ"
+        },
+        {
+          "resource": "repo://src/app/qrcode/QRClient.tsx#L46-L64",
+          "version": "repo-lines-v1:sha256:ab7bd6dc8bb3a3ada4ef6ec2903541e02e92da10462cd27b1f6f9d39a4e1bb0f:eyJzZWxlY3RlZExpbmVDb3VudCI6MTksImZpcnN0U2VsZWN0ZWRMaW5lSGFzaCI6IjljYWM4M2Y4NWU2OTgzYTg3OGI2MTg4MGNmOGNkZDc3YjM2Y2IwMzhjMDlhNzM4YjllODcyZjU1YjhhZGIyN2MiLCJsYXN0U2VsZWN0ZWRMaW5lSGFzaCI6ImZlZjY5MDA3YTdlNzVjY2RiMmMxOWVmYTlkOTVjNDNiZjc4N2YzM2EyYjljODI2NWM0YTVjZTY0MmZlNmRiZWEiLCJwcmVjZWRpbmdDb250ZXh0TGluZUNvdW50IjozLCJwcmVjZWRpbmdDb250ZXh0SGFzaCI6IjE4NWVhMzY1YzM4ZmY0YTNhMWJkYjdkMmZmNTk1NWNlNjg1YWE3ODQ4MTgyZjhlYWNkZjBiZGZhZTk5ODFkMDMiLCJmb2xsb3dpbmdDb250ZXh0TGluZUNvdW50IjozLCJmb2xsb3dpbmdDb250ZXh0SGFzaCI6IjUxZTM3MjVkYTAwMmI0NmVkOGI0ZGU4ODAwM2FkOTcxMGRjYWYxOGQ1N2M0NzAxZGMzYmVmZjBiMmM1Y2IxM2YifQ"
+        }
+      ]
+    },
+    {
+      "id": "claim_61eea871ce834d6fab923aa7e7591be1",
+      "statement": "Client media utilities mitigate browser memory leaks by revoking previous object URLs during output regeneration and component unmount lifecycles using URL.revokeObjectURL.",
+      "evidence": [
+        {
+          "resource": "repo://src/app/audio-trimmer/AudioTrimmerClient.tsx#L82-L90",
+          "version": "repo-lines-v1:sha256:cdb9ff0ee8e9a05b3ed8602c94fbf0bb1c42a4577108a8900f5067e5f377fcba:eyJzZWxlY3RlZExpbmVDb3VudCI6OSwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiZGE2NTBjNzE2OTI0ZTBhZDg4Yzc2Zjk2ZGEwMzJhMDdhMzdlOWExMjc3NDI2YzI3NTIyODI4YjQ5ODdkMTA1NiIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiNTZmZmJmOWJlZjJiNThjYjk5MzYyYzQ4YWYxNzYzZjY3Y2MwNjc3OTRmZjViNzQxMDhlMjUzYjg3YjkzMTQ4MCIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjExOTE5Y2YxZDlhNjEzOTZiOGJlMmZjZTdmNTgzYWUxZDQzZGQ0ZjhhYTJkM2M5MmI5MTIzZDE0ZTczMmY5MyIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzk4OWQ5YTQ4N2U4YjM2NWI1M2M5NzkzNDZhNWExYjA5OWY5YTE3OTQ2Y2IzNDQ2Njc1NDRlNWNiZTBkNDlhMSJ9"
+        },
+        {
+          "resource": "repo://src/app/exif-stripper/ExifStripperClient.tsx#L84-L89",
+          "version": "repo-lines-v1:sha256:76911b23db5132e1ed7e764baca634a2b993c0b5acd93992943f5e757dba7390:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTk2NmZiZmE4ODk5OGRhNzQ2NTZjNTAxOTQ5NTZjMjVmMDg0OTQ1NzY2MGMwMDlmZTYzZDFlOWZhOWRjOTMxYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiMWMyNGNkMWFmMGM0OWFiYTY1YWM0NDJkNTZlODJkMDNiNzAwYmM4ZGQ5NDhkNjI5NjE5NTdjMTZiNWQ2NzEyMyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTFlMzcyNWRhMDAyYjQ2ZWQ4YjRkZTg4MDAzYWQ5NzEwZGNhZjE4ZDU3YzQ3MDFkYzNiZWZmMGIyYzVjYjEzZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiYzE5N2RjYWJmNTczNGViYjg1ZDM0NGYzOGQ4OTc0MDA4YzhkZjIwYmI2MjAyNDA2MTJjMGRlZjAxOGMxZDgxMSJ9"
+        },
+        {
+          "resource": "repo://src/app/image-compressor/ImageClient.tsx#L122-L127",
+          "version": "repo-lines-v1:sha256:473a2e71accfbb930b14dfd6ed7ef3f5a438752c14e16245ecec414c770c6b21:eyJzZWxlY3RlZExpbmVDb3VudCI6NiwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTk2NmZiZmE4ODk5OGRhNzQ2NTZjNTAxOTQ5NTZjMjVmMDg0OTQ1NzY2MGMwMDlmZTYzZDFlOWZhOWRjOTMxYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiOGI0OWJkYTI1YTljZmM5ZjU3OGE2ZjRkYmFiODhhMmQ3NWYwY2E2ZmJlMGY0MDkxYTg0Y2I1ZWViMmVlYzY4ZiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiYzI1NDg0OTFiYmNhYTI2MWQwNjkxYWQyYzQzNzgwMzk1MDg2YjAwNWM2Mzg5MTZkNWFmYTdjYWQ1MDI3NGExNSIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiODg5NzJlOGFkYWQwNTBlNzliNWVkODkwMmFlNzI3ZjM3ZTljMmYzMjIzNTQyMWI1NGU2YjhhNDVlNmI5MzBlZSJ9"
+        },
+        {
+          "resource": "repo://src/app/image-compressor/ImageClient.tsx#L64-L67",
+          "version": "repo-lines-v1:sha256:cf394f948978d7ab715953bf1f91c081ac122c7575c09ec9d61ab2c51fbca6f1:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiN2EzYjIzMGM1YTkzMjJjZGJjYjM3ZmU2YjA3MDIwOTFjMDZlNDBkODI4MDQ5Y2IyZWEzNmY5NzUyNzdhODE2OCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiODg1NWY0MDQ5ZjBkMDZkNmRjMmE2NDE0ODY3ZDg4ODk2Njc3MTgyNzYzYjk5ODdjNGE2ZjBjMjNkOWI5MmExYSIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiMjQyMWFiYWU1YzIyZWE4ODVhNzRkYmZlZmI2ODc2YmZkMDI4MjgyNTI2MGMyY2VjMzc1ZDMxNDg3YmUzN2UyNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNDVmMGRmOTY5NDVjYWMzN2E5MjgyOWU2ODJkMjVlNzZjMjFkNGRiOTQ3MjMyMGZkOTUxYTAwMzdjNjc4MDY0YSJ9"
+        },
+        {
+          "resource": "repo://src/app/image-to-pdf/ImageToPdfClient.tsx#L181-L184",
+          "version": "repo-lines-v1:sha256:f35490591ee4579cd5e4c882cb6774878bd84ec57903ca76d9cf53751739f79a:eyJzZWxlY3RlZExpbmVDb3VudCI6NCwiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiYThjYjgxNmQxN2RjYWI5YjAyNDg0MDA4OGFlZmU2OGMzODVhMDFiZjIyMmI5OWY2ZDdhZGZlNjgxNmFjYjJiZCIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiYWQxZGZlMzBjNDUzMjM2MGQzZTI1N2Q2ODRhODQ0ZDRiMTJiNDE2MmZjZTY3MThiNWVhMGI2OWE4M2EyOWFhYyIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiN2VmNmVjMmZiNWJkYTI2NGU5YjJiMDVlMjc0YjU4YmQ4MTMxYzFmOTE1MmJlNGI2YmVkNTFlNGRkNGM4NzhiNiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNTY3M2U1MjY4NmNlOGQwNTAwYWRlMDRkNDFiYTFkZjUyMjBkZmQ4MjZmNzk2ODRhOGY3NzUwOTZmOWVlYzhjYyJ9"
+        },
+        {
+          "resource": "repo://src/app/image-to-pdf/ImageToPdfClient.tsx#L192-L198",
+          "version": "repo-lines-v1:sha256:0fcf4aa4effd65ebde741b64302e1a9550a274ca2e1cfb29653c9294cd59dd62:eyJzZWxlY3RlZExpbmVDb3VudCI6NywiZmlyc3RTZWxlY3RlZExpbmVIYXNoIjoiNTk2NmZiZmE4ODk5OGRhNzQ2NTZjNTAxOTQ5NTZjMjVmMDg0OTQ1NzY2MGMwMDlmZTYzZDFlOWZhOWRjOTMxYyIsImxhc3RTZWxlY3RlZExpbmVIYXNoIjoiZmRjNTJmMDhiMzliMDhiMDFjOGQzMDhiZjg4MGIwYmVmMDJmZDFkZmNjOWQ5YWE5M2E0ZDFiNWY0ZDU4YjZjYiIsInByZWNlZGluZ0NvbnRleHRMaW5lQ291bnQiOjMsInByZWNlZGluZ0NvbnRleHRIYXNoIjoiNTFlMzcyNWRhMDAyYjQ2ZWQ4YjRkZTg4MDAzYWQ5NzEwZGNhZjE4ZDU3YzQ3MDFkYzNiZWZmMGIyYzVjYjEzZiIsImZvbGxvd2luZ0NvbnRleHRMaW5lQ291bnQiOjMsImZvbGxvd2luZ0NvbnRleHRIYXNoIjoiNjY5ZTRlZDM2OGExOGNlOTdjM2Y2M2M0OWI3NzkwNTU5NWIwMDM4MmNlNDk1ZGJmNDBiNzNjMzhlY2JhNWJlZCJ9"
+        }
+      ]
+    }
+  ],
+  "verification": {
+    "by": "openwiki/0.6.0",
+    "at": "2026-09-24T05:09:02.049Z"
+  }
+}

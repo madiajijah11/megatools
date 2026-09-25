@@ -52,6 +52,11 @@ Every tool MUST adhere to these exact requirements:
 3. **Changelog & Notification Bell ("What's New")**:
    - In `src/lib/changelog-data.ts`:
      - Add new `ChangelogItem` at the **TOP** of `CHANGELOG_ITEMS`.
+     - **TYPE DISCIPLINE**: Select the exact matching `ChangeType`:
+       - `"added"`: Brand new tool additions.
+       - `"fixed"`: Bug fixes, parser edge cases, syntax repairs, or broken features.
+       - `"improved"`: UI/UX enhancements, responsive layouts, or performance boosts.
+       - `"updated"`: Data dictionary, spec version, or algorithm refactors.
      - **DATE RULE**: Must use the REAL current ISO date (`YYYY-MM-DD` from `new Date().toISOString().split('T')[0]`).
      - This automatically triggers the notification bell badge in the header and displays the release on `/changelog`.
 
@@ -60,3 +65,11 @@ Every tool MUST adhere to these exact requirements:
 
 5. **Verification**:
    - Run `npx tsc --noEmit` and ensure zero errors prior to committing.
+
+<!-- OPENWIKI:START -->
+
+## OpenWiki
+
+@AGENTS.md
+
+<!-- OPENWIKI:END -->
