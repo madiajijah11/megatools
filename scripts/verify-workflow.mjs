@@ -96,6 +96,8 @@ try {
   } else {
     const invalidDates = changelog.filter((item) => !/^\d{4}-\d{2}-\d{2}$/.test(item.date));
     const validTypes = new Set(["added", "fixed", "improved", "updated"]);
+    const toolSlugs = new Set([...appEntries, ...excludedDirs]);
+    const invalidToolLinks = changelog.filter((item) => item.toolHref && !toolSlugs.has(item.toolHref.replace(/^\//, "")));
     const invalidTypes = changelog.filter((item) => !validTypes.has(item.type));
 
     if (invalidDates.length > 0) {
@@ -108,7 +110,12 @@ try {
       invalidTypes.forEach((i) => console.error(`      - ID: ${i.id}, Type: "${i.type}"`));
       hasErrors = true;
     }
-    if (invalidDates.length === 0 && invalidTypes.length === 0) {
+    if (invalidToolLinks.length > 0) {
+      console.error("   ❌ [Changelog Link Error] toolHref must point to an existing tool route:");
+      invalidToolLinks.forEach((item) => console.error(`      - ID: ${item.id}, Link: "${item.toolHref}"`));
+      hasErrors = true;
+    }
+    if (invalidDates.length === 0 && invalidTypes.length === 0 && invalidToolLinks.length === 0) {
       console.log(`   ✅ Valid Changelog: ${changelog.length} entries verified (Latest: ${changelog[0].id}, Type: "${changelog[0].type}").`);
     }
   }

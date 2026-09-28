@@ -6,7 +6,7 @@ You are working on **MegaTools**, a privacy-first, zero-server-leakage suite of 
 
 ## ⚠️ MANDATORY ZERO-MISTAKE PROTOCOL (ALWAYS ENFORCED)
 
-Every AI agent (Claude Code, Cursor, Copilot, DeepSeek, Gemini, Windsurf, Cline, Aider) MUST adhere to these 6 strict workflow rules without deviation:
+Every AI agent (Claude Code, Cursor, Copilot, DeepSeek, Gemini, Windsurf, Cline, Aider) MUST adhere to these 6 strict workflow rules without deviation. **No tool change is complete until its changelog entry is added and verification passes.**
 
 ### 1. Mandatory Scaffolding & Layout Standard (<ToolLayout />)
 - **Scaffolding**: NEVER handwrite boilerplate from scratch. Always run:
@@ -26,14 +26,23 @@ In `src/lib/tool-data.ts`:
 
 ### 3. Changelog & Notification Bell Protocol ("What's New")
 In `src/lib/changelog-data.ts`:
-- Add a new `ChangelogItem` entry at the **TOP** of the `CHANGELOG_ITEMS` array.
+- Add a new `ChangelogItem` entry at the **TOP** of the `CHANGELOG_ITEMS` array for **every tool addition, feature change, bug fix, UI/UX improvement, or refactor**.
+- **MANDATORY COMPLETION RULE**: Do not report the work complete, commit, or push until the changelog entry exists and `npm run verify` passes.
+- **TYPE DISCIPLINE**: Use `added` for new tools, `fixed` for bugs/broken behavior, `improved` for UX/layout/performance, or `updated` for spec/data/algorithm changes.
 - **DATE RULE**: `date` MUST use the **REAL current system ISO date** (`YYYY-MM-DD` from `new Date().toISOString().split("T")[0]`). NEVER hardcode past or arbitrary placeholder dates.
+- `toolHref` MUST point to the changed tool route; use a valid route for multi-tool changes.
 - This directly powers the green notification bell badge in the header and displays the release on `/changelog`.
 
 ### 4. Documentation Sync
 - Add the new tool row to the matching category table in `README.md` and update the total tool count.
 
-### 5. Automated Verification Gate
+### 5. Critical Thinking & Acceptance Criteria (MANDATORY BEFORE IMPLEMENTATION)
+- Before coding, define explicit acceptance criteria for each advertised feature: input, output, edge cases, errors, privacy, and UI interactions.
+- Audit the existing implementation against the proposal; identify gaps or misleading claims before adding features.
+- Do not call an MVP complete while core advertised behavior is missing; rename/scope it or implement the behavior.
+- Implement in batches; manually test valid, invalid, empty, boundary, and interaction cases before moving on.
+
+### 6. Automated Verification Gate
 Before committing or claiming completion:
 - Always run `npm run verify` (or `npx tsc --noEmit`) to confirm 0 type errors, 0 category mismatches, and 100% ToolLayout coverage.
 

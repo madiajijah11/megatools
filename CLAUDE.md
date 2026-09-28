@@ -36,7 +36,7 @@ Custom tokens in `globals.css` via `@theme inline`:
 
 ### Mandatory Tool Addition Workflow (Zero-Mistake Protocol)
 
-Every tool MUST adhere to these exact requirements:
+Every tool MUST adhere to these exact requirements. No tool change is complete until its changelog entry is added and verification passes.
 
 1. **Scaffolding & Layout**:
    - Run `npm run make:tool <tool-slug> "<Tool Title>" <category> "<Tech>"`.
@@ -51,7 +51,10 @@ Every tool MUST adhere to these exact requirements:
 
 3. **Changelog & Notification Bell ("What's New")**:
    - In `src/lib/changelog-data.ts`:
-     - Add new `ChangelogItem` at the **TOP** of `CHANGELOG_ITEMS`.
+     - Add new `ChangelogItem` at the **TOP** of `CHANGELOG_ITEMS` for every tool addition, feature change, bug fix, UI/UX improvement, or refactor.
+      - **COMPLETION GATE**: Do not report work complete, commit, or push until the entry exists and `npm run verify` passes.
+      - `toolHref` MUST point to the changed tool route; use a valid route for multi-tool changes.
+      - CHANGELOG_ITEMS`.
      - **TYPE DISCIPLINE**: Select the exact matching `ChangeType`:
        - `"added"`: Brand new tool additions.
        - `"fixed"`: Bug fixes, parser edge cases, syntax repairs, or broken features.
@@ -63,7 +66,13 @@ Every tool MUST adhere to these exact requirements:
 4. **Documentation**:
    - Add new tool row to the matching category table in `README.md`.
 
-5. **Verification**:
+5. **Critical Thinking & Acceptance Criteria (MANDATORY BEFORE IMPLEMENTATION)**:
+    - Before coding, define explicit acceptance criteria for every advertised feature: input, output, edge cases, errors, privacy, and UI interactions.
+    - Audit the existing implementation against the proposal; identify gaps or misleading claims before adding features.
+    - Do not call an MVP complete while core advertised behavior is missing; rename/scope it or implement the behavior.
+    - Implement in batches; manually test valid, invalid, empty, boundary, and interaction cases before moving on.
+
+6. **Verification**:
    - Run `npx tsc --noEmit` and ensure zero errors prior to committing.
 
 <!-- OPENWIKI:START -->

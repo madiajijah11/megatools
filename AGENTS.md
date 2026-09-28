@@ -10,7 +10,7 @@ Refer to `ARCHITECTURE.md` and `CLAUDE.md` for complete system design and compon
 
 ## ⚠️ MANDATORY TOOL ADDITION WORKFLOW (ZERO-MISTAKE PROTOCOL)
 
-Every AI agent or developer adding, updating, or refactoring tools MUST strictly follow these 6 mandatory steps:
+Every AI agent or developer adding, updating, or refactoring tools MUST strictly follow these 6 mandatory steps. **No tool change is complete until its changelog entry is added and verification passes.**
 
 1. **Plan & Confirm First**:
    - Present an implementation plan with features, tech engine, and UI breakdown before writing code.
@@ -30,7 +30,9 @@ Every AI agent or developer adding, updating, or refactoring tools MUST strictly
 
 4. **Changelog & Notification Bell ("What's New")**:
    - In `src/lib/changelog-data.ts`:
-     - Add a new `ChangelogItem` entry at the **TOP** of `CHANGELOG_ITEMS` array.
+     - Add a new `ChangelogItem` entry at the **TOP** of `CHANGELOG_ITEMS` array for **every tool addition, feature change, bug fix, UI/UX improvement, or refactor**.
+     - **COMPLETION GATE**: Do not report work complete, commit, or push until the entry exists and `npm run verify` passes.
+     - `toolHref` MUST point to the changed tool route; use a valid route for multi-tool changes.
      - **TYPE DISCIPLINE**: Select the exact matching `ChangeType`:
        - `"added"`: Brand new tool additions.
        - `"fixed"`: Bug fixes, parser edge cases, syntax repairs, or broken features.
@@ -42,7 +44,14 @@ Every AI agent or developer adding, updating, or refactoring tools MUST strictly
 5. **Documentation & README**:
    - Add the new tool row to the matching category table in `README.md` and update the count.
 
-6. **Verification Gate**:
+6. **Critical Thinking & Acceptance Criteria (MANDATORY BEFORE IMPLEMENTATION)**:
+   - Before coding any new tool or substantial change, define explicit acceptance criteria for each advertised feature: input contract, output contract, edge cases, error state, privacy behavior, and UI interaction.
+   - Audit the existing implementation against the proposal before adding features; identify gaps, scope limits, and misleading claims.
+   - Do not call an MVP complete when core advertised behavior is missing. Rename/scope the tool or implement the missing behavior.
+   - Implement in batches with one tool's criteria verified before moving to the next.
+   - After implementation, manually test each acceptance criterion with representative valid, invalid, empty, boundary, and interaction inputs.
+
+7. **Verification Gate**:
    - Always run `npx tsc --noEmit` to guarantee zero type errors.
    - When committing in confined environments, use `git commit --no-gpg-sign -m "..."`.
 

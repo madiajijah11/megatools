@@ -6,7 +6,7 @@
 
 ---
 
-## 🛠️ Complete Tools Directory (101 Tools)
+## 🛠️ Complete Tools Directory (108 Tools)
 
 ### 📄 PDF & Documents (6)
 | Tool | Route | Engine | Description |
@@ -61,8 +61,10 @@
 | **Password Generator** | `/password-generator` | Crypto API | Create strong, cryptographically random passwords with custom sets |
 | **UUID Generator** | `/uuid-generator` | `crypto.randomUUID` | Generate UUID v4 identifiers (single or bulk up to 100) |
 | **Image Steganography** | `/steganography` | Canvas Pixel LSB | Hide secret messages in image pixels or extract hidden payloads |
+| **Color Converter & Palette Studio** | `/color-converter-pro` | Native Color Math | Convert HEX, RGB, and HSL values with CSS output |
+| **Image Cropper & Resizer** | `/image-cropper` | Canvas API | Resize, rotate, and export images locally |
 
-### 📱 Media, Audio & Video (11)
+### 📱 Media, Audio & Video (13)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **SVG to PNG / JPG / WebP Converter** | `/svg-converter` | Canvas Rasterizer | Rasterize & upscale vector SVG files to 1x, 2x, 4x bitmap images |
@@ -77,10 +79,12 @@
 | **Favicon & Icon Generator** | `/favicon-generator` | Canvas API | Generate standard icon sizes (16, 32, 48, 180, 192, 512px) + HTML tags |
 | **Web Audio Tone & Frequency Synthesizer** | `/tone-generator` | Web Audio API | Generate pure tones (20Hz-20kHz), binaural beats, and colored noise with oscilloscope |
 
-### 📝 Format & Code (18)
+### 📝 Format & Code (20)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **SQL DDL to TypeScript & Zod Schema** | `/sql-to-ts` | SQL DDL Parser | Convert SQL CREATE TABLE statements into TypeScript interfaces, types, and Zod schemas |
+| **OpenAPI to TypeScript & Zod** | `/openapi-to-ts` | OpenAPI Schema Parser | Generate typed definitions from API component schemas |
+| **JSONL Analyzer & Schema Inspector** | `/jsonl-analyzer` | Streaming JSONL Parser | Inspect validity, fields, and clean JSON Lines |
 | **cURL to Code Converter** | `/curl-converter` | Shell AST Parser | Convert cURL commands into JavaScript fetch, Python requests, Axios, and Go code |
 | **JSON to TypeScript & Zod Schema** | `/json-to-ts` | AST Generator | Infer TypeScript interfaces, types, and Zod validation schemas from JSON |
 | **HTML / SVG to JSX Converter** | `/html-to-jsx` | Regex AST | Convert raw HTML and SVG into React/JSX with camelCase attributes & style objects |
@@ -100,10 +104,13 @@
 | **Markdown Preview** | `/markdown-preview` | `@mdx-js/mdx` | Live Markdown and MDX renderer with sanitized output |
 | **Base64 Data URL & Asset Embedder** | `/data-url` | FileReader API | Convert images, fonts, and SVGs into RFC 2397 Data URLs & CSS rules |
 
-### ⚙️ Dev & Network (13)
+### ⚙️ Dev & Network (16)
 | Tool | Route | Engine | Description |
 |---|---|---|---|
 | **Semantic Versioning Calculator & Range Tester** | `/semver-calculator` | SemVer 2.0 Spec Engine | Evaluate SemVer ranges (^, ~, >=, ||), simulate 1-click bumps, and sort multi-version releases |
+| **Environment File Editor & Sanitizer** | `/env-file-editor` | Native Text Parser | Sanitize .env values and export .env.example or JSON |
+| **Gitignore Generator** | `/gitignore-generator` | Template Engine | Compose .gitignore files from common project presets |
+| **HTTP Request Builder** | `/http-request-builder` | Native Request Serializer | Generate cURL, fetch, Axios, and Python requests snippets |
 | **RDAP Domain & Registration Inspector** | `/rdap-lookup` | ICANN RDAP Protocol | Query domain registration, expiration, transfer locks, and IP ownership |
 | **DNS over HTTPS (DoH) Lookup** | `/dns-lookup` | Cloudflare & Google DoH | Query A, AAAA, MX, TXT, CNAME, NS, SOA records with DNSSEC validation |
 | **Cron Expression Generator & Parser** | `/cron-parser` | Cron Engine | Parse and explain crontab schedules in plain English & calculate upcoming runs |
