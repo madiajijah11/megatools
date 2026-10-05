@@ -13,6 +13,20 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-10-05-seo-metadata-schema-optimization",
+    date: "2026-10-05",
+    title: "SEO Metadata & WebApplication Schema Optimization",
+    type: "improved",
+    toolHref: "/http-status",
+    toolName: "Search Visibility",
+    description: "Enhanced metadata, high-intent query keywords, canonical URLs, and structured JSON-LD schemas across top ranking tools.",
+    highlights: [
+      "Optimized titles and meta descriptions for high-impression tools (HTTP Status, SQL Formatter, Audio Trimmer, Favicon Generator, ASCII Banner, CIDR)",
+      "Added WebApplication Schema.org structured data for rich search snippets and improved CTR",
+      "Aligned search queries (postgresql beautifier, wav cutter, cidr notation calculator) with page metadata"
+    ],
+  },
+  {
     id: "2026-09-28-seven-tools-critical-fixes",
     date: "2026-09-28",
     title: "Seven New Tools Critical Fixes",
