@@ -13,6 +13,22 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-10-05-har-sanitizer-release",
+    date: "2026-10-05",
+    title: "HAR File Sanitizer & Credential Stripper",
+    type: "added",
+    toolHref: "/har-sanitizer",
+    toolName: "HAR Sanitizer",
+    description: "Launch of 100% client-side HTTP Archive (.har) credential sanitizer to purge sensitive cookies, tokens, and passwords before sharing.",
+    highlights: [
+      "Sanitizes authorization headers, bearer tokens, API keys, and session cookies locally",
+      "Deep recursive inspection of JSON request and response payloads with PII key redaction",
+      "Query parameter token scrubbing and URL token redaction",
+      "Ultra-compact mode to strip heavy binary/image and response bodies for lightweight sharing",
+      "Seamless integration bridge to inspect sanitized files in HAR Waterfall Viewer"
+    ],
+  },
+  {
     id: "2026-10-05-seo-metadata-schema-optimization",
     date: "2026-10-05",
     title: "SEO Metadata & WebApplication Schema Optimization",

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
+import Link from "next/link";
 import ToolLayout from "@/components/ToolLayout";
 import CopyButton from "@/components/CopyButton";
 
@@ -207,6 +208,16 @@ export default function HarViewerClient() {
     }
   }, []);
 
+  useEffect(() => {
+    try {
+      const imported = sessionStorage.getItem("megatools_har_import");
+      if (imported) {
+        sessionStorage.removeItem("megatools_har_import");
+        parseHarFile(imported, "sanitized-export.har");
+      }
+    } catch {}
+  }, [parseHarFile]);
+
   const handleFileUpload = (file: File) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -289,35 +300,44 @@ export default function HarViewerClient() {
             <span className="text-text-muted">({entries.length} items)</span>
           </div>
 
-          <label
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragOver(true);
-            }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragOver(false);
-              const file = e.dataTransfer.files[0];
-              if (file) handleFileUpload(file);
-            }}
-            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
-              dragOver
-                ? "border-accent bg-accent/15 text-accent"
-                : "border-border-subtle bg-bg-page text-text-secondary hover:border-accent hover:text-accent"
-            }`}
-          >
-            + Upload .har File
-            <input
-              type="file"
-              accept=".har,application/json"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
+          <div className="flex items-center gap-2">
+            <Link
+              href="/har-sanitizer"
+              className="px-3 py-1.5 rounded-lg border border-border-subtle bg-bg-page text-xs font-bold text-accent hover:border-accent transition-all inline-flex items-center gap-1.5"
+            >
+              <span>🛡️ Sanitize Credentials</span>
+            </Link>
+
+            <label
+              onDragOver={(e) => {
+                e.preventDefault();
+                setDragOver(true);
+              }}
+              onDragLeave={() => setDragOver(false)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setDragOver(false);
+                const file = e.dataTransfer.files[0];
                 if (file) handleFileUpload(file);
               }}
-              className="hidden"
-            />
-          </label>
+              className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all cursor-pointer ${
+                dragOver
+                  ? "border-accent bg-accent/15 text-accent"
+                  : "border-border-subtle bg-bg-page text-text-secondary hover:border-accent hover:text-accent"
+              }`}
+            >
+              + Upload .har File
+              <input
+                type="file"
+                accept=".har,application/json"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleFileUpload(file);
+                }}
+                className="hidden"
+              />
+            </label>
+          </div>
         </div>
 
         {/* Filter Controls Bar */}
