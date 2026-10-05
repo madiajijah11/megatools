@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const HOST = "megatools-tau.vercel.app";
-const KEY = "1e7e8c110e4fbbaa65afbd80547ae803";
+const KEY = "1afe9733d34744e3ae2d9111d38393d1";
 const KEY_LOCATION = `https://${HOST}/${KEY}.txt`;
 
 // Read tool hrefs from tool-data.ts
