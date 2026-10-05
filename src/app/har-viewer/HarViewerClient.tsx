@@ -13,17 +13,17 @@ interface HarEntry {
     method: string;
     url: string;
     headers: { name: string; value: string }[];
-    queryString: { name: string; value: string }[];
-    bodySize: number;
+    queryString?: { name: string; value: string }[];
+    bodySize?: number;
   };
   response: {
     status: number;
     statusText: string;
     headers: { name: string; value: string }[];
-    content: { size: number; mimeType: string; text?: string };
-    bodySize: number;
+    content?: { size?: number; mimeType?: string; text?: string };
+    bodySize?: number;
   };
-  timings: {
+  timings?: {
     blocked?: number;
     dns?: number;
     connect?: number;
@@ -195,9 +195,38 @@ export default function HarViewerClient() {
     try {
       const parsed = JSON.parse(content);
       if (parsed.log && Array.isArray(parsed.log.entries)) {
-        const mapped = parsed.log.entries.map((e: HarEntry, idx: number) => ({
+        const mapped: HarEntry[] = parsed.log.entries.map((e: any, idx: number) => ({
           ...e,
           id: e.id || String(idx + 1),
+          startedDateTime: e.startedDateTime || new Date().toISOString(),
+          time: typeof e.time === "number" && !isNaN(e.time) ? Math.max(0, e.time) : 0,
+          request: {
+            method: e.request?.method || "GET",
+            url: e.request?.url || "",
+            headers: Array.isArray(e.request?.headers) ? e.request.headers : [],
+            queryString: Array.isArray(e.request?.queryString) ? e.request.queryString : [],
+            bodySize: typeof e.request?.bodySize === "number" ? e.request.bodySize : 0,
+          },
+          response: {
+            status: typeof e.response?.status === "number" ? e.response.status : 200,
+            statusText: e.response?.statusText || "OK",
+            headers: Array.isArray(e.response?.headers) ? e.response.headers : [],
+            content: {
+              size: typeof e.response?.content?.size === "number" ? e.response.content.size : 0,
+              mimeType: e.response?.content?.mimeType || "application/octet-stream",
+              text: e.response?.content?.text,
+            },
+            bodySize: typeof e.response?.bodySize === "number" ? e.response.bodySize : 0,
+          },
+          timings: {
+            blocked: Math.max(0, e.timings?.blocked ?? 0),
+            dns: Math.max(0, e.timings?.dns ?? 0),
+            connect: Math.max(0, e.timings?.connect ?? 0),
+            ssl: Math.max(0, e.timings?.ssl ?? 0),
+            send: Math.max(0, e.timings?.send ?? 0),
+            wait: Math.max(0, e.timings?.wait ?? 0),
+            receive: Math.max(0, e.timings?.receive ?? 0),
+          },
         }));
         setEntries(mapped);
         setFileName(name);
@@ -232,20 +261,22 @@ export default function HarViewerClient() {
       // Search
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
-        if (!e.request.url.toLowerCase().includes(q) && !e.request.method.toLowerCase().includes(q)) {
+        const urlMatch = (e.request?.url || "").toLowerCase().includes(q);
+        const methodMatch = (e.request?.method || "").toLowerCase().includes(q);
+        if (!urlMatch && !methodMatch) {
           return false;
         }
       }
 
       // Status
       if (statusFilter !== "ALL") {
-        const statusStr = String(e.response.status);
+        const statusStr = String(e.response?.status || 200);
         if (!statusStr.startsWith(statusFilter[0])) return false;
       }
 
       // Type
       if (typeFilter !== "ALL") {
-        const mime = (e.response.content?.mimeType || "").toLowerCase();
+        const mime = (e.response?.content?.mimeType || "").toLowerCase();
         if (typeFilter === "XHR" && !mime.includes("json") && !mime.includes("xml")) return false;
         if (typeFilter === "JS" && !mime.includes("javascript")) return false;
         if (typeFilter === "CSS" && !mime.includes("css")) return false;
@@ -261,11 +292,15 @@ export default function HarViewerClient() {
   }, [entries, selectedEntryId]);
 
   const maxDuration = useMemo(() => {
-    return Math.max(...entries.map((e) => e.time), 1);
+    return Math.max(...entries.map((e) => (typeof e.time === "number" && !isNaN(e.time) ? e.time : 0)), 1);
   }, [entries]);
 
   const totalTransferred = useMemo(() => {
-    return entries.reduce((acc, e) => acc + (e.response.bodySize > 0 ? e.response.bodySize : e.response.content.size || 0), 0);
+    return entries.reduce((acc, e) => {
+      const body = typeof e.response?.bodySize === "number" ? e.response.bodySize : 0;
+      const content = typeof e.response?.content?.size === "number" ? e.response.content.size : 0;
+      return acc + (body > 0 ? body : content);
+    }, 0);
   }, [entries]);
 
   const stats = (
@@ -401,13 +436,18 @@ export default function HarViewerClient() {
           <div className="divide-y divide-border-subtle border border-border-subtle bg-bg-page rounded-b-lg max-h-[320px] overflow-y-auto text-xs">
             {filteredEntries.map((e) => {
               const isSelected = e.id === selectedEntryId;
-              const is2xx = e.response.status >= 200 && e.response.status < 300;
-              const is3xx = e.response.status >= 300 && e.response.status < 400;
-              const is4xx = e.response.status >= 400 && e.response.status < 500;
-              const is5xx = e.response.status >= 500;
+              const status = e.response?.status || 200;
+              const is2xx = status >= 200 && status < 300;
+              const is3xx = status >= 300 && status < 400;
+              const is4xx = status >= 400 && status < 500;
+              const is5xx = status >= 500;
 
-              const urlName = e.request.url.split("/").pop()?.split("?")[0] || e.request.url;
-              const widthPct = Math.max(4, (e.time / maxDuration) * 100);
+              const reqUrl = e.request?.url || "";
+              const urlName = reqUrl.split("/").pop()?.split("?")[0] || reqUrl || "request";
+              const widthPct = Math.max(4, (((e.time || 0) / maxDuration) * 100));
+              const transferred = (e.response?.bodySize && e.response.bodySize > 0)
+                ? e.response.bodySize
+                : (e.response?.content?.size || 0);
 
               return (
                 <div
@@ -419,7 +459,7 @@ export default function HarViewerClient() {
                       : "hover:bg-bg-card text-text-secondary"
                   }`}
                 >
-                  <span className="w-16 shrink-0 font-bold text-accent">{e.request.method}</span>
+                  <span className="w-16 shrink-0 font-bold text-accent">{e.request?.method || "GET"}</span>
                   <span
                     className={`w-16 shrink-0 font-bold ${
                       is2xx
@@ -433,13 +473,13 @@ export default function HarViewerClient() {
                         : "text-text-muted"
                     }`}
                   >
-                    {e.response.status}
+                    {status}
                   </span>
-                  <span className="flex-1 truncate mx-2 font-mono text-[11px]" title={e.request.url}>
-                    {urlName} <span className="text-text-muted text-[10px]">({e.request.url})</span>
+                  <span className="flex-1 truncate mx-2 font-mono text-[11px]" title={reqUrl}>
+                    {urlName} <span className="text-text-muted text-[10px]">({reqUrl})</span>
                   </span>
                   <span className="w-20 text-right shrink-0 text-[11px] text-text-muted font-mono">
-                    {formatBytes(e.response.bodySize > 0 ? e.response.bodySize : e.response.content.size || 0)}
+                    {formatBytes(transferred)}
                   </span>
                   <div className="w-32 shrink-0 flex items-center justify-end gap-1.5">
                     <div className="w-20 bg-border-subtle h-2 rounded-full overflow-hidden flex">
@@ -449,7 +489,7 @@ export default function HarViewerClient() {
                       />
                     </div>
                     <span className="text-[10px] text-text-muted font-mono w-10 text-right">
-                      {Math.round(e.time)}ms
+                      {Math.round(e.time || 0)}ms
                     </span>
                   </div>
                 </div>
@@ -463,42 +503,42 @@ export default function HarViewerClient() {
           <div className="pt-3 border-t border-border-subtle space-y-3">
             <div className="h-8 flex items-center justify-between text-xs">
               <span className="font-semibold text-text-primary truncate">
-                Request Details: <strong className="text-accent">{selectedEntry.request.method}</strong> {selectedEntry.request.url}
+                Request Details: <strong className="text-accent">{selectedEntry.request?.method || "GET"}</strong> {selectedEntry.request?.url}
               </span>
-              <CopyButton text={selectedEntry.request.url} label="Copy URL" />
+              <CopyButton text={selectedEntry.request?.url || ""} label="Copy URL" />
             </div>
 
             {/* Timings Breakdown Row */}
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs">
               <div className="p-2 rounded bg-bg-page border border-border-subtle">
                 <span className="text-text-muted text-[10px] block">DNS Lookup</span>
-                <span className="font-bold text-purple-300">{selectedEntry.timings.dns || 0} ms</span>
+                <span className="font-bold text-purple-300">{Math.round(selectedEntry.timings?.dns ?? 0)} ms</span>
               </div>
               <div className="p-2 rounded bg-bg-page border border-border-subtle">
                 <span className="text-text-muted text-[10px] block">TCP Connect</span>
-                <span className="font-bold text-amber-300">{selectedEntry.timings.connect || 0} ms</span>
+                <span className="font-bold text-amber-300">{Math.round(selectedEntry.timings?.connect ?? 0)} ms</span>
               </div>
               <div className="p-2 rounded bg-bg-page border border-border-subtle">
                 <span className="text-text-muted text-[10px] block">SSL Handshake</span>
-                <span className="font-bold text-cyan-300">{selectedEntry.timings.ssl || 0} ms</span>
+                <span className="font-bold text-cyan-300">{Math.round(selectedEntry.timings?.ssl ?? 0)} ms</span>
               </div>
               <div className="p-2 rounded bg-bg-page border border-border-subtle">
                 <span className="text-text-muted text-[10px] block">TTFB (Wait)</span>
-                <span className="font-bold text-accent">{selectedEntry.timings.wait || 0} ms</span>
+                <span className="font-bold text-accent">{Math.round(selectedEntry.timings?.wait ?? 0)} ms</span>
               </div>
               <div className="p-2 rounded bg-bg-page border border-border-subtle">
                 <span className="text-text-muted text-[10px] block">Content Download</span>
-                <span className="font-bold text-success">{selectedEntry.timings.receive || 0} ms</span>
+                <span className="font-bold text-success">{Math.round(selectedEntry.timings?.receive ?? 0)} ms</span>
               </div>
             </div>
 
             {/* Response Headers */}
             <div className="space-y-1.5">
               <span className="text-xs font-semibold text-text-primary block">
-                Response Headers ({selectedEntry.response.headers.length})
+                Response Headers ({selectedEntry.response?.headers?.length ?? 0})
               </span>
               <div className="p-3 rounded-lg border border-border-subtle bg-bg-page text-xs space-y-1 max-h-40 overflow-y-auto">
-                {selectedEntry.response.headers.map((h, i) => (
+                {(selectedEntry.response?.headers || []).map((h, i) => (
                   <div key={i} className="flex items-start gap-2 py-0.5 border-b border-border-subtle/30 last:border-0">
                     <span className="text-accent font-bold w-40 shrink-0">{h.name}:</span>
                     <span className="text-text-secondary break-all flex-1">{h.value}</span>
@@ -508,7 +548,7 @@ export default function HarViewerClient() {
             </div>
 
             {/* Response Content Preview */}
-            {selectedEntry.response.content.text && (
+            {selectedEntry.response?.content?.text && (
               <div className="space-y-1.5">
                 <div className="h-8 flex items-center justify-between text-xs">
                   <span className="font-semibold text-text-primary">Response Payload Body</span>

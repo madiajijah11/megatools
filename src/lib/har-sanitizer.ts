@@ -622,6 +622,15 @@ export const SAMPLE_DIRTY_HAR_JSON = JSON.stringify(
           id: "req-1",
           startedDateTime: "2026-10-05T08:14:00.120Z",
           time: 180,
+          timings: {
+            blocked: 1.5,
+            dns: 18.2,
+            connect: 32.4,
+            ssl: 45.1,
+            send: 1.2,
+            wait: 68.6,
+            receive: 13.0
+          },
           serverIPAddress: "198.51.100.42",
           clientIPAddress: "203.0.113.19",
           request: {
@@ -683,6 +692,15 @@ export const SAMPLE_DIRTY_HAR_JSON = JSON.stringify(
           id: "req-2",
           startedDateTime: "2026-10-05T08:14:00.350Z",
           time: 65,
+          timings: {
+            blocked: 0.8,
+            dns: 5.4,
+            connect: 12.1,
+            ssl: 18.2,
+            send: 0.5,
+            wait: 22.0,
+            receive: 6.0
+          },
           serverIPAddress: "198.51.100.88",
           request: {
             method: "GET",
@@ -721,6 +739,15 @@ export const SAMPLE_DIRTY_HAR_JSON = JSON.stringify(
           id: "req-3",
           startedDateTime: "2026-10-05T08:14:00.520Z",
           time: 42,
+          timings: {
+            blocked: 0.4,
+            dns: 0,
+            connect: 0,
+            ssl: 0,
+            send: 0.3,
+            wait: 15.3,
+            receive: 26.0
+          },
           serverIPAddress: "104.21.49.200",
           request: {
             method: "GET",
