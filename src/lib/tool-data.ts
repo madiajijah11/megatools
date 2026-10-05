@@ -1638,6 +1638,30 @@ export const TOOLS: ToolInfo[] = [
       output: "export interface User {\n  id: number;\n  email: string;\n}"
     }
   },
+  {
+    id: "har-sanitizer",
+    title: "HAR File Sanitizer & Credential Stripper",
+    shortTitle: "HAR Sanitizer",
+    description: "Scrub cookies, bearer tokens, API keys, passwords, and sensitive headers from HTTP Archive (.har) logs 100% client-side.",
+    emoji: "🛡️",
+    href: "/har-sanitizer",
+    tech: "HAR AST & Regex Redactor",
+    steps: [
+      "Upload, drop, or load sample .har file exported from browser DevTools",
+      "Configure sanitization options (auth headers, cookies, query tokens, JSON bodies, IP masking)",
+      "Review interactive security audit log showing all detected leaks and redactions",
+      "Download clean sanitized .har file or open directly in HAR Waterfall Viewer"
+    ],
+    tips: [
+      "Never share un-sanitized .har files with third parties as they often contain active session cookies and authorization tokens",
+      "Use Ultra-Compact preset to purge heavy response bodies while preserving network requests and headers",
+      "100% client-side privacy: all processing happens in browser memory with zero server uploads"
+    ],
+    example: {
+      input: "network-session.har with Bearer tokens, cookies, and passwords in JSON body",
+      output: "Sanitized .har with all secrets replaced by [REDACTED] and binary assets purged"
+    }
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
@@ -1691,6 +1715,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "env-file-editor",
       "gitignore-generator",
       "http-request-builder",
+      "har-sanitizer",
     ],
   },
   {
