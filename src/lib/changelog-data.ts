@@ -13,6 +13,22 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-10-06-pii-redactor-release",
+    date: "2026-10-06",
+    title: "AI Prompt PII Redactor & Secret Masker",
+    type: "added",
+    toolHref: "/pii-redactor",
+    toolName: "PII Redactor",
+    description: "Launch of client-side privacy tool to redact confidential personal data and developer credentials before sharing prompts with AI models.",
+    highlights: [
+      "Detects Indonesian NIK & NPWP, Luhn-verified credit cards, emails, phone numbers, and IPv4 addresses",
+      "Masks developer secrets: OpenAI, Anthropic, AWS, Stripe keys, JWTs, DB connection URIs, and passwords",
+      "Smart entity tokenization (<EMAIL_1>, <API_KEY_1>) to preserve AI reasoning and relationship context",
+      "Reversible De-anonymizer bridge to restore original sensitive data from AI model responses",
+      "100% in-browser client-side execution with zero data storage or external network transmission"
+    ],
+  },
+  {
     id: "2026-10-05-har-sanitizer-release",
     date: "2026-10-05",
     title: "HAR File Sanitizer & Credential Stripper",
