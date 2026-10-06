@@ -1662,6 +1662,30 @@ export const TOOLS: ToolInfo[] = [
       output: "Sanitized .har with all secrets replaced by [REDACTED] and binary assets purged"
     }
   },
+  {
+    id: "pii-redactor",
+    title: "AI Prompt PII Redactor & Secret Masker",
+    shortTitle: "Prompt Redactor",
+    description: "Detect and mask confidential PII (NIK, NPWP, credit cards, emails) and secrets (API keys, passwords, JWTs) before pasting to AI, with reversible de-anonymization.",
+    emoji: "🛡️",
+    href: "/pii-redactor",
+    tech: "Client-Side PII & Secret Redactor Engine",
+    steps: [
+      "Paste your confidential prompt, customer support inquiry, crash log, or SQL dump",
+      "Select your preferred masking mode (smart tokens, generic tags, asterisks, or synthetic fake data)",
+      "Copy sanitized prompt directly for ChatGPT, Claude, Cursor, or Gemini",
+      "Paste AI response into De-anonymizer tab to seamlessly restore original secrets"
+    ],
+    tips: [
+      "Use Smart Entity Tokens (<TAG_1>) so the AI understands entity relationships while keeping secrets hidden",
+      "Use the De-anonymizer to instantly restore your real customer emails and keys after the AI responds",
+      "Indonesian NIK & NPWP, Luhn-validated credit cards, and major cloud API keys are detected automatically"
+    ],
+    example: {
+      input: "Customer Budi Santoso (NIK 3171012508890002, email budi@perusahaan.co.id, card 4532-0150-1823-9910)",
+      output: "Customer Budi Santoso (NIK <NIK_1>, email <EMAIL_1>, card <CREDIT_CARD_1>)"
+    }
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
@@ -1829,6 +1853,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "llm-diff-comparator",
       "json-repair",
       "jsonl-analyzer",
+      "pii-redactor",
     ],
   },
 ];
