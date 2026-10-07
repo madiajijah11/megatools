@@ -13,6 +13,23 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-10-07-compose-visualizer-release",
+    date: "2026-10-07",
+    title: "Docker Compose Visualizer & Security Linter",
+    type: "added",
+    toolHref: "/compose-visualizer",
+    toolName: "Docker Compose Visualizer",
+    description: "Launch of interactive Docker Compose topology visualizer, security vulnerability scanner, and 1-click YAML production hardening engine.",
+    highlights: [
+      "Visualizes services, port mappings, mounted volumes, networks, and dependency relationships",
+      "Comprehensive security audit: detects root users, wildcard 0.0.0.0 bindings, Docker socket mounts, unpinned tags, and missing limits",
+      "Automated Security Score & Grade (A+ to F) with actionable remediation and code snippets",
+      "1-Click Auto-Harden feature to generate production-ready, security-patched docker-compose.yml files",
+      "Exportable Mermaid architecture flowcharts for GitHub READMEs and team documentation",
+      "100% client-side in-browser YAML parsing with zero external server dependencies"
+    ],
+  },
+  {
     id: "2026-10-06-pii-redactor-release",
     date: "2026-10-06",
     title: "AI Prompt PII Redactor & Secret Masker",
