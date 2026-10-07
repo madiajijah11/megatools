@@ -1686,6 +1686,31 @@ export const TOOLS: ToolInfo[] = [
       output: "Customer Budi Santoso (NIK <NIK_1>, email <EMAIL_1>, card <CREDIT_CARD_1>)"
     }
   },
+  {
+    id: "compose-visualizer",
+    title: "Docker Compose Visualizer & Security Linter",
+    shortTitle: "Compose Visualizer",
+    description:
+      "Parse docker-compose.yml files, visualize service topologies, networks, ports, and volumes, audit security risks, and auto-generate 1-click hardened YAML.",
+    emoji: "🐳",
+    href: "/compose-visualizer",
+    tech: "Client-Side Docker Compose Linter & Topology Engine",
+    steps: [
+      "Paste your docker-compose.yml file or upload it from your computer",
+      "Explore the interactive Topology map to inspect services, open ports, mounted volumes, and networks",
+      "Review the Security Linter tab to check for root containers, wildcard 0.0.0.0 bindings, Docker socket leaks, and unpinned tags",
+      "Use 1-Click Auto-Harden to generate a production-ready, security-audited docker-compose.yml and export Mermaid architecture diagrams"
+    ],
+    tips: [
+      "Never bind sensitive database ports (Postgres, Mongo, Redis) to 0.0.0.0; always bind them to 127.0.0.1 or keep them internal",
+      "Avoid mounting /var/run/docker.sock into containers because it grants root access over the host machine",
+      "Export the generated Mermaid flowchart to easily document your architecture in GitHub READMEs"
+    ],
+    example: {
+      input: "services:\n  postgres:\n    image: postgres:latest\n    ports:\n      - 5432:5432",
+      output: "Security Grade: C (Wildcard database port exposed on 0.0.0.0, unpinned image tag, missing healthcheck)"
+    }
+  },
 ];
 
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
@@ -1822,6 +1847,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "regex-explainer",
       "cron-simulator",
       "semver-calculator",
+      "compose-visualizer",
     ],
   },
   {
