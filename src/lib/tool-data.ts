@@ -1711,8 +1711,31 @@ export const TOOLS: ToolInfo[] = [
       output: "Security Grade: C (Wildcard database port exposed on 0.0.0.0, unpinned image tag, missing healthcheck)"
     }
   },
+  {
+    id: "prompt-fuzzer",
+    title: "Prompt Injection & LLM Guardrail Fuzzer",
+    shortTitle: "Prompt Fuzzer",
+    description: "Stress-test LLM system prompts against jailbreaks, delimiter hijacking, prompt leaks, and generate 1-click fortified guardrails.",
+    emoji: "🛡️",
+    href: "/prompt-fuzzer",
+    tech: "Client-Side • Security Fuzzer & Guardrail Fortifier",
+    steps: [
+      "Paste your AI system prompt or choose one of the vulnerability presets",
+      "Inspect the live Attack Matrix to evaluate resistance against prompt leaks, DAN jailbreaks, and indirect injection",
+      "Test custom adversarial attack payloads inside the Interactive Attack Sandbox",
+      "Use 1-Click Auto-Harden to generate an enterprise-fortified, XML-encapsulated system prompt"
+    ],
+    tips: [
+      "Always isolate untrusted user input within explicit boundary tags like <user_query>...</user_query>",
+      "Include an explicit non-disclosure clause instructing the LLM to never recite or summarize its system prompt",
+      "Prohibit the generation of arbitrary markdown images to prevent zero-click URL telemetry leaks"
+    ],
+    example: {
+      input: "You are a customer support agent. Help users with whatever they ask.",
+      output: "Security Grade: F (0/100, 11 vulnerabilities detected, missing non-disclosure & untrusted input boundaries)"
+    }
+  },
 ];
-
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
   TOOLS.map((t) => [t.id, t])
 );
@@ -1880,6 +1903,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "json-repair",
       "jsonl-analyzer",
       "pii-redactor",
+      "prompt-fuzzer",
     ],
   },
 ];

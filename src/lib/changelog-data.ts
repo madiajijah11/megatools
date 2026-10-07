@@ -13,6 +13,23 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-10-07-prompt-fuzzer-release",
+    date: "2026-10-07",
+    title: "Prompt Injection & LLM Guardrail Fuzzer",
+    type: "added",
+    toolHref: "/prompt-fuzzer",
+    toolName: "Prompt Fuzzer",
+    description: "Launch of LLM system prompt stress-testing fuzzer, attack simulator, and 1-click enterprise guardrail fortifier.",
+    highlights: [
+      "Comprehensive attack suite: tests resistance against verbatim system leaks, 'ignore previous instructions', DAN roleplay jailbreaks, delimiter hijacking, and RAG poisoning",
+      "Zero-click exfiltration audit: detects risk of markdown image data leaks (![exfil](https://...))",
+      "Dynamic Security Scoring (0-100) and letter grades (A+ to F) with exact remediation snippets",
+      "Interactive Attack Sandbox to simulate adversarial user inputs and preview the combined prompt stream",
+      "1-Click Prompt Fortifier to wrap system instructions with immutable XML boundaries, non-disclosure directives, and untrusted input contracts",
+      "100% private and in-browser: prompts are never sent to external servers or telemetry APIs"
+    ],
+  },
+  {
     id: "2026-10-07-compose-visualizer-release",
     date: "2026-10-07",
     title: "Docker Compose Visualizer & Security Linter",
