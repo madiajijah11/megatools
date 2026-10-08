@@ -1735,6 +1735,30 @@ export const TOOLS: ToolInfo[] = [
       output: "Security Grade: F (0/100, 11 vulnerabilities detected, missing non-disclosure & untrusted input boundaries)"
     }
   },
+  {
+    id: "cron-collision",
+    title: "Distributed Cron Collision & Thundering Herd Analyzer",
+    shortTitle: "Cron Collision",
+    description: "Detect thundering herd spikes, simulate 24h multi-cron concurrency heatmaps, and optimize schedule offsets with 1-click jittering.",
+    emoji: "💥",
+    href: "/cron-collision",
+    tech: "Client-Side • Multi-Cron Concurrency & Jitter Optimizer",
+    steps: [
+      "Paste your multi-line crontab or load a real-world fleet scenario preset",
+      "Inspect the 24-Hour Timeline and Heatmap to pinpoint high-concurrency thundering herd spikes",
+      "Review the Collisions List to identify all jobs clashing at identical timestamps",
+      "Use 1-Click Smart Jitter to rebalance conflicting schedules and export your optimized crontab or Kubernetes YAML"
+    ],
+    tips: [
+      "Avoid scheduling heavy maintenance jobs on exact hour boundaries (:00)",
+      "Use prime-minute offsets (e.g., :17, :37) to prevent harmonic collisions across recurring intervals",
+      "Consider resource impact weights when scheduling database vacuum, indexing, and backup jobs"
+    ],
+    example: {
+      input: "0 0 * * * backup.sh\n0 0 * * * vacuum.sh\n0 0 * * * sync.sh",
+      output: "Critical Collision: 3 concurrent tasks at 00:00. Rebalance recommendation: offset to :14 and :28."
+    }
+  },
 ];
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
   TOOLS.map((t) => [t.id, t])
@@ -1871,6 +1895,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "cron-simulator",
       "semver-calculator",
       "compose-visualizer",
+      "cron-collision",
     ],
   },
   {
