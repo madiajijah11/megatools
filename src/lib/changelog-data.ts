@@ -13,6 +13,23 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-10-08-cron-collision-release",
+    date: "2026-10-08",
+    title: "Distributed Cron Collision & Thundering Herd Analyzer",
+    type: "added",
+    toolHref: "/cron-collision",
+    toolName: "Cron Collision Analyzer",
+    description: "Launch of multi-cron schedule concurrency analyzer, 24-hour thundering herd visualizer, and 1-click schedule de-collision jitter engine.",
+    highlights: [
+      "Multi-Cron Fleet Concurrency: Simulates 1,440-minute daily execution waves across dozens of crontabs simultaneously",
+      "Thundering Herd Detection: Automatically flags dangerous clashes where multiple heavy tasks hit the database or CPU at the same minute",
+      "Interactive 24-Hour Timeline: Hourly execution bars with drill-down into minute-by-minute concurrency and resource weight",
+      "1-Click Smart Jitter & Optimizer: Rebalances colliding jobs using prime-minute phase shifts while preserving original frequencies",
+      "Crontab & Kubernetes Export: 1-click export to clean Linux crontab format or Kubernetes CronJob YAML manifests",
+      "100% Client-Side: Zero backend transmission, keeping sensitive internal scripts and job names completely private"
+    ],
+  },
+  {
     id: "2026-10-07-prompt-fuzzer-release",
     date: "2026-10-07",
     title: "Prompt Injection & LLM Guardrail Fuzzer",
