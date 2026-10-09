@@ -1759,6 +1759,30 @@ export const TOOLS: ToolInfo[] = [
       output: "Critical Collision: 3 concurrent tasks at 00:00. Rebalance recommendation: offset to :14 and :28."
     }
   },
+  {
+    id: "storage-packer",
+    title: "Solidity Storage Layout & Gas Packing Optimizer",
+    shortTitle: "Storage Packer",
+    description: "Visualize EVM 32-byte storage slots, simulate struct and variable packing, eliminate wasted padding bytes, and optimize SSTORE gas costs with 1-click bin-packing.",
+    emoji: "📦",
+    href: "/storage-packer",
+    tech: "Client-Side • EVM Storage Slot & Gas Optimizer",
+    steps: [
+      "Paste your Solidity struct or state variables, or pick a real-world DeFi / Gaming preset",
+      "Inspect the 32-Byte EVM Slot Grid to see how variables occupy slots and where padding bytes are wasted",
+      "Switch to the 1-Click Optimizer tab to calculate potential SSTORE gas savings and reduced slot footprint",
+      "Apply the optimal First-Fit Decreasing packing layout and copy the re-ordered Solidity code"
+    ],
+    tips: [
+      "Group smaller types like uint128, uint64, uint32, and bool contiguous to pack them into a single 32-byte slot",
+      "Order variables descending by size to minimize slot fragmentation and avoid accidental 31-byte padding holes",
+      "Never reorder state variables in an already-deployed upgradeable proxy contract (UUPS / Transparent) to prevent storage collision"
+    ],
+    example: {
+      input: "uint128 rewardRate;\nbool isActive;\nuint256 totalStaked;\naddress owner;",
+      output: "Slot 0: [address owner (20B), uint128 rewardRate (16B) -> split], Slot 1: [uint256 totalStaked]. Optimized: 2 slots vs 3 slots."
+    }
+  },
 ];
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
   TOOLS.map((t) => [t.id, t])
@@ -1910,6 +1934,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "merkle-tree-generator",
       "bip39-generator",
       "evm-calldata-decoder",
+      "storage-packer",
     ],
   },
   {

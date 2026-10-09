@@ -13,6 +13,23 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-10-09-storage-packer-release",
+    date: "2026-10-09",
+    title: "Solidity Storage Layout & Gas Packing Optimizer",
+    type: "added",
+    toolHref: "/storage-packer",
+    toolName: "Solidity Storage Packer",
+    description: "Launch of interactive EVM 32-byte storage slot visualizer, struct and state variable packing simulator, and 1-click First-Fit Decreasing gas optimizer.",
+    highlights: [
+      "32-Byte EVM Slot Grid: Visualizes byte-by-byte memory layout (Slot 0..N) with color-coded variables and clear indicators for wasted storage padding",
+      "First-Fit Decreasing Bin Packing: 1-click algorithm re-orders state variables to pack tightest into 32-byte boundaries without accidental padding holes",
+      "Gas & Cost Savings Engine: Computes exact slot reductions, deployment bytecode savings, and cold/warm SSTORE write gas reductions",
+      "Solidity Parser & Importer: Paste raw Solidity contracts or structs and automatically parse primitives, addresses, uints, and dynamic types",
+      "Interactive Variable Manager: Add, delete, and re-order variables manually with real-time reactive layout updates",
+      "100% Client-Side Privacy: Runs completely in-browser, ensuring confidential proprietary smart contract architectures stay secure"
+    ],
+  },
+  {
     id: "2026-10-08-cron-collision-release",
     date: "2026-10-08",
     title: "Distributed Cron Collision & Thundering Herd Analyzer",
