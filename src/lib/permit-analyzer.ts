@@ -1,7 +1,7 @@
 /**
  * EIP-712 Typed Data & Permit Phishing Signature Deconstructor
  *
- * Implements EIP-712 encoding and hashing, pure-TS secp256k1 ecrecover,
+ * Implements EIP-712 encoding and hashing, pure-TS secp256k1 ecrecover & signing,
  * anti-drainer security heuristics, and human-readable intent translation.
  */
 
@@ -56,6 +56,16 @@ export interface HumanReadableSummary {
   verifyingContract?: string;
 }
 
+export interface SignatureComponents {
+  r: string;
+  s: string;
+  v: number;
+  isLowerS: boolean;
+  lengthBytes: number;
+  isValidFormat: boolean;
+  formatDescription: string;
+}
+
 export interface EIP712AnalysisResult {
   isValid: boolean;
   errorMessage?: string;
@@ -67,6 +77,7 @@ export interface EIP712AnalysisResult {
   recoveredSigner?: string;
   signatureValid?: boolean;
   signatureError?: string;
+  signatureComponents?: SignatureComponents;
   summary: HumanReadableSummary;
   overallRisk: RiskLevel;
   riskScore: number; // 0 (Safe) to 100 (Deadly Drainer)
@@ -122,10 +133,10 @@ export function isUnlimitedAmount(val: unknown): boolean {
 }
 
 // BigInt SECP256K1 Implementation
-const SECP256K1_P = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F");
-const SECP256K1_N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
-const SECP256K1_GX = BigInt("0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798");
-const SECP256K1_GY = BigInt("0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8");
+export const SECP256K1_P = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F");
+export const SECP256K1_N = BigInt("0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
+export const SECP256K1_GX = BigInt("0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798");
+export const SECP256K1_GY = BigInt("0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8");
 
 function mod(n: bigint, m: bigint = SECP256K1_P): bigint {
   const result = n % m;
@@ -174,13 +185,11 @@ function pointAdd(P1: Point, P2: Point): Point {
 
   if (x1 === x2) {
     if (mod(y1 + y2) === 0n) return null;
-    // Point doubling: lambda = (3 * x1^2) / (2 * y1)
     const lambda = mod(3n * x1 * x1 * modInverse(2n * y1));
     const x3 = mod(lambda * lambda - 2n * x1);
     const y3 = mod(lambda * (x1 - x3) - y1);
     return [x3, y3];
   } else {
-    // Point addition: lambda = (y2 - y1) / (x2 - x1)
     const lambda = mod((y2 - y1) * modInverse(x2 - x1));
     const x3 = mod(lambda * lambda - x1 - x2);
     const y3 = mod(lambda * (x1 - x3) - y1);
@@ -200,6 +209,105 @@ function pointMultiply(k: bigint, pt: Point): Point {
     scalar >>= 1n;
   }
   return res;
+}
+
+/**
+ * Split and inspect 65-byte ECDSA signature into r, s, v with EIP-2 malleability verification.
+ */
+export function splitSignature(signatureHex: string): SignatureComponents | null {
+  const clean = signatureHex.trim().replace(/^0x/, "");
+  if (clean.length !== 130) {
+    return null;
+  }
+
+  const rHex = clean.slice(0, 64);
+  const sHex = clean.slice(64, 128);
+  const vHex = clean.slice(128, 130);
+
+  const vInt = parseInt(vHex, 16);
+  const sBig = BigInt("0x" + sHex);
+  const isLowerS = sBig <= SECP256K1_N / 2n;
+
+  return {
+    r: "0x" + rHex,
+    s: "0x" + sHex,
+    v: vInt,
+    isLowerS,
+    lengthBytes: 65,
+    isValidFormat: true,
+    formatDescription: isLowerS
+      ? "Canonical 65-byte ECDSA (EIP-2 Malleability Protected)"
+      : "Non-standard high-S signature (Vulnerable to transaction malleability)",
+  };
+}
+
+/**
+ * Derive Ethereum checksummed address from private key in pure TypeScript.
+ */
+export function deriveAddressFromPrivateKey(privKeyHex: string): string {
+  const clean = privKeyHex.trim().replace(/^0x/, "");
+  if (clean.length !== 64) {
+    throw new Error("Private key must be exactly 32 bytes (64 hex characters)");
+  }
+  const privBig = BigInt("0x" + clean);
+  if (privBig <= 0n || privBig >= SECP256K1_N) {
+    throw new Error("Private key out of valid secp256k1 range");
+  }
+
+  const pub = pointMultiply(privBig, [SECP256K1_GX, SECP256K1_GY]);
+  if (!pub) throw new Error("Failed to derive public key");
+
+  const qxHex = pub[0].toString(16).padStart(64, "0");
+  const qyHex = pub[1].toString(16).padStart(64, "0");
+  const pubBytes = hexToBytes(qxHex + qyHex);
+
+  const hash = keccak256(pubBytes);
+  const addrBytes = hash.slice(12, 32);
+  const addrHex = bytesToHex(addrBytes);
+  return toChecksumAddress("0x" + addrHex);
+}
+
+/**
+ * Deterministically sign a 32-byte digest with a private key (RFC-6979 inspired via Keccak).
+ */
+export function signDigest(digestHex: string, privKeyHex: string): string {
+  const cleanDigest = digestHex.trim().replace(/^0x/, "");
+  const cleanPriv = privKeyHex.trim().replace(/^0x/, "");
+
+  if (cleanDigest.length !== 64) {
+    throw new Error("Digest must be exactly 32 bytes (64 hex characters)");
+  }
+  if (cleanPriv.length !== 64) {
+    throw new Error("Private key must be exactly 32 bytes (64 hex characters)");
+  }
+
+  const z = BigInt("0x" + cleanDigest);
+  const d = BigInt("0x" + cleanPriv);
+
+  // Deterministic nonce k derivation
+  const combined = hexToBytes(cleanDigest + cleanPriv);
+  const kBytes = keccak256(combined);
+  let k = mod(BigInt("0x" + bytesToHex(kBytes)), SECP256K1_N);
+  if (k === 0n) k = 1n;
+
+  const R = pointMultiply(k, [SECP256K1_GX, SECP256K1_GY]);
+  if (!R) throw new Error("Signing failed (point at infinity)");
+
+  const r = mod(R[0], SECP256K1_N);
+  const kInv = modInverse(k, SECP256K1_N);
+  let s = mod(kInv * (z + r * d), SECP256K1_N);
+  let v = Number(R[1] % 2n);
+
+  // EIP-2: enforce lower S
+  if (s > SECP256K1_N / 2n) {
+    s = SECP256K1_N - s;
+    v = v ^ 1;
+  }
+
+  const vHex = (v + 27).toString(16).padStart(2, "0");
+  const rHex = r.toString(16).padStart(64, "0");
+  const sHex = s.toString(16).padStart(64, "0");
+  return "0x" + rHex + sHex + vHex;
 }
 
 /**
@@ -573,12 +681,14 @@ export function analyzeEIP712Payload(
   const sHashHex = "0x" + bytesToHex(sHash);
   const tHashHex = "0x" + bytesToHex(tHash);
 
-  // Signer recovery if signature provided
+  // Signer recovery & signature decomposition if signature provided
   let recoveredSigner: string | undefined;
   let signatureValid: boolean | undefined;
   let signatureError: string | undefined;
+  let signatureComponents: SignatureComponents | undefined;
 
   if (signatureHex && signatureHex.trim().length > 0) {
+    signatureComponents = splitSignature(signatureHex) ?? undefined;
     try {
       recoveredSigner = recoverSignerAddress(digestHex, signatureHex);
       signatureValid = true;
@@ -828,6 +938,7 @@ export function analyzeEIP712Payload(
     recoveredSigner,
     signatureValid,
     signatureError,
+    signatureComponents,
     summary: {
       protocolName,
       actionType,
@@ -848,6 +959,10 @@ export function analyzeEIP712Payload(
     encodedTypeString: encType,
   };
 }
+
+// Default standard Foundry / Hardhat test account #0
+export const DEFAULT_TEST_PRIVATE_KEY = "0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80";
+export const DEFAULT_TEST_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
 
 // Curated Test Presets
 export const PRESET_ERC2612_DRAINER_SCAM = JSON.stringify(
@@ -875,7 +990,7 @@ export const PRESET_ERC2612_DRAINER_SCAM = JSON.stringify(
       verifyingContract: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
     },
     message: {
-      owner: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      owner: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266", // Victim Account
       spender: "0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045", // Attacker drainer address
       value: "115792089237316195423570985008687907853269984665640564039457584007913129639935", // MaxUint256
       nonce: 0,
@@ -885,6 +1000,9 @@ export const PRESET_ERC2612_DRAINER_SCAM = JSON.stringify(
   null,
   2
 );
+
+// Pre-computed valid signature for PRESET_ERC2612_DRAINER_SCAM signed by owner 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+export const PRESET_ERC2612_SAMPLE_SIG = "0x0e93cd74dab8c84de2f93f2e86dc5d1123c0e44c38e36fd7fd40e8ee118a68f9268766f7c49fbd919df5ca29b07b7aef984a5002a0a99f0df45827c8077554491c";
 
 export const PRESET_UNISWAP_PERMIT2 = JSON.stringify(
   {
@@ -916,16 +1034,18 @@ export const PRESET_UNISWAP_PERMIT2 = JSON.stringify(
       details: {
         token: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", // WETH
         amount: "1000000000000000000", // 1.0 WETH
-        expiration: Math.floor(Date.now() / 1000) + 1800, // 30 minutes
+        expiration: 1893456000,
         nonce: 1,
       },
       spender: "0x3fC91A3afd70395Cd496C647d5a6CC9D4B2b7FAD", // Uniswap Universal Router
-      sigDeadline: Math.floor(Date.now() / 1000) + 1800,
+      sigDeadline: 1893456000,
     },
   },
   null,
   2
 );
+
+export const PRESET_UNISWAP_SAMPLE_SIG = "0x2d78c4df0c732d155b3f1b46c623e73391ccf0be7ac190db938ed6b5dd6c1181727001d129516ca8f5b686e31ae48028e624c21f37ba6c101fc85ebdddf99a541b";
 
 export const PRESET_SEAPORT_DRAINER = JSON.stringify(
   {
@@ -973,7 +1093,7 @@ export const PRESET_SEAPORT_DRAINER = JSON.stringify(
       verifyingContract: "0x00000000000000ADc04C56Bf30aC9d3c0aAF14dC",
     },
     message: {
-      offerer: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e",
+      offerer: "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
       zone: "0x0000000000000000000000000000000000000000",
       offer: [
         {
@@ -997,6 +1117,8 @@ export const PRESET_SEAPORT_DRAINER = JSON.stringify(
   null,
   2
 );
+
+export const PRESET_SEAPORT_SAMPLE_SIG = "0xafc35f6697bc1aff5964b210815e3af7f71f44f5c7c2b61745ee525a74cdc651511c5eb4304eb023b0e939f05bca9044389878bda00b2c42a9bf5e3299879a441c";
 
 export const PRESET_SAFE_MULTISIG = JSON.stringify(
   {
@@ -1039,3 +1161,5 @@ export const PRESET_SAFE_MULTISIG = JSON.stringify(
   null,
   2
 );
+
+export const PRESET_SAFE_SAMPLE_SIG = "0x5b26365b28448beef3b1a85d3053876fdbcecaf27bd0518704e807d81b0821ca0eaf85f282933ee5105b7abeb2d4175153cf819f0ac2a15e5400f4ce233e14091b";

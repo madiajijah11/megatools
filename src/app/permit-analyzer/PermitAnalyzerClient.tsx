@@ -6,24 +6,50 @@ import CopyButton from "@/components/CopyButton";
 import {
   analyzeEIP712Payload,
   EIP712AnalysisResult,
+  signDigest,
+  deriveAddressFromPrivateKey,
+  DEFAULT_TEST_PRIVATE_KEY,
   PRESET_ERC2612_DRAINER_SCAM,
+  PRESET_ERC2612_SAMPLE_SIG,
   PRESET_UNISWAP_PERMIT2,
+  PRESET_UNISWAP_SAMPLE_SIG,
   PRESET_SEAPORT_DRAINER,
+  PRESET_SEAPORT_SAMPLE_SIG,
   PRESET_SAFE_MULTISIG,
+  PRESET_SAFE_SAMPLE_SIG,
 } from "@/lib/permit-analyzer";
+
+// Secondary test key (Hardhat / Foundry Account #1) for simulating mismatch/attackers
+const ATTACKER_TEST_PRIVATE_KEY = "0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d";
 
 export default function PermitAnalyzerClient() {
   const [jsonInput, setJsonInput] = useState<string>(PRESET_ERC2612_DRAINER_SCAM);
-  const [signatureInput, setSignatureInput] = useState<string>("");
+  const [signatureInput, setSignatureInput] = useState<string>(PRESET_ERC2612_SAMPLE_SIG);
   const [activeTab, setActiveTab] = useState<"security" | "summary" | "signature" | "hashes">("security");
+  const [simPrivateKey, setSimPrivateKey] = useState<string>(DEFAULT_TEST_PRIVATE_KEY);
 
   // Analysis result
   const analysis: EIP712AnalysisResult = useMemo(() => {
     return analyzeEIP712Payload(jsonInput, signatureInput);
   }, [jsonInput, signatureInput]);
 
-  const loadPreset = (preset: string) => {
+  const loadPreset = (preset: string, sampleSig?: string) => {
     setJsonInput(preset);
+    if (sampleSig) {
+      setSignatureInput(sampleSig);
+    }
+  };
+
+  // 1-Click Signing Helpers
+  const handleAutoSign = (privKey: string) => {
+    if (!analysis.isValid || !analysis.eip712Digest) return;
+    try {
+      const cleanKey = privKey.trim();
+      const sig = signDigest(analysis.eip712Digest, cleanKey);
+      setSignatureInput(sig);
+    } catch (e: unknown) {
+      alert(e instanceof Error ? e.message : "Signing failed");
+    }
   };
 
   // Badge styles based on risk level
@@ -66,9 +92,21 @@ export default function PermitAnalyzerClient() {
         </span>
       </div>
       <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
-        <span className="text-text-muted">Risk Flags:</span>
-        <span className={`font-bold ${analysis.riskFlags.length > 0 ? "text-rose-400" : "text-emerald-400"}`}>
-          {analysis.riskFlags.length} detected
+        <span className="text-text-muted">Signer Status:</span>
+        <span
+          className={`font-bold ${
+            analysis.recoveredSigner
+              ? analysis.summary.ownerOrSigner?.toLowerCase() === analysis.recoveredSigner.toLowerCase()
+                ? "text-emerald-400"
+                : "text-rose-400"
+              : "text-text-muted"
+          }`}
+        >
+          {analysis.recoveredSigner
+            ? analysis.summary.ownerOrSigner?.toLowerCase() === analysis.recoveredSigner.toLowerCase()
+              ? "Owner Match"
+              : "Signer Mismatch"
+            : "No Signature"}
         </span>
       </div>
       <div className="flex justify-between items-center py-1 border-b border-border-subtle/50">
@@ -90,25 +128,25 @@ export default function PermitAnalyzerClient() {
               ⚡ Load Preset:
             </span>
             <button
-              onClick={() => loadPreset(PRESET_ERC2612_DRAINER_SCAM)}
+              onClick={() => loadPreset(PRESET_ERC2612_DRAINER_SCAM, PRESET_ERC2612_SAMPLE_SIG)}
               className="px-2.5 py-1 text-xs rounded-lg bg-bg-page hover:bg-bg-hover border border-border-subtle text-rose-400 hover:text-rose-300 transition-colors font-medium"
             >
               🚨 ERC-2612 Drainer Scam
             </button>
             <button
-              onClick={() => loadPreset(PRESET_SEAPORT_DRAINER)}
+              onClick={() => loadPreset(PRESET_SEAPORT_DRAINER, PRESET_SEAPORT_SAMPLE_SIG)}
               className="px-2.5 py-1 text-xs rounded-lg bg-bg-page hover:bg-bg-hover border border-border-subtle text-orange-400 hover:text-orange-300 transition-colors font-medium"
             >
               💀 Seaport 0-ETH NFT Drainer
             </button>
             <button
-              onClick={() => loadPreset(PRESET_UNISWAP_PERMIT2)}
+              onClick={() => loadPreset(PRESET_UNISWAP_PERMIT2, PRESET_UNISWAP_SAMPLE_SIG)}
               className="px-2.5 py-1 text-xs rounded-lg bg-bg-page hover:bg-bg-hover border border-border-subtle text-sky-400 hover:text-sky-300 transition-colors font-medium"
             >
               🦄 Uniswap Permit2
             </button>
             <button
-              onClick={() => loadPreset(PRESET_SAFE_MULTISIG)}
+              onClick={() => loadPreset(PRESET_SAFE_MULTISIG, PRESET_SAFE_SAMPLE_SIG)}
               className="px-2.5 py-1 text-xs rounded-lg bg-bg-page hover:bg-bg-hover border border-border-subtle text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
             >
               🛡️ Safe Multi-Sig Tx
@@ -116,14 +154,17 @@ export default function PermitAnalyzerClient() {
           </div>
 
           <button
-            onClick={() => setJsonInput("")}
+            onClick={() => {
+              setJsonInput("");
+              setSignatureInput("");
+            }}
             className="px-2.5 py-1 text-xs rounded-lg bg-bg-page hover:bg-bg-hover border border-border-subtle text-text-muted hover:text-text-primary transition-colors"
           >
-            Clear Input
+            Clear All
           </button>
         </div>
 
-        {/* Input Area (JSON & Signature) */}
+        {/* Top Input Area (JSON & Signature) */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           <div className="lg:col-span-2 space-y-2">
             <div className="flex items-center justify-between text-xs">
@@ -143,9 +184,19 @@ export default function PermitAnalyzerClient() {
 
           <div className="space-y-4 flex flex-col justify-between">
             <div className="space-y-2">
-              <label className="block text-xs font-semibold text-text-secondary">
-                <span>🔏</span> Optional Secp256k1 Signature Hex
-              </label>
+              <div className="flex items-center justify-between text-xs">
+                <label className="font-semibold text-text-secondary flex items-center gap-1">
+                  <span>🔏</span> 65-Byte Signature (r,s,v)
+                </label>
+                {signatureInput && (
+                  <button
+                    onClick={() => setSignatureInput("")}
+                    className="text-[11px] text-text-muted hover:text-rose-400"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
               <textarea
                 value={signatureInput}
                 onChange={(e) => setSignatureInput(e.target.value)}
@@ -153,9 +204,22 @@ export default function PermitAnalyzerClient() {
                 rows={4}
                 className="w-full p-2.5 rounded-xl bg-bg-card border border-border-subtle font-mono text-xs text-text-primary focus:outline-none focus:border-accent resize-none"
               />
-              <span className="text-[11px] text-text-muted block">
-                Leave empty for pure signature deconstruction & risk analysis.
-              </span>
+              <div className="flex items-center justify-between text-[11px] text-text-muted">
+                <span>
+                  {signatureInput.trim() ? (
+                    <span className="text-emerald-400 font-mono">
+                      ✓ Length: {Math.floor(signatureInput.trim().replace(/^0x/, "").length / 2)} bytes
+                    </span>
+                  ) : (
+                    "Leave empty or load preset"
+                  )}
+                </span>
+                {analysis.recoveredSigner && (
+                  <span className="font-mono text-accent truncate max-w-[140px]">
+                    {analysis.recoveredSigner.slice(0, 6)}...{analysis.recoveredSigner.slice(-4)}
+                  </span>
+                )}
+              </div>
             </div>
 
             {/* Quick Risk Alert Banner */}
@@ -193,10 +257,10 @@ export default function PermitAnalyzerClient() {
 
         {/* Tab Navigation */}
         <div className="border-b border-border-subtle">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab("security")}
-              className={`pb-3 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${
+              className={`pb-3 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "security"
                   ? "border-accent text-accent"
                   : "border-transparent text-text-muted hover:text-text-primary"
@@ -211,27 +275,40 @@ export default function PermitAnalyzerClient() {
             </button>
             <button
               onClick={() => setActiveTab("summary")}
-              className={`pb-3 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${
+              className={`pb-3 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "summary"
                   ? "border-accent text-accent"
                   : "border-transparent text-text-muted hover:text-text-primary"
               }`}
             >
-              <span>👤</span> Human-Readable Intent Card
+              <span>📋</span> Human-Readable Intent Card
             </button>
             <button
               onClick={() => setActiveTab("signature")}
-              className={`pb-3 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${
+              className={`pb-3 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "signature"
                   ? "border-accent text-accent"
                   : "border-transparent text-text-muted hover:text-text-primary"
               }`}
             >
-              <span>🔏</span> Signer & Recovery
+              <span>🔏</span> Signer & Recovery Inspector
+              {analysis.recoveredSigner && (
+                <span
+                  className={`px-1.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                    analysis.summary.ownerOrSigner?.toLowerCase() === analysis.recoveredSigner.toLowerCase()
+                      ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                      : "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                  }`}
+                >
+                  {analysis.summary.ownerOrSigner?.toLowerCase() === analysis.recoveredSigner.toLowerCase()
+                    ? "✓ Verified"
+                    : "Mismatch"}
+                </span>
+              )}
             </button>
             <button
               onClick={() => setActiveTab("hashes")}
-              className={`pb-3 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 ${
+              className={`pb-3 text-sm font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap ${
                 activeTab === "hashes"
                   ? "border-accent text-accent"
                   : "border-transparent text-text-muted hover:text-text-primary"
@@ -386,36 +463,82 @@ export default function PermitAnalyzerClient() {
           </div>
         )}
 
-        {/* TAB 3: SIGNER & RECOVERY */}
+        {/* TAB 3: SIGNER & RECOVERY INSPECTOR (ENHANCED) */}
         {activeTab === "signature" && (
-          <div className="space-y-4">
-            <div className="p-5 rounded-xl bg-bg-card border border-border-subtle space-y-4">
-              <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
-                <span>🔏</span> Secp256k1 Elliptic Curve Signer Recovery
-              </h3>
-              <p className="text-xs text-text-muted">
-                Recovers the Ethereum public address from the 65-byte ECDSA signature (r, s, v) and the calculated EIP-712 digest.
-              </p>
+          <div className="space-y-6">
+            {/* Action Bar inside Signer Tab */}
+            <div className="p-4 rounded-xl bg-bg-card border border-border-subtle space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div>
+                  <h3 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                    <span>🔏</span> Secp256k1 Elliptic Curve Signer Recovery
+                  </h3>
+                  <p className="text-xs text-text-muted mt-0.5">
+                    Deconstructs ECDSA signature components and computes public key address from curve coordinates.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => handleAutoSign(DEFAULT_TEST_PRIVATE_KEY)}
+                    className="px-3 py-1.5 text-xs rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-300 transition-colors font-medium flex items-center gap-1.5"
+                  >
+                    <span>✨</span> Auto-Sign with Owner Key (Match)
+                  </button>
+                  <button
+                    onClick={() => handleAutoSign(ATTACKER_TEST_PRIVATE_KEY)}
+                    className="px-3 py-1.5 text-xs rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 transition-colors font-medium flex items-center gap-1.5"
+                  >
+                    <span>🚨</span> Simulate Attacker Signature (Mismatch)
+                  </button>
+                </div>
+              </div>
 
-              {analysis.recoveredSigner ? (
-                <div className="space-y-3">
-                  <div className="p-4 rounded-xl bg-bg-page border border-border-subtle space-y-2">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-text-muted">Recovered Signer Address:</span>
-                      <CopyButton text={analysis.recoveredSigner} label="Copy Address" />
-                    </div>
-                    <div className="font-mono text-sm font-bold text-emerald-400 break-all">
-                      {analysis.recoveredSigner}
-                    </div>
+              {/* In-tab Signature Input */}
+              <div className="space-y-1.5 pt-2 border-t border-border-subtle/50">
+                <div className="flex items-center justify-between text-xs text-text-muted">
+                  <span>Raw Signature Hex (65-byte / 130 hex characters):</span>
+                  {signatureInput && <CopyButton text={signatureInput} label="Copy Signature" />}
+                </div>
+                <input
+                  type="text"
+                  value={signatureInput}
+                  onChange={(e) => setSignatureInput(e.target.value)}
+                  placeholder="0x..."
+                  className="w-full p-2.5 rounded-lg bg-bg-page border border-border-subtle font-mono text-xs text-text-primary focus:outline-none focus:border-accent"
+                />
+              </div>
+            </div>
+
+            {/* Signature Verification Verdict Card */}
+            {analysis.recoveredSigner ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Recovered Signer Address */}
+                <div className="p-4 rounded-xl bg-bg-card border border-border-subtle space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-text-muted">
+                      1. Recovered Signer Address
+                    </span>
+                    <CopyButton text={analysis.recoveredSigner} label="Copy Address" />
                   </div>
+                  <div className="font-mono text-sm font-bold text-accent break-all p-2.5 rounded-lg bg-bg-page border border-border-subtle">
+                    {analysis.recoveredSigner}
+                  </div>
+                  <span className="text-[11px] text-text-muted block">
+                    Derived from public key point Q = r^-1(sR - zG)
+                  </span>
+                </div>
 
-                  <div className="p-3 rounded-lg bg-bg-page border border-border-subtle flex items-center justify-between text-xs">
-                    <span className="text-text-muted">Matches Declared Owner:</span>
+                {/* Identity Cross-Check */}
+                <div className="p-4 rounded-xl bg-bg-card border border-border-subtle space-y-2 flex flex-col justify-between">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-text-muted">
+                      2. Declared Owner in Message
+                    </span>
                     <span
-                      className={`font-bold font-mono ${
+                      className={`text-xs font-mono font-bold px-2 py-0.5 rounded border ${
                         analysis.summary.ownerOrSigner?.toLowerCase() === analysis.recoveredSigner.toLowerCase()
-                          ? "text-emerald-400"
-                          : "text-rose-400"
+                          ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                          : "bg-rose-500/20 text-rose-300 border-rose-500/40"
                       }`}
                     >
                       {analysis.summary.ownerOrSigner?.toLowerCase() === analysis.recoveredSigner.toLowerCase()
@@ -423,18 +546,198 @@ export default function PermitAnalyzerClient() {
                         : "❌ MISMATCH DETECTED"}
                     </span>
                   </div>
+                  <div className="font-mono text-sm font-bold text-text-primary break-all p-2.5 rounded-lg bg-bg-page border border-border-subtle">
+                    {analysis.summary.ownerOrSigner || "No owner specified in message"}
+                  </div>
+                  <span className="text-[11px] text-text-muted block">
+                    {analysis.summary.ownerOrSigner?.toLowerCase() === analysis.recoveredSigner.toLowerCase()
+                      ? "The private key that authorized this signature belongs to the declared owner."
+                      : "Warning: Signer does NOT match owner! Transaction will revert on-chain."}
+                  </span>
                 </div>
-              ) : (
-                <div className="p-6 text-center rounded-xl bg-bg-page border border-border-subtle text-xs text-text-muted space-y-2">
-                  <span>ℹ️</span>
-                  <p>
-                    Paste a 65-byte raw signature hex in the box above to perform cryptographic verification.
+              </div>
+            ) : (
+              <div className="p-6 text-center rounded-xl bg-bg-card border border-border-subtle space-y-2">
+                <span className="text-2xl">ℹ️</span>
+                <h4 className="text-sm font-bold text-text-primary">No Valid Signature Loaded</h4>
+                <p className="text-xs text-text-muted max-w-md mx-auto">
+                  Click <strong>&quot;Auto-Sign with Owner Key&quot;</strong> above, or paste an existing 65-byte hex signature to unpack its elliptic curve coordinates.
+                </p>
+                {analysis.signatureError && (
+                  <p className="text-xs text-rose-400 font-mono mt-2">{analysis.signatureError}</p>
+                )}
+              </div>
+            )}
+
+            {/* Signature (r, s, v) Breakdown */}
+            {analysis.signatureComponents && (
+              <div className="p-5 rounded-xl bg-bg-card border border-border-subtle space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle/50 pb-3">
+                  <div>
+                    <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                      <span>🧩</span> ECDSA Component Decomposition (r, s, v)
+                    </h4>
+                    <p className="text-xs text-text-muted">
+                      Unpacked 65-byte signature into curve coordinate and scalar proof
+                    </p>
+                  </div>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold border ${
+                      analysis.signatureComponents.isLowerS
+                        ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40"
+                        : "bg-amber-500/20 text-amber-300 border-amber-500/40"
+                    }`}
+                  >
+                    {analysis.signatureComponents.formatDescription}
+                  </span>
+                </div>
+
+                <div className="space-y-3 font-mono text-xs">
+                  {/* Parameter r */}
+                  <div className="p-3 rounded-lg bg-bg-page border border-border-subtle space-y-1">
+                    <div className="flex items-center justify-between text-text-muted">
+                      <span className="font-bold text-accent">Parameter r (32 Bytes / X-Coordinate on secp256k1):</span>
+                      <CopyButton text={analysis.signatureComponents.r} label="Copy r" />
+                    </div>
+                    <div className="text-text-primary break-all select-all font-semibold">
+                      {analysis.signatureComponents.r}
+                    </div>
+                  </div>
+
+                  {/* Parameter s */}
+                  <div className="p-3 rounded-lg bg-bg-page border border-border-subtle space-y-1">
+                    <div className="flex items-center justify-between text-text-muted">
+                      <span className="font-bold text-accent">Parameter s (32 Bytes / Signature Scalar Proof):</span>
+                      <CopyButton text={analysis.signatureComponents.s} label="Copy s" />
+                    </div>
+                    <div className="text-text-primary break-all select-all font-semibold">
+                      {analysis.signatureComponents.s}
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] pt-1">
+                      <span className="text-text-muted">EIP-2 Malleability Compliance:</span>
+                      <span
+                        className={
+                          analysis.signatureComponents.isLowerS
+                            ? "text-emerald-400 font-bold"
+                            : "text-amber-400 font-bold"
+                        }
+                      >
+                        {analysis.signatureComponents.isLowerS
+                          ? "✓ Lower S (s ≤ secp256k1_n / 2)"
+                          : "⚠️ High S (May be rejected by strict contracts)"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Parameter v */}
+                  <div className="p-3 rounded-lg bg-bg-page border border-border-subtle flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                      <span className="font-bold text-accent block">
+                        Recovery Identifier v (1 Byte):
+                      </span>
+                      <span className="text-text-muted text-[11px]">
+                        Determines which of the two possible Y curve coordinates to select
+                      </span>
+                    </div>
+                    <div className="text-sm font-bold text-text-primary bg-bg-card px-3 py-1 rounded border border-border-subtle">
+                      {analysis.signatureComponents.v} (Hex: 0x{analysis.signatureComponents.v.toString(16)})
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Cryptographic Recovery Step-by-Step Flow */}
+            <div className="p-5 rounded-xl bg-bg-card border border-border-subtle space-y-3">
+              <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                <span>🔄</span> How Secp256k1 EIP-712 Signer Recovery Works
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+                <div className="p-3 rounded-lg bg-bg-page border border-border-subtle space-y-1">
+                  <span className="font-bold text-accent block">Step 1: Compute Digest</span>
+                  <p className="text-text-muted text-[11px]">
+                    Hash <code>\x19\x01</code>, domain separator, and struct hash into 32-byte digest z.
                   </p>
-                  {analysis.signatureError && (
-                    <p className="text-rose-400 font-mono">{analysis.signatureError}</p>
-                  )}
                 </div>
-              )}
+                <div className="p-3 rounded-lg bg-bg-page border border-border-subtle space-y-1">
+                  <span className="font-bold text-accent block">Step 2: Unpack Curve Point</span>
+                  <p className="text-text-muted text-[11px]">
+                    Calculate point R = (r, y) on curve secp256k1 using recovery byte v.
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-bg-page border border-border-subtle space-y-1">
+                  <span className="font-bold text-accent block">Step 3: Recover Public Key</span>
+                  <p className="text-text-muted text-[11px]">
+                    Evaluate Q = r^-1(sR - zG) to derive uncompressed 64-byte public key (Qx, Qy).
+                  </p>
+                </div>
+                <div className="p-3 rounded-lg bg-bg-page border border-border-subtle space-y-1">
+                  <span className="font-bold text-accent block">Step 4: Keccak-256 Hash</span>
+                  <p className="text-text-muted text-[11px]">
+                    Take the last 20 bytes of Keccak-256(Q) to produce the Ethereum address.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Interactive Local Signer Simulator Workbench */}
+            <div className="p-5 rounded-xl bg-bg-card border border-border-subtle space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle/50 pb-3">
+                <div>
+                  <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                    <span>💻</span> Local Developer Signing Sandbox (100% In-Browser)
+                  </h4>
+                  <p className="text-xs text-text-muted">
+                    Test signing this EIP-712 payload with any test private key without sending keys over network.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSimPrivateKey(DEFAULT_TEST_PRIVATE_KEY)}
+                    className="px-2.5 py-1 text-[11px] rounded bg-bg-page hover:bg-bg-hover border border-border-subtle text-accent"
+                  >
+                    Foundry #0 Key
+                  </button>
+                  <button
+                    onClick={() => setSimPrivateKey(ATTACKER_TEST_PRIVATE_KEY)}
+                    className="px-2.5 py-1 text-[11px] rounded bg-bg-page hover:bg-bg-hover border border-border-subtle text-text-muted hover:text-text-primary"
+                  >
+                    Foundry #1 Key
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-xs text-text-muted">
+                    <span>Test Private Key (Hex):</span>
+                    {simPrivateKey && (
+                      <span className="font-mono text-emerald-400 text-[11px]">
+                        Address: {deriveAddressFromPrivateKey(simPrivateKey)}
+                      </span>
+                    )}
+                  </div>
+                  <input
+                    type="text"
+                    value={simPrivateKey}
+                    onChange={(e) => setSimPrivateKey(e.target.value)}
+                    placeholder="0x... 32-byte private key"
+                    className="w-full p-2 rounded-lg bg-bg-page border border-border-subtle font-mono text-xs text-text-primary focus:outline-none focus:border-accent"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handleAutoSign(simPrivateKey)}
+                    className="px-4 py-2 rounded-lg bg-accent text-white font-semibold text-xs hover:opacity-90 transition-opacity flex items-center gap-2"
+                  >
+                    <span>✍️</span> Sign EIP-712 Digest Now
+                  </button>
+                  <span className="text-xs text-text-muted">
+                    Generates valid signature (r, s, v) and immediately tests recovery.
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         )}
