@@ -13,6 +13,23 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-10-12-permit-analyzer-release",
+    date: "2026-10-12",
+    title: "EIP-712 Permit & Phishing Signature Deconstructor",
+    type: "added",
+    toolHref: "/permit-analyzer",
+    toolName: "Permit & Signature Analyzer",
+    description: "Launch of client-side EIP-712 typed data deconstructor, wallet drainer heuristic scanner, and secp256k1 signature verification engine.",
+    highlights: [
+      "EIP-712 Canonical Deconstructor: Computes exact typeHash, domainSeparator, structHash, and final 32-byte EIP-712 digest (eth_signTypedData_v4)",
+      "Drainer & Phishing Scanner: Heuristic engine detects infinite token allowances (MaxUint256), perpetual deadlines, and Seaport zero-consideration scam orders",
+      "Secp256k1 Signer Recovery: Pure TypeScript elliptic curve recovery checks recovered public address against declared message owners without external RPCs",
+      "Human-Readable Intent Card: Translates complex nested typed data into plain English detailing exact assets, spenders, networks, and expiration limits",
+      "Real-World Presets: Instant testing with ERC-2612 drainers, Uniswap Permit2 single/batch allowances, Seaport 1.5 orders, and Gnosis Safe transactions",
+      "100% Client-Side Privacy: All hashing and signature recovery execute directly in the browser with zero external server dependencies"
+    ],
+  },
+  {
     id: "2026-10-09-storage-packer-release",
     date: "2026-10-09",
     title: "Solidity Storage Layout & Gas Packing Optimizer",
