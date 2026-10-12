@@ -1783,6 +1783,30 @@ export const TOOLS: ToolInfo[] = [
       output: "Slot 0: [address owner (20B), uint128 rewardRate (16B) -> split], Slot 1: [uint256 totalStaked]. Optimized: 2 slots vs 3 slots."
     }
   },
+  {
+    id: "permit-analyzer",
+    title: "EIP-712 Permit & Phishing Signature Deconstructor",
+    shortTitle: "Permit Analyzer",
+    description: "Deconstruct EIP-712 typed data messages, decode Permit & Permit2 signatures, detect infinite allowance wallet drainer scams, and verify secp256k1 signers 100% client-side.",
+    emoji: "🔏",
+    href: "/permit-analyzer",
+    tech: "Client-Side • EIP-712 & Secp256k1 Deconstructor",
+    steps: [
+      "Paste any raw EIP-712 typed data JSON or pick a curated real-world preset (ERC-2612 Drainer, Uniswap Permit2, Seaport)",
+      "Optionally input a 65-byte raw signature hex (r, s, v) to cryptographically recover the signer address",
+      "Review the Security Risk Scorecard and Human-Readable Intent Card to confirm what tokens or permissions are granted",
+      "Inspect canonical domainSeparator, structHash, and final EIP-712 digest values for smart contract verification"
+    ],
+    tips: [
+      "Always inspect the spender address; malicious drainer websites impersonate official dApp frontends to request MaxUint256 approvals",
+      "Check the expiration deadline; perpetual deadlines (e.g. year 2099 or MaxUint256) allow attackers to drain tokens at any future time",
+      "Legitimate EIP-712 typed data should always specify a valid verifyingContract and chainId to prevent replay attacks"
+    ],
+    example: {
+      input: "{\"primaryType\":\"Permit\",\"message\":{\"owner\":\"0x742d35...\",\"spender\":\"0xd8dA6B...\",\"value\":\"115792...\"}}",
+      output: "Risk Verdict: CRITICAL (90/100). Infinite token allowance detected. Spender 0xd8dA... not a known protocol router."
+    }
+  },
 ];
 export const TOOLS_INFO: Record<string, ToolInfo> = Object.fromEntries(
   TOOLS.map((t) => [t.id, t])
@@ -1935,6 +1959,7 @@ export const TOOL_CATEGORIES: ToolCategory[] = [
       "bip39-generator",
       "evm-calldata-decoder",
       "storage-packer",
+      "permit-analyzer",
     ],
   },
   {
