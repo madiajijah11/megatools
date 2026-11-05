@@ -26,6 +26,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "User-Agent String Parser & Client Hints Inspector",
+  url: "https://megatools-tau.vercel.app/user-agent-parser",
+  description: "Parse User-Agent strings to detect browser versions, OS architecture, device models, and AI search crawler bots.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function UserAgentParserPage() {
-  return <UserAgentParserClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <UserAgentParserClient />
+    </>
+  );
 }

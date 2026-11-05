@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "RAG Document Chunker & Overlap Visualizer",
+  url: "https://megatools-tau.vercel.app/rag-chunker",
+  description: "Partition documents into optimized semantic chunks with configurable size, overlap, and vector database export.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function RagChunkerPage() {
-  return <RagChunkerClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <RagChunkerClient />
+    </>
+  );
 }

@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Base64 Data URL & Asset Embedder",
+  url: "https://megatools-tau.vercel.app/data-url",
+  description: "Convert images, fonts, SVGs, and files into inline Base64 Data URLs, CSS background snippets, and HTML tags.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function DataUrlPage() {
-  return <DataUrlClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <DataUrlClient />
+    </>
+  );
 }

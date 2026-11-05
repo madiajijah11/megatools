@@ -27,6 +27,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "LLM Output Diff & Hallucination Spotter",
+  url: "https://megatools-tau.vercel.app/llm-diff-comparator",
+  description: "Compare AI model outputs side-by-side with word-level diff, numerical discrepancy analysis, and hallucination detection.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function LlmDiffComparatorPage() {
-  return <LlmDiffComparatorClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <LlmDiffComparatorClient />
+    </>
+  );
 }

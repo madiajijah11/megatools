@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Web Audio Tone & Frequency Synthesizer",
+  url: "https://megatools-tau.vercel.app/tone-generator",
+  description: "Generate pure acoustic frequencies (20Hz - 20kHz), binaural beats, and colored noise (white, pink, brown) with a live oscilloscope.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function ToneGeneratorPage() {
-  return <ToneGeneratorClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ToneGeneratorClient />
+    </>
+  );
 }

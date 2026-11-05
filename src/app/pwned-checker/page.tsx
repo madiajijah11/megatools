@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Pwned Password & Data Breach Checker",
+  url: "https://megatools-tau.vercel.app/pwned-checker",
+  description: "Check if your password has been exposed in billions of leaked records using mathematical k-Anonymity privacy.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function PwnedCheckerPage() {
-  return <PwnedCheckerClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <PwnedCheckerClient />
+    </>
+  );
 }

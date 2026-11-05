@@ -52,6 +52,9 @@ export const metadata: Metadata = {
     title: "MegaTools — Free Online Tools",
     description: "Free, fast, privacy-first tools for devs and everyone.",
   },
+  alternates: {
+    canonical: "/",
+  },
   verification: {
     google: "VNK6qw2Ov-15QBCr5sZYMYncz4GzXBmqcf1OZwBq2WE",
     other: {

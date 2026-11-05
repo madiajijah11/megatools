@@ -16,6 +16,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Gitignore Generator",
+  url: "https://megatools-tau.vercel.app/gitignore-generator",
+  description: "Compose a project-ready .gitignore from popular language, framework, OS, and editor presets.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function GitignoreGeneratorPage() {
-  return <GitignoreGeneratorClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <GitignoreGeneratorClient />
+    </>
+  );
 }

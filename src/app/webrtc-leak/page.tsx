@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "WebRTC IP Leak & VPN Shield Tester",
+  url: "https://megatools-tau.vercel.app/webrtc-leak",
+  description: "Detect if your real public or local IP address leaks through WebRTC STUN requests even while using a VPN or proxy.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function WebRTCLeakPage() {
-  return <WebRTCLeakClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <WebRTCLeakClient />
+    </>
+  );
 }

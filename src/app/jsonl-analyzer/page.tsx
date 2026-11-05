@@ -16,6 +16,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "JSONL Analyzer & Schema Inspector",
+  url: "https://megatools-tau.vercel.app/jsonl-analyzer",
+  description: "Inspect JSON Lines validity, field coverage, and clean valid output in-browser.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function JsonlAnalyzerPage() {
-  return <JsonlAnalyzerClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <JsonlAnalyzerClient />
+    </>
+  );
 }

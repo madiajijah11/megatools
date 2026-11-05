@@ -27,6 +27,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Content Security Policy (CSP) Builder & Analyzer",
+  url: "https://megatools-tau.vercel.app/csp-builder",
+  description: "Construct, analyze, and test hardened Content Security Policy (CSP) headers with cryptographic nonces and security audit.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function CspBuilderPage() {
-  return <CspBuilderClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <CspBuilderClient />
+    </>
+  );
 }

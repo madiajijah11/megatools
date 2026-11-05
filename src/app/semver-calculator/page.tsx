@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Semantic Versioning Calculator & Range Tester",
+  url: "https://megatools-tau.vercel.app/semver-calculator",
+  description: "Evaluate SemVer 2.0 ranges, simulate Major/Minor/Patch bumps, and sort multi-version releases in browser RAM.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function SemverCalculatorPage() {
-  return <SemverCalculatorClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <SemverCalculatorClient />
+    </>
+  );
 }

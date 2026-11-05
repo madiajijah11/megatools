@@ -5,15 +5,32 @@ export const metadata: Metadata = {
   title: "About MegaTools — Privacy-First Developer Tools",
   description:
     "Learn about MegaTools: 73+ fast, free, 100% in-browser developer, media, blockchain, AI, and cybersecurity tools running with zero server uploads.",
+  alternates: {
+    canonical: "/about",
+  },
   openGraph: {
     title: "About MegaTools",
     description: "The story and architecture behind MegaTools.",
+    url: "https://megatools-tau.vercel.app/about",
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About MegaTools",
+  url: "https://megatools-tau.vercel.app/about",
+  description: "Learn about MegaTools: fast, free, 100% client-side developer and cybersecurity tools.",
 };
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="mx-auto max-w-4xl px-4 py-12">
       <Link
         href="/"
         className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
@@ -93,5 +110,6 @@ export default function AboutPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

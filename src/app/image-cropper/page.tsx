@@ -16,6 +16,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Image Cropper & Resizer",
+  url: "https://megatools-tau.vercel.app/image-cropper",
+  description: "Resize, rotate, and export images locally using the browser Canvas API.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function ImageCropperPage() {
-  return <ImageCropperClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ImageCropperClient />
+    </>
+  );
 }

@@ -16,6 +16,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Environment File Editor & Sanitizer",
+  url: "https://megatools-tau.vercel.app/env-file-editor",
+  description: "Inspect, sanitize, and export .env variables locally without sending secrets anywhere.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function EnvFileEditorPage() {
-  return <EnvFileEditorClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <EnvFileEditorClient />
+    </>
+  );
 }

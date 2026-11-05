@@ -26,6 +26,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Secret & API Key Leak Scanner",
+  url: "https://megatools-tau.vercel.app/secret-scanner",
+  description: "Detect leaked API keys, tokens, database credentials, and high-entropy secrets client-side with 1-click auto-masking.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function SecretScannerPage() {
-  return <SecretScannerClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <SecretScannerClient />
+    </>
+  );
 }

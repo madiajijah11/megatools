@@ -13,6 +13,21 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-11-05-site-wide-seo-overhaul",
+    date: "2026-11-05",
+    title: "Site-Wide SEO Architecture & Crawlability Overhaul",
+    type: "improved",
+    toolHref: "/sitemap.xml",
+    toolName: "SEO & Discovery Engine",
+    description: "Complete technical SEO overhaul across all 115+ tool pages, implementing self-referential canonical URLs, WebApplication JSON-LD schemas, stable sitemap timestamps, and category-based contextual internal linking.",
+    highlights: [
+      "Canonical URL Standardization: Added alternates.canonical across every tool page and utility route to prevent duplicate indexation and mirror penalties",
+      "Structured Data Automation: Embedded schema.org WebApplication JSON-LD across all 115+ client utilities to enable rich snippets in Google SERP",
+      "Dynamic Related Tools: Added contextual cross-links in InfoPanel drawer to keep crawl depth under 2 hops and boost topic cluster authority",
+      "Sitemap Timestamp Accuracy: Optimized sitemap.ts to resolve realistic lastModified dates based on actual changelog milestones instead of volatile new Date() requests"
+    ],
+  },
+  {
     id: "2026-10-12-permit-analyzer-release",
     date: "2026-10-12",
     title: "EIP-712 Permit & Phishing Signature Deconstructor",

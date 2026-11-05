@@ -27,6 +27,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Few-Shot Prompt & Fine-Tuning Dataset Formatter",
+  url: "https://megatools-tau.vercel.app/few-shot-formatter",
+  description: "Construct, validate, and convert few-shot prompt examples into OpenAI JSONL, Anthropic XML, ChatML, and Llama 3 templates.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function FewShotFormatterPage() {
-  return <FewShotFormatterClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <FewShotFormatterClient />
+    </>
+  );
 }

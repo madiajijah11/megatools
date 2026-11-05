@@ -16,6 +16,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "HTTP Request Builder",
+  url: "https://megatools-tau.vercel.app/http-request-builder",
+  description: "Build one HTTP request and export it as cURL, fetch, Axios, or Python requests code.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function HttpRequestBuilderPage() {
-  return <HttpRequestBuilderClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <HttpRequestBuilderClient />
+    </>
+  );
 }

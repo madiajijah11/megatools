@@ -5,15 +5,32 @@ export const metadata: Metadata = {
   title: "Terms of Service — MegaTools",
   description:
     "Terms of Service for MegaTools. Review our conditions of use and service disclaimer.",
+  alternates: {
+    canonical: "/terms",
+  },
   openGraph: {
     title: "Terms of Service — MegaTools",
     description: "Terms and conditions for using MegaTools.",
+    url: "https://megatools-tau.vercel.app/terms",
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "MegaTools Terms of Service",
+  url: "https://megatools-tau.vercel.app/terms",
+  description: "Terms and conditions for using MegaTools browser-based utilities.",
 };
 
 export default function TermsPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="mx-auto max-w-4xl px-4 py-12">
       <Link
         href="/"
         className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
@@ -84,5 +101,6 @@ export default function TermsPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

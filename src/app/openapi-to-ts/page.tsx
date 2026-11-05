@@ -16,6 +16,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "OpenAPI to TypeScript & Zod",
+  url: "https://megatools-tau.vercel.app/openapi-to-ts",
+  description: "Generate TypeScript interfaces or Zod schemas from OpenAPI component definitions entirely in your browser.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function OpenapiToTsPage() {
-  return <OpenapiToTsClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <OpenapiToTsClient />
+    </>
+  );
 }

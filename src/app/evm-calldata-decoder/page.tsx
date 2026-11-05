@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "EVM Calldata Decoder & ABI Inspector",
+  url: "https://megatools-tau.vercel.app/evm-calldata-decoder",
+  description: "Decode raw Ethereum & EVM transaction calldata hex into human-readable parameters and 32-byte word slices.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function EvmCalldataDecoderPage() {
-  return <EvmCalldataDecoderClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <EvmCalldataDecoderClient />
+    </>
+  );
 }

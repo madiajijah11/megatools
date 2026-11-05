@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "BIP-39 Mnemonic Seed Phrase Studio",
+  url: "https://megatools-tau.vercel.app/bip39-generator",
+  description: "Generate cryptographically secure 12 & 24-word seed phrases, verify checksums, and derive PBKDF2 512-bit binary seeds.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function Bip39GeneratorPage() {
-  return <Bip39GeneratorClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <Bip39GeneratorClient />
+    </>
+  );
 }

@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Robots.txt Generator & URL Match Tester",
+  url: "https://megatools-tau.vercel.app/robots-generator",
+  description: "Construct standard robots.txt files with AI bot blocking (GPTBot, ClaudeBot), crawl delays, and live URL matching simulation.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function RobotsGeneratorPage() {
-  return <RobotsGeneratorClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <RobotsGeneratorClient />
+    </>
+  );
 }

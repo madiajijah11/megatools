@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Structured System Prompt Architect",
+  url: "https://megatools-tau.vercel.app/prompt-architect",
+  description: "Engineer production-grade, anti-hallucination XML/Markdown system prompts with role constraints and few-shot examples.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function PromptArchitectPage() {
-  return <PromptArchitectClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <PromptArchitectClient />
+    </>
+  );
 }

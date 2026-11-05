@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "GraphQL Query Beautifier & AST Inspector",
+  url: "https://megatools-tau.vercel.app/graphql-formatter",
+  description: "Format, prettify, minify, and extract variables or operation AST metrics from GraphQL queries and mutations.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function GraphqlFormatterPage() {
-  return <GraphqlFormatterClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <GraphqlFormatterClient />
+    </>
+  );
 }

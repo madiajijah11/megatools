@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "RDAP Domain & IP Registration Inspector",
+  url: "https://megatools-tau.vercel.app/rdap-lookup",
+  description: "Query authoritative domain registration, expiration dates, status flags, and IP ownership via ICANN",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function RdapLookupPage() {
-  return <RdapLookupClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <RdapLookupClient />
+    </>
+  );
 }

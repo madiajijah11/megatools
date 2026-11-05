@@ -5,15 +5,32 @@ export const metadata: Metadata = {
   title: "Privacy Policy — MegaTools",
   description:
     "Privacy Policy for MegaTools. Learn how we protect your privacy through 100% client-side, zero-server architecture.",
+  alternates: {
+    canonical: "/privacy",
+  },
   openGraph: {
     title: "Privacy Policy — MegaTools",
     description: "Our commitment to 100% client-side privacy and data protection.",
+    url: "https://megatools-tau.vercel.app/privacy",
   },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "MegaTools Privacy Policy",
+  url: "https://megatools-tau.vercel.app/privacy",
+  description: "Learn how MegaTools protects your privacy through 100% client-side zero-server processing.",
 };
 
 export default function PrivacyPage() {
   return (
-    <div className="mx-auto max-w-4xl px-4 py-12">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <div className="mx-auto max-w-4xl px-4 py-12">
       <Link
         href="/"
         className="text-sm text-text-secondary hover:text-accent transition-colors mb-6 inline-flex items-center gap-1 font-mono"
@@ -125,5 +142,6 @@ export default function PrivacyPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

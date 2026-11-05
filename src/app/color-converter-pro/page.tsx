@@ -16,6 +16,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Color Converter & Palette Studio",
+  url: "https://megatools-tau.vercel.app/color-converter-pro",
+  description: "Convert HEX colors to RGB and HSL, preview swatches, and copy CSS values.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function ColorConverterProPage() {
-  return <ColorConverterProClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <ColorConverterProClient />
+    </>
+  );
 }

@@ -26,6 +26,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "HAR File Viewer & Network Waterfall Analyzer",
+  url: "https://megatools-tau.vercel.app/har-viewer",
+  description: "Inspect HTTP Archive (.har) logs with visual waterfall timelines, TTFB metrics, SSL/DNS timings, and request headers.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function HarViewerPage() {
-  return <HarViewerClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <HarViewerClient />
+    </>
+  );
 }

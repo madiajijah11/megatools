@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "JSON to CSV / TSV Converter & Table Exporter",
+  url: "https://megatools-tau.vercel.app/json-to-csv",
+  description: "Convert JSON arrays and nested structures into clean CSV, TSV, or interactive data grids with automatic key flattening.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function JsonToCsvPage() {
-  return <JsonToCsvClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <JsonToCsvClient />
+    </>
+  );
 }

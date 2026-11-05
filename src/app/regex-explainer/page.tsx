@@ -25,6 +25,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "Regex Visual Explainer & AST Token Breakdown",
+  url: "https://megatools-tau.vercel.app/regex-explainer",
+  description: "Deconstruct regular expressions into clear plain-English token explanations, lookarounds, capture groups, and quantifier breakdowns.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function RegexExplainerPage() {
-  return <RegexExplainerClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <RegexExplainerClient />
+    </>
+  );
 }

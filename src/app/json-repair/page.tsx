@@ -26,6 +26,29 @@ export const metadata: Metadata = {
   },
 };
 
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: "LLM JSON Repair & Auto-Fixer",
+  url: "https://megatools-tau.vercel.app/json-repair",
+  description: "Auto-fix broken, truncated, and malformed JSON from AI prompts. Fixes quotes, trailing commas, and brackets in-browser.",
+  applicationCategory: "UtilityApplication",
+  operatingSystem: "All",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 export default function JsonRepairPage() {
-  return <JsonRepairClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <JsonRepairClient />
+    </>
+  );
 }
