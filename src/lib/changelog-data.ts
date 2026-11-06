@@ -13,11 +13,24 @@ export interface ChangelogItem {
 
 export const CHANGELOG_ITEMS: ChangelogItem[] = [
   {
+    id: "2026-11-06-fix-canonical-urls",
+    date: "2026-11-06",
+    title: "Fix Canonical & JSON-LD URLs for Web3 Tools",
+    type: "fixed",
+    toolHref: "/permit-analyzer",
+    toolName: "Permit Analyzer & Storage Packer",
+    description: "Corrected canonical tags, OpenGraph, and WebApplication JSON-LD URLs in permit-analyzer and storage-packer to eliminate legacy domain conflicts and ensure consistent indexation.",
+    highlights: [
+      "Fixed external canonical references to resolve relative paths against the official domain",
+      "Synchronized structured schema.org WebApplication metadata with site-wide standards",
+    ],
+  },
+  {
     id: "2026-11-05-site-wide-seo-overhaul",
     date: "2026-11-05",
     title: "Site-Wide SEO Architecture & Crawlability Overhaul",
     type: "improved",
-    toolHref: "/sitemap.xml",
+    toolHref: "/robots-generator",
     toolName: "SEO & Discovery Engine",
     description: "Complete technical SEO overhaul across all 115+ tool pages, implementing self-referential canonical URLs, WebApplication JSON-LD schemas, stable sitemap timestamps, and category-based contextual internal linking.",
     highlights: [

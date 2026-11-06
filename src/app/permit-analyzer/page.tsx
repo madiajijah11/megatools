@@ -18,13 +18,13 @@ export const metadata: Metadata = {
     "web3 security tools",
   ],
   alternates: {
-    canonical: "https://megatools.net/permit-analyzer",
+    canonical: "/permit-analyzer",
   },
   openGraph: {
     title: "EIP-712 Permit & Phishing Signature Deconstructor — MegaTools",
     description:
       "Deconstruct EIP-712 typed data messages, decode Permit & Permit2 signatures, detect infinite allowance wallet drainer scams, and verify secp256k1 signers 100% client-side.",
-    url: "https://megatools.net/permit-analyzer",
+    url: "https://megatools-tau.vercel.app/permit-analyzer",
     siteName: "MegaTools",
     type: "website",
   },
@@ -35,7 +35,7 @@ export default function PermitAnalyzerPage() {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     name: "EIP-712 Permit & Phishing Signature Deconstructor",
-    url: "https://megatools.net/permit-analyzer",
+    url: "https://megatools-tau.vercel.app/permit-analyzer",
     description:
       "Deconstruct EIP-712 typed data messages, decode Permit & Permit2 signatures, detect infinite allowance wallet drainer scams, and verify secp256k1 signers 100% client-side.",
     applicationCategory: "SecurityApplication",
